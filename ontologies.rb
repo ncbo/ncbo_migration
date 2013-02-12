@@ -14,8 +14,10 @@ abort("ERRORS:\n#{errors.join("\n")}") unless errors.empty?
 LinkedData::Models::SubmissionStatus.init
 LinkedData::Models::OntologyFormat.init
 
-# Don't process formats
+# Don't process the following formats
 skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "UMLS"]
+
+# Transform old formats to new names
 format_mapping = {
   "OBO" => "OBO",
   "OWL" => "OWL",
@@ -26,6 +28,11 @@ format_mapping = {
   "UMLS-RELA" => "UMLS",
   "PROTEGE" => "PROTEGE"
 }
+
+# Default download files value should be true
+Kernel.const_defined?("DOWNLOAD_FILES") ? nil : DOWNLOAD_FILES = true
+
+# Hard-coded master files for ontologies that have zips with multiple files
 master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl"}
 
 acronyms = Set.new
@@ -161,7 +168,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
   os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format)
   
   # Ontology file
-  if skip_formats.include?(ont.format)
+  if skip_formats.include?(ont.format) || !DOWNLOAD_FILES
     os.summaryOnly = true
     skipped << "#{ont.abbreviation}, #{ont.format}"
   elsif !os.summaryOnly
@@ -190,7 +197,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
   
   if os.valid?
     os.save
-  else
+  elsif !of.exist?
     if (
         os.errors[:uploadFilePath] and
         os.errors[:uploadFilePath].kind_of?(Array) and
@@ -222,7 +229,7 @@ puts "Duplicate ontology names/acronyms (ontologies created with `DUPLICATE` app
 puts duplicates.empty? ? "None" : duplicates.join("\n")
 
 puts ""
-puts "Entered as `summaryOnly` because we don't support this format yet:"
+puts "Entered as `summaryOnly` because we don't support this format yet OR file downloading was disabled:"
 puts skipped.empty? ? "None" : skipped.join("\n")
 
 puts ""
