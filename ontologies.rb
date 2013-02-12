@@ -199,7 +199,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
   
   if os.valid?
     os.save
-  elsif !of.exist?
+  elsif !os.exist?
     if (
         os.errors[:uploadFilePath] and
         os.errors[:uploadFilePath].kind_of?(Array) and
