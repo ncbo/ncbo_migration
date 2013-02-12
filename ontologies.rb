@@ -42,6 +42,7 @@ skipped = []
 no_contacts = []
 bad_urls = []
 zip_multiple_files = []
+
 puts "Number of ontologies to migrate: #{RestHelper.ontologies.length}"
 pbar = ProgressBar.new("Migrating", RestHelper.ontologies.length*2)
 RestHelper.ontologies.each_with_index do |ont, index|
@@ -151,8 +152,9 @@ RestHelper.ontologies.each_with_index do |ont, index|
   os.ontology           = o
 
   # Contact
-  contact = LinkedData::Models::Contact.where(name: ont.contactName, email: ont.contactEmail)
-  if contact.empty?
+  contact_name = ont.contactName || ont.contactEmail
+  contact = LinkedData::Models::Contact.where(name: contact_name, email: ont.contactEmail) unless ont.contactEmail.nil?
+  if contact.nil? || contact.empty?
     name = ont.contactName || "UNKNOWN"
     email = ont.contactEmail || "UNKNOWN"
     no_contacts << "#{ont.abbreviation}, #{ont.contactName}, #{ont.contactEmail}" if [name, email].include?("UNKNOWN")
