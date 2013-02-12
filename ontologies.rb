@@ -52,7 +52,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
   o.acronym            = ont.abbreviation
   o.name               = ont.displayLabel
   o.viewingRestriction = ont.viewingRestriction
-  o.doNotUpdate        = ont.isManuel == 1
+  o.doNotUpdate        = ont.isManual == 1
   o.flat               = ont.isFlat == 1
 
   # ACL
