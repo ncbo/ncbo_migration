@@ -164,7 +164,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
   if skip_formats.include?(ont.format)
     os.summaryOnly = true
     skipped << "#{ont.abbreviation}, #{ont.format}"
-  else
+  elsif !os.summaryOnly
     begin
       # Get file
       if os.pullLocation
