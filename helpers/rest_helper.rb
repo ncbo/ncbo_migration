@@ -5,6 +5,7 @@ require 'json'
 require 'open-uri'
 require 'recursive-open-struct'
 require 'progressbar'
+require 'net/http'
 
 require_relative '../settings'
 
@@ -93,7 +94,7 @@ class RestHelper
       http_session.use_ssl = (uri.scheme == 'https')
       http_session.start do |http|
         http.request_get(uri.request_uri) do |res|
-          raise Net::HTTPBadResponse("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
+          raise Net::HTTPBadResponse.new("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
           file_size = res.read_header["content-length"].to_i
           begin
             filename = res.read_header["content-disposition"].match(/filename=\"(.*)\"/)[1] if filename.nil?
