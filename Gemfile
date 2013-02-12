@@ -7,4 +7,4 @@ gem 'pry'
 
 gem 'goo', :git => 'https://github.com/ncbo/goo.git'
 gem 'sparql_http', :git => 'https://github.com/ncbo/sparql_http.git'
-gem 'ontologies_linked_data', :ontologies_linked_data => 'https://github.com/ncbo/ontologies_linked_data.git'
+gem 'ontologies_linked_data', :git => 'https://github.com/ncbo/ontologies_linked_data.git'

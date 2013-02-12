@@ -1,0 +1,69 @@
+GIT
+  remote: https://github.com/ncbo/goo.git
+  revision: d7561ab73d666a80771e304873b23cebdddbed04
+  specs:
+    goo (0.0.2)
+      uuid
+
+GIT
+  remote: https://github.com/ncbo/ontologies_linked_data.git
+  revision: d00ecdbe503e250cb12ebfaab09eff5024d9c740
+  specs:
+    ontologies_linked_data (0.0.1)
+      bcrypt-ruby
+      goo
+      json
+      multi_json
+      oj
+      rack
+      rack-test
+      rubyzip
+
+GIT
+  remote: https://github.com/ncbo/sparql_http.git
+  revision: bd1e57d69d36b84867780fa1781f8e7ac1f73128
+  specs:
+    sparql_http (0.0.1)
+      multi_json
+      oj
+      rake
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bcrypt-ruby (3.0.1)
+    coderay (1.0.8)
+    json (1.7.7)
+    macaddr (1.6.1)
+      systemu (~> 2.5.0)
+    method_source (0.8.1)
+    multi_json (1.6.0)
+    mysql2 (0.3.11)
+    oj (2.0.4)
+    progressbar (0.20.0)
+    pry (0.9.12)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    rack (1.5.2)
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rake (10.0.3)
+    recursive-open-struct (0.3.1)
+    rubyzip (0.9.9)
+    slop (3.4.3)
+    systemu (2.5.2)
+    uuid (2.3.6)
+      macaddr (~> 1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  goo!
+  mysql2
+  ontologies_linked_data!
+  progressbar
+  pry
+  recursive-open-struct
+  sparql_http!
