@@ -1,8 +1,10 @@
 require 'cgi'
+require 'uri'
 require 'ostruct'
 require 'json'
 require 'open-uri'
 require 'recursive-open-struct'
+require 'progressbar'
 
 require_relative '../settings'
 
@@ -64,6 +66,70 @@ class RestHelper
   def self.concept(ontology_id, concept_id)
     json = get_json("/concepts/#{ontology_id}?conceptid=#{CGI.escape(concept_id)}")
     get_json_as_object(json[:success][:data][0][:classBean])
+  end
+  
+  def self.ontology_file(ontology_id)
+    file, filename = get_file("#{REST_URL}/ontologies/download/#{ontology_id}?apikey=#{API_KEY}")
+    
+    matches = filename.match(/(.*?)_v.+?(?:\.([^.]*)$|$)/)
+    filename = "#{matches[1]}.#{matches[2]}" unless matches.nil?
+    
+    # file = open("#{REST_URL}/ontologies/download/#{ontology_id}?apikey=#{API_KEY}", :read_timeout => nil)
+    # filename = file.meta["content-disposition"].match(/filename=\"(.*)\"/)[1]
+    return file, filename
+  end
+  
+  def self.get_file(full_path)
+    uri = URI(full_path)
+    
+    if uri.kind_of?(URI::FTP)
+      file, filename = get_file_ftp(full_path)
+    else
+      file = Tempfile.new('ont-rest-file')
+      file_size = 0
+      filename = nil
+      http_session = Net::HTTP.new(uri.host, uri.port)
+      http_session.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http_session.use_ssl = (uri.scheme == 'https')
+      http_session.start do |http|
+        http.request_get(uri.request_uri) do |res|
+          raise Net::HTTPBadResponse("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
+          file_size = res.read_header["content-length"].to_i
+          begin
+            filename = res.read_header["content-disposition"].match(/filename=\"(.*)\"/)[1] if filename.nil?
+          rescue Exception => e
+            filename = LinkedData::Utils::Namespaces.last_iri_fragment(full_path) if filename.nil?
+          end
+          bar = ProgressBar.new(filename, file_size)
+          bar.file_transfer_mode
+          res.read_body do |segment|
+            bar.inc(segment.size)
+            file.write(segment)
+          end
+        end
+      end
+      file.close
+    end
+    
+    return file, filename
+  end
+  
+  def self.get_file_ftp(full_path)
+    url = URI.parse(full_path)
+    ftp = Net::FTP.new(url.host, url.user, url.password)
+    ftp.passive = true
+    ftp.login
+    filename = LinkedData::Utils::Namespaces.last_iri_fragment(url.path)
+    tmp = Tempfile.new(filename)
+    file_size = ftp.size(url.path)
+    bar = ProgressBar.new(filename, file_size)
+    bar.file_transfer_mode
+    ftp.getbinaryfile(url.path) do |chunk|
+      bar.inc(chunk.size)
+      tmp << chunk
+    end
+    tmp.close
+    return tmp, filename
   end
     
   def self.safe_acronym(acr)
