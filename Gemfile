@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'mysql2'
 gem 'recursive-open-struct'
 gem 'progressbar'
+gem 'pry'
 
 gem 'goo', :git => 'https://github.com/ncbo/goo.git'
 # gem 'goo', :path => '../../goo'
