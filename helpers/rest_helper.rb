@@ -56,6 +56,10 @@ class RestHelper
     get_json_as_object(get_json("/ontologies")[:success][:data][0][:list][0][:ontologyBean])
   end
   
+  def self.ontology_versions(virtual_id)
+    get_json_as_object(get_json("/ontologies/versions/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
+  end
+  
   def self.categories
     get_json_as_object(get_json("/categories")[:success][:data][0][:list][0][:categoryBean])
   end
@@ -75,31 +79,42 @@ class RestHelper
     matches = filename.match(/(.*?)_v.+?(?:\.([^.]*)$|$)/)
     filename = "#{matches[1]}.#{matches[2]}" unless matches.nil?
     
-    # file = open("#{REST_URL}/ontologies/download/#{ontology_id}?apikey=#{API_KEY}", :read_timeout => nil)
-    # filename = file.meta["content-disposition"].match(/filename=\"(.*)\"/)[1]
     return file, filename
   end
   
-  def self.get_file(full_path)
-    uri = URI(full_path)
+  def self.get_file(uri, limit = 10)
+    raise ArgumentError, 'HTTP redirect too deep' if limit == 0
+
+    uri = URI(uri) unless uri.kind_of?(URI)
     
     if uri.kind_of?(URI::FTP)
-      file, filename = get_file_ftp(full_path)
+      file, filename = get_file_ftp(uri)
     else
       file = Tempfile.new('ont-rest-file')
       file_size = 0
       filename = nil
-      http_session = Net::HTTP.new(uri.host, uri.port)
+      http_session = Net::HTTP.new(uri.host, uri.port) rescue binding.pry
       http_session.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http_session.use_ssl = (uri.scheme == 'https')
       http_session.start do |http|
         http.request_get(uri.request_uri) do |res|
+          if res.kind_of?(Net::HTTPRedirection)
+            new_loc = res['location']
+            if new_loc.match(/^(http:\/\/|https:\/\/)/)
+              uri = new_loc
+            else
+              uri.path = new_loc
+            end
+            return get_file(uri, limit - 1)
+          end
+    
           raise Net::HTTPBadResponse.new("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
+    
           file_size = res.read_header["content-length"].to_i
           begin
             filename = res.read_header["content-disposition"].match(/filename=\"(.*)\"/)[1] if filename.nil?
           rescue Exception => e
-            filename = LinkedData::Utils::Namespaces.last_iri_fragment(full_path) if filename.nil?
+            filename = LinkedData::Utils::Namespaces.last_iri_fragment(uri.request_uri) if filename.nil?
           end
           bar = ProgressBar.new(filename, file_size)
           bar.file_transfer_mode
@@ -115,8 +130,8 @@ class RestHelper
     return file, filename
   end
   
-  def self.get_file_ftp(full_path)
-    url = URI.parse(full_path)
+  def self.get_file_ftp(url)
+    url = URI.parse(url) unless url.kind_of?(URI)
     ftp = Net::FTP.new(url.host, url.user, url.password)
     ftp.passive = true
     ftp.login
