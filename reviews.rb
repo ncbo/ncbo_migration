@@ -33,19 +33,21 @@ WHERE R.rating_type_id = T.id
 ORDER BY R.rating_type_id;
 EOS
 
-review_failures = []
+review_failures = {
+    :no_user => [],
+    :no_ontology => [],
+    :no_content => [],
+    :test_content => [],
+    :invalid => []
+}
 
 puts "Number of reviews to migrate: #{reviews.count}"
 pbar = ProgressBar.new("Migrating", reviews.count)
 reviews.each_with_index(:symbolize_keys => true) do |review, index|
 
   pbar.inc
-  if review[:review].empty?
-    review_failures.push(review)
-    next
-  end
   if review[:review].downcase.start_with?('test')
-    review_failures.push(review)
+    review_failures[:test_content].push(review)
     next
   end
 
@@ -57,6 +59,15 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   # :created_at=>2011-08-24 06:33:42 -0700,
   # :updated_at=>2011-08-24 06:33:42 -0700,
   # :project_id=>129
+
+  # Get the review ratings.
+  ratings = client.query(rating_query.gsub("%review_id%", review[:id].to_s))
+
+  # If the review contains no text and no ratings, skip it.
+  if review[:review].empty? and ratings.count == 0
+    review_failures[:no_content].push(review)
+    next
+  end
 
   # lookup ontology in REST service data.
   ontMatch = nil
@@ -79,7 +90,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   end
   # Move on if the review ontology is not found in the REST service data.
   if ontMatch.nil?
-    review_failures.push(review)
+    review_failures[:no_ontology].push(review)
     next
   end
 
@@ -96,7 +107,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   end
   # Move on if the review ontology is not found in the triple store data.
   if ontLD.nil?
-    review_failures.push(review)
+    review_failures[:no_ontology].push(review)
     next
   end
 
@@ -111,7 +122,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   # Try to find this user in the triple store.
   userLD = LinkedData::Models::User.find(user.username)
   if userLD.nil?
-    review_failures.push(review)
+    review_failures[:no_user].push(review)
     next
   end
 
@@ -122,8 +133,6 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   review_params[:updated] = review[:updated_at].to_datetime
   review_params[:ontologyReviewed] = ontLD
 
-  # Get the review ratings.
-  ratings = client.query(rating_query.gsub("%review_id%", review[:id].to_s))
   ratings.each do |rating|
     case rating["rating_type"]
       when "Domain Coverage"
@@ -149,7 +158,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   if revLD.valid?
     revLD.save
   else
-    review_failures.push(review)
+    review_failures[:invalid].push(review)
     puts "Review is invalid."
     puts "Original review: #{review.inspect}"
     puts "Migration errors: #{revLD.errors}"
@@ -160,7 +169,20 @@ end
 
 pbar.finish
 puts
-puts "Review migration failures:"
-puts review_failures
+puts "Review migration failures."
 puts
+puts "Reviews with invalid model data:"
+puts review_failures[:invalid]
+puts
+puts "Reviews with no matching user:"
+puts review_failures[:no_user]
+puts
+puts "Reviews with no matching ontology:"
+puts review_failures[:no_ontology]
+puts
+puts "Reviews with no text or ratings:"
+puts review_failures[:no_content]
+puts
+puts "Reviews starting with 'test' content:"
+puts review_failures[:test_content]
 
