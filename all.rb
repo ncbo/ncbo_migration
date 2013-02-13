@@ -4,7 +4,7 @@ require_relative 'users'
 require_relative 'categories'
 require_relative 'groups'
 require_relative 'ontologies'
-# TODO: add projects and reviews
+require_relative 'reviews'
+# TODO: add projects
 #require_relative 'projects'
-#require_relative 'reviews'
 
