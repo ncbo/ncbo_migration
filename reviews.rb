@@ -164,7 +164,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
     puts "Migration errors: #{revLD.errors}"
   end
 
-  # Some simple checks?
+  # TODO: some simple checks on the saved model?
 end
 
 pbar.finish
