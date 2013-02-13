@@ -32,6 +32,9 @@ format_mapping = {
 # Default download files value should be true
 Kernel.const_defined?("DOWNLOAD_FILES") ? nil : DOWNLOAD_FILES = true
 
+# Should we get all versions of every ontology, default to false
+Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = false
+
 # Hard-coded master files for ontologies that have zips with multiple files
 master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl"}
 
@@ -43,9 +46,22 @@ no_contacts = []
 bad_urls = []
 zip_multiple_files = []
 
-puts "Number of ontologies to migrate: #{RestHelper.ontologies.length}"
-pbar = ProgressBar.new("Migrating", RestHelper.ontologies.length*2)
-RestHelper.ontologies.each_with_index do |ont, index|
+ontologies = []
+
+if ALL_ONTOLOGY_VERSIONS
+  latest = RestHelper.ontologies
+  latest.each do |ont|
+    versions = RestHelper.ontology_versions(ont.ontologyId)
+    versions = versions.kind_of?(Array) ? versions : [versions]
+    ontologies = ontologies + versions
+  end
+else
+  ontologies = RestHelper.ontologies
+end
+
+puts "Number of ontologies to migrate: #{ontologies.length}"
+pbar = ProgressBar.new("Migrating", ontologies.length*2)
+ontologies.each do |ont|
   if acronyms.include?(ont.abbreviation.downcase)
     duplicates << ont.abbreviation
     ont.abbreviation = ont.abbreviation + "-DUPLICATE-ACRONYM"
@@ -130,6 +146,13 @@ RestHelper.ontologies.each_with_index do |ont, index|
   # Submission
   os                    = LinkedData::Models::OntologySubmission.new
   os.submissionId       = ont.internalVersionNumber
+  ##
+  #
+  #
+  # TODO: Log bad property URIs
+  #
+  #
+  ##
   os.prefLabelProperty  = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.preferredNameSlot))
   os.definitionProperty = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.documentationSlot))
   os.synonymProperty    = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.synonymSlot))
