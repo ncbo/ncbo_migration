@@ -2,3 +2,4 @@
 settings.rb
 test/data*
 parsing*
+Gemfile.lock
