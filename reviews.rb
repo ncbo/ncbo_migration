@@ -169,20 +169,20 @@ end
 
 pbar.finish
 puts
-puts "Review migration failures."
+puts "Review migration failures (in the order failures are evaluated)."
 puts
-puts "Reviews with invalid model data:"
-puts review_failures[:invalid]
-puts
-puts "Reviews with no matching user:"
-puts review_failures[:no_user]
-puts
-puts "Reviews with no matching ontology:"
-puts review_failures[:no_ontology]
+puts "Reviews starting with 'test' content:"
+puts review_failures[:test_content]
 puts
 puts "Reviews with no text or ratings:"
 puts review_failures[:no_content]
 puts
-puts "Reviews starting with 'test' content:"
-puts review_failures[:test_content]
+puts "Reviews with no matching ontology:"
+puts review_failures[:no_ontology]
+puts
+puts "Reviews with no matching user:"
+puts review_failures[:no_user]
+puts
+puts "Reviews with invalid model data:"
+puts review_failures[:invalid]
 
