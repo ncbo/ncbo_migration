@@ -43,6 +43,9 @@ end
 
 FileUtils.mkdir_p("./parsing")
 
+timeouts = []
+labels = []
+
 puts "Parsing #{ontologies_to_parse.length} submissions..."
 pbar = ProgressBar.new("Parsing", ontologies_to_parse.length)
 ontologies_to_parse.each do |os|
@@ -54,12 +57,22 @@ ontologies_to_parse.each do |os|
 
   begin
     os.process_submission(logger)
+  rescue Timeout::Error => timeout
+    timeouts << "#{os.ontology.acronym}, #{os.submissionId}"
   rescue Exception => e
-    errors << "#{os.ontology.acronym}\n#{e.message}\n#{e.backtrace}"
+    if e.message.include?("Class model only allows one label. TODO: internationalization")
+      labels << "#{os.ontology.acronym}, #{os.submissionId}"
+    else
+      errors << "#{os.ontology.acronym}\n#{e.message}\n#{e.backtrace}"
+    end
   end
 
   pbar.inc
 end
+
+puts "Timeouts:", timeouts.join("\n")
+
+puts "Only one label:", labels.join("\n")
 
 puts "Errors:"
 puts errors.join("\n\n")
