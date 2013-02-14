@@ -15,7 +15,7 @@ LinkedData::Models::SubmissionStatus.init
 LinkedData::Models::OntologyFormat.init
 
 # Don't process the following formats
-skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "UMLS"]
+skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "UMLS", "LEXGRID-XML"]
 
 # Transform old formats to new names
 format_mapping = {
@@ -26,35 +26,61 @@ format_mapping = {
   "OWL-LITE" => "OWL",
   "RRF" => "UMLS",
   "UMLS-RELA" => "UMLS",
-  "PROTEGE" => "PROTEGE"
+  "PROTEGE" => "PROTEGE",
+  "LEXGRID-XML" => "UMLS"
 }
 
 # Default download files value should be true
 Kernel.const_defined?("DOWNLOAD_FILES") ? nil : DOWNLOAD_FILES = true
+
+# Should we get all versions of every ontology, default to false
+Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = false
 
 # Hard-coded master files for ontologies that have zips with multiple files
 master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl"}
 
 acronyms = Set.new
 names = Set.new
+virtual_to_acronym = {}
+
+# Track the bad data
 duplicates = []
 skipped = []
 no_contacts = []
 bad_urls = []
 zip_multiple_files = []
+missing_abbreviation = []
+missing_users = []
+bad_formats = []
 
-puts "Number of ontologies to migrate: #{RestHelper.ontologies.length}"
-pbar = ProgressBar.new("Migrating", RestHelper.ontologies.length*2)
-RestHelper.ontologies.each_with_index do |ont, index|
+latest = RestHelper.ontologies
+
+# Ontology-level checks
+latest.each do |ont|
   if acronyms.include?(ont.abbreviation.downcase)
     duplicates << ont.abbreviation
-    ont.abbreviation = ont.abbreviation + "-DUPLICATE-ACRONYM"
+    next
+    # ont.abbreviation = ont.abbreviation + "-DUPLICATE-ACRONYM"
   elsif names.include?(ont.displayLabel.downcase)
     duplicates << ont.displayLabel
     ont.displayLabel = ont.displayLabel + " DUPLICATE NAME"
   end
   acronyms << ont.abbreviation.downcase
   names << ont.displayLabel.downcase
+  virtual_to_acronym[ont.ontologyId] = ont.abbreviation
+end
+
+# Do not create ontologies with duplicate acronyms
+latest.delete_if {|o| duplicates.include?(o.abbreviation)}
+
+# Process latest and save ontology objects
+puts "", "Number of ontologies to migrate: #{latest.length}"
+pbar = ProgressBar.new("Migrating", latest.length)
+latest.each do |ont|
+  if ont.abbreviation.nil?
+    missing_abbreviation << "#{ont.displayLabel}, #{ont.id}"
+    next
+  end
   
   o                    = LinkedData::Models::Ontology.new
   o.acronym            = ont.abbreviation
@@ -77,7 +103,12 @@ RestHelper.ontologies.each_with_index do |ont, index|
   # Admins
   user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue binding.pry
   user_ids.each do |user_id|
-    old_user = RestHelper.user(user_id)
+    begin
+      old_user = RestHelper.user(user_id)
+    rescue Exception => e
+      missing_users << "#{ont.id}, #{user_id}"
+      next
+    end
     new_user = LinkedData::Models::User.find(old_user.username)
     if o.administeredBy.nil?
       o.administeredBy = [new_user]
@@ -123,13 +154,43 @@ RestHelper.ontologies.each_with_index do |ont, index|
   end
   
   pbar.inc
+end
+
+# For submissions, either get all versions or use what we have
+submissions = []
+if ALL_ONTOLOGY_VERSIONS
+  latest.each do |ont|
+    versions = RestHelper.ontology_versions(ont.ontologyId)
+    versions = versions.kind_of?(Array) ? versions : [versions]
+    submissions = submissions + versions
+  end
+else
+  submissions = latest
+end
+
+puts "", "Number of submissions to migrate: #{submissions.length}"
+pbar = ProgressBar.new("Migrating", submissions.length*2)
+submissions.each do |ont|
+  begin
+  acronym = virtual_to_acronym[ont.ontologyId]
+  if acronym.nil?
+    missing_abbreviation << "#{ont.displayLabel}, #{ont.id}"
+    next
+  end
   
   # Check to make sure Ontology is persistent, otherwise lookup again
-  o = o.persistent? ? o : LinkedData::Models::Ontology.find(o.acronym)
+  o = LinkedData::Models::Ontology.find(acronym)
   
   # Submission
   os                    = LinkedData::Models::OntologySubmission.new
   os.submissionId       = ont.internalVersionNumber
+  ##
+  #
+  #
+  # TODO: Log bad property URIs
+  #
+  #
+  ##
   os.prefLabelProperty  = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.preferredNameSlot))
   os.definitionProperty = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.documentationSlot))
   os.synonymProperty    = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.synonymSlot))
@@ -151,13 +212,15 @@ RestHelper.ontologies.each_with_index do |ont, index|
   os.submissionStatus   = LinkedData::Models::SubmissionStatus.find("UPLOADED")
   os.ontology           = o
 
+  pbar.inc
+
   # Contact
   contact_name = ont.contactName || ont.contactEmail
   contact = LinkedData::Models::Contact.where(name: contact_name, email: ont.contactEmail) unless ont.contactEmail.nil?
   if contact.nil? || contact.empty?
     name = ont.contactName || "UNKNOWN"
     email = ont.contactEmail || "UNKNOWN"
-    no_contacts << "#{ont.abbreviation}, #{ont.contactName}, #{ont.contactEmail}" if [name, email].include?("UNKNOWN")
+    no_contacts << "#{ont.abbreviation}, #{ont.id}, #{ont.contactName}, #{ont.contactEmail}" if [name, email].include?("UNKNOWN")
     contact = LinkedData::Models::Contact.new(name: name, email: email)
     contact.save
   else
@@ -167,12 +230,16 @@ RestHelper.ontologies.each_with_index do |ont, index|
 
   # Ont format
   format = format_mapping[ont.format]
-  os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format)
+  if format.nil? || format.empty?
+    bad_formats << "#{ont.abbreviation}, #{ont.id}, #{format}"
+  else
+    os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format)
+  end
   
   # Ontology file
   if skip_formats.include?(ont.format) || !DOWNLOAD_FILES
     os.summaryOnly = true
-    skipped << "#{ont.abbreviation}, #{ont.format}"
+    skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
   elsif !os.summaryOnly
     begin
       # Get file
@@ -183,7 +250,7 @@ RestHelper.ontologies.each_with_index do |ont, index|
           file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
           os.uploadFilePath = file_location
         else
-          bad_urls << "#{o.acronym}, #{os.pullLocation.value}"
+          bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.value}"
           os.pullLocation = nil
           os.summaryOnly = true
         end
@@ -193,46 +260,66 @@ RestHelper.ontologies.each_with_index do |ont, index|
         os.uploadFilePath = file_location
       end
     rescue Exception => e
-      bad_urls << "#{o.acronym}, #{os.pullLocation || ""}, #{e.message}"
+      bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation || ""}, #{e.message}"
     end
   end
-  
-  if os.valid?
-    os.save
-  elsif !os.exist?
-    if (
-        os.errors[:uploadFilePath] and
-        os.errors[:uploadFilePath].kind_of?(Array) and
-        os.errors[:uploadFilePath].first.kind_of?(Hash) and
-        os.errors[:uploadFilePath].first[:message] and
-        os.errors[:uploadFilePath].first[:message].start_with?("Zip file detected")
-    )
-      # Problem with multiple files
-      if master_file.key?(o.acronym)
-        os.masterFileName = master_file[o.acronym]
-        if os.valid?
-          os.save
+
+  begin
+    if os.valid?
+      os.save
+    elsif !os.exist?
+      if (
+          os.errors[:uploadFilePath] and
+          os.errors[:uploadFilePath].kind_of?(Array) and
+          os.errors[:uploadFilePath].first.kind_of?(Hash) and
+          os.errors[:uploadFilePath].first[:message] and
+          os.errors[:uploadFilePath].first[:message].start_with?("Zip file detected")
+      )
+        # Problem with multiple files
+        if master_file.key?(o.acronym)
+          os.masterFileName = master_file[o.acronym]
+          if os.valid?
+            os.save
+          else
+            puts "Could not save ontology submission after setting master file, #{os.ontology.acronym}/#{os.submissionId}, #{os.errors}"
+          end
         else
-          puts "Could not save ontology submission after setting master file, #{os.ontology.acronym}/#{os.submissionId}, #{os.errors}"
+          zip_multiple_files << "#{o.acronym}, #{ont.id}, #{os.errors[:uploadFilePath].first[:options]}"
         end
       else
-        zip_multiple_files << "#{o.acronym}, #{os.errors[:uploadFilePath].first[:options]}"
+        puts "Could not save ontology submission, #{ont.abbreviation}, #{ont.id}, #{os.errors}"
       end
-    else
-      puts "Could not save ontology submission, #{os.ontology.acronym}/#{os.submissionId}, #{os.errors}"
     end
+  rescue Exception => e
+    puts "Could not save ontology submission, #{ont.abbreviation}, #{ont.id}, #{os.errors || ""}, #{e.message}"
   end
   
   pbar.inc
+  rescue Exception => e
+    binding.pry
+  end
 end
 pbar.finish
 
-puts "Duplicate ontology names/acronyms (ontologies created with `DUPLICATE` appended):"
+puts ""
+puts "Bad formats:"
+puts bad_formats.empty? ? "None" : bad_formats.join("\n")
+
+puts ""
+puts "Missing abbreviation:"
+puts missing_abbreviation.empty? ? "None" : missing_abbreviation.join("\n")
+
+puts ""
+puts "The following users submitted ontologies but no longer exist:"
+puts missing_users.empty? ? "None" : missing_users.join("\n")
+
+puts ""
+puts "Duplicate ontology names/acronyms (ontologies skipped):"
 puts duplicates.empty? ? "None" : duplicates.join("\n")
 
 puts ""
-puts "Entered as `summaryOnly` because we don't support this format yet OR file downloading was disabled:"
-puts skipped.empty? ? "None" : skipped.join("\n")
+puts "Entered as `summaryOnly` because we don't support this format yet:"
+puts skipped.empty? || DOWNLOAD_FILES == false ? "None" : skipped.join("\n")
 
 puts ""
 puts "Missing contact information:"
