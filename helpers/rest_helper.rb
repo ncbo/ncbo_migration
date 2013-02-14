@@ -56,8 +56,22 @@ class RestHelper
     get_json_as_object(get_json("/ontologies")[:success][:data][0][:list][0][:ontologyBean])
   end
   
+  def self.ontology(version_id)
+    get_json_as_object(get_json("/ontologies/#{version_id}")[:success][:data][0][:list][0][:ontologyBean])
+  end
+  
   def self.ontology_versions(virtual_id)
     get_json_as_object(get_json("/ontologies/versions/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
+  end
+  
+  def self.latest_ontology(virtual_id)
+    get_json_as_object(get_json("/virtual/ontology/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
+  end
+  
+  def self.latest_ontology?(version_id)
+    ont = ontology(version_id)
+    latest = latest_ontology(ont.ontologyId)
+    ont.id.to_i == latest.id.to_i
   end
   
   def self.categories
