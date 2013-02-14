@@ -1,13 +1,11 @@
-GIT
-  remote: https://github.com/ncbo/goo.git
-  revision: d7561ab73d666a80771e304873b23cebdddbed04
+PATH
+  remote: ~/Development/goo
   specs:
     goo (0.0.2)
       uuid
 
-GIT
-  remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: d00ecdbe503e250cb12ebfaab09eff5024d9c740
+PATH
+  remote: ~/Development/ontologies_linked_data
   specs:
     ontologies_linked_data (0.0.1)
       bcrypt-ruby
@@ -19,9 +17,8 @@ GIT
       rack-test
       rubyzip
 
-GIT
-  remote: https://github.com/ncbo/sparql_http.git
-  revision: bd1e57d69d36b84867780fa1781f8e7ac1f73128
+PATH
+  remote: ~/Development/sparql_http
   specs:
     sparql_http (0.0.1)
       multi_json
