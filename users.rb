@@ -62,7 +62,7 @@ users.each_with_index(:symbolize_keys => true) do |user, index|
     if !retrieved_user.passwordHash.eql?(user[:password])
       errors << "hash"
     end
-    if !retrieved_user.apikey.eql?(user[:apikey])
+    if !retrieved_user.apikey.eql?(user[:api_key])
       errors << "apikey"
     end
   end
