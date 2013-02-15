@@ -1,3 +1,5 @@
+require_relative 'settings'
+
 require 'date'
 require 'progressbar'
 require 'ontologies_linked_data'

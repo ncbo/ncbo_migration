@@ -1,3 +1,4 @@
+require_relative 'settings'
 require 'ontologies_linked_data'
 
 # Require migrations in the order they need to run

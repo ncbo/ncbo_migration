@@ -1,3 +1,5 @@
+require_relative 'settings'
+
 require 'ostruct'
 require 'progressbar'
 require 'ontologies_linked_data'

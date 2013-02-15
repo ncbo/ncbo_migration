@@ -1,8 +1,9 @@
+require_relative 'settings'
+
 require 'mysql2'
 require 'ontologies_linked_data'
 require 'progressbar'
 
-require_relative 'settings'
 require_relative 'helpers/rest_helper'
 require 'pry'
 

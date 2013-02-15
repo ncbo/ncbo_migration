@@ -1,9 +1,8 @@
+require_relative 'settings'
+
 require 'mysql2'
 require 'ontologies_linked_data'
 require 'progressbar'
-
-require_relative 'settings'
-require 'pry'
 
 client = Mysql2::Client.new(host: USERS_DB_HOST, username: USERS_DB_USERNAME, password: USERS_DB_PASSWORD, database: "bioportal")
 
