@@ -70,10 +70,9 @@ ontologies_to_parse.each do |os|
   pbar.inc
 end
 
-puts "Timeouts:", timeouts.join("\n")
+puts "", "Timeouts:", timeouts.join("\n")
 
-puts "Only one label:", labels.join("\n")
+puts "", "Only one label:", labels.join("\n")
 
-puts "Errors:"
-puts errors.join("\n\n")
+puts "", "Errors:", errors.join("\n\n")
   
