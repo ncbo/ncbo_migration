@@ -1,8 +1,7 @@
-require_relative 'settings'
+require_relative 'helpers/setup_ontologies_linked_data'
 
 require 'date'
 require 'progressbar'
-require 'ontologies_linked_data'
 
 require_relative 'helpers/rest_helper'
 
@@ -250,7 +249,7 @@ submissions.each do |ont|
           # os.download_and_store_ontology_file
           file, filename = RestHelper.get_file(os.pullLocation.value)
           file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
-          os.uploadFilePath = file_location
+          os.uploadFilePath = File.expand_path(file_location, __FILE__)
         else
           bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.value}"
           os.pullLocation = nil
@@ -259,7 +258,7 @@ submissions.each do |ont|
       else
         file, filename = RestHelper.ontology_file(ont.id)
         file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
-        os.uploadFilePath = file_location
+        os.uploadFilePath = File.expand_path(file_location, __FILE__)
       end
     rescue Exception => e
       bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation || ""}, #{e.message}"

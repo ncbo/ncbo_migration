@@ -1,10 +1,10 @@
-require_relative 'settings'
+require_relative 'helpers/setup_ontologies_linked_data'
 
 require 'logger'
 require 'progressbar'
-require 'ontologies_linked_data'
 
-only_parse = []
+# An array of acronyms to restrict parsing to these particular ontologies
+only_parse = ["HIMC-CPT", "OntoOrpha", "OntoPneumo", "Top-Menelas"]
 
 
 submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}, summaryOnly: false)
@@ -27,6 +27,7 @@ if only_parse.empty?
     end
   
     if !os.valid?
+      binding.pry
       errors << "#{os.acronym}, #{os.errors}"
       next
     end
