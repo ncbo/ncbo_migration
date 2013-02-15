@@ -29,7 +29,7 @@ users.each_with_index(:symbolize_keys => true) do |user, index|
     firstName: user[:firstname],
     lastName: user[:lastname],
     created: DateTime.parse(user[:date_created].to_s),
-    apikey: user[:apykey],
+    apikey: user[:api_key],
   }
   new_user = LinkedData::Models::User.new(new_user_attrs)
   new_user.attributes[:passwordHash] = user[:password]
