@@ -2,6 +2,7 @@ REST_URL              = "http://rest.bioontology.org/bioportal"
 API_KEY               = ""
 DOWNLOAD_FILES        = true
 ALL_ONTOLOGY_VERSIONS = false
+REPOSITORY_FOLDER     = "./repo"
 # MySQL host for users.
 USERS_DB_HOST         = ""
 USERS_DB_USERNAME     = ""
