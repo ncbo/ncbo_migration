@@ -2,5 +2,6 @@
 # having to store the settings in the ontologies_linked_data gem itself
 require_relative "../settings"
 require "ontologies_linked_data"
-$REPOSITORY_FOLDER = REPOSITORY_FOLDER || "./repo"
+repo = Kernel.const_defined?("REPOSITORY_FOLDER") ? REPOSITORY_FOLDER : "./repo"
+$REPOSITORY_FOLDER = repo
 
