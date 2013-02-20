@@ -56,6 +56,10 @@ class RestHelper
     get_json_as_object(get_json("/ontologies")[:success][:data][0][:list][0][:ontologyBean])
   end
   
+  def self.views
+    get_json_as_object(get_json("/views")[:success][:data][0][:list][0][:ontologyBean])
+  end
+  
   def self.ontology(version_id)
     get_json_as_object(get_json("/ontologies/#{version_id}")[:success][:data][0][:list][0][:ontologyBean])
   end
