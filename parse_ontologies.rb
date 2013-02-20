@@ -4,7 +4,7 @@ require 'logger'
 require 'progressbar'
 
 # An array of acronyms to restrict parsing to these particular ontologies
-only_parse = ["HIMC-CPT", "OntoOrpha", "OntoPneumo", "Top-Menelas"]
+only_parse = []
 
 
 submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}, summaryOnly: false)
@@ -27,7 +27,6 @@ if only_parse.empty?
     end
   
     if !os.valid?
-      binding.pry
       errors << "#{os.acronym}, #{os.errors}"
       next
     end
@@ -49,7 +48,7 @@ FileUtils.mkdir_p("./parsing")
 timeouts = []
 labels = []
 
-puts "Parsing #{ontologies_to_parse.length} submissions..."
+puts "", "Parsing #{ontologies_to_parse.length} submissions..."
 pbar = ProgressBar.new("Parsing", ontologies_to_parse.length)
 ontologies_to_parse.each do |os|
   os.ontology.load unless os.ontology.loaded?

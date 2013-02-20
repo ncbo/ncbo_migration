@@ -5,6 +5,8 @@ require 'progressbar'
 
 require_relative 'helpers/rest_helper'
 
+only_migrate_ontologies = []
+
 errors = []
 errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty?
 errors << "Could not find categories, please run user migration: bundle exec ruby categories.rb" if LinkedData::Models::Category.all.empty?
@@ -55,6 +57,11 @@ missing_users = []
 bad_formats = []
 
 latest = RestHelper.ontologies
+
+# Remove all other ontologies if user specifies only migrating certain ones
+if only_migrate_ontologies && !only_migrate_ontologies.empty?
+  latest.delete_if {|o| !only_migrate_ontologies.include?(o.abbreviation)}
+end
 
 # Ontology-level checks
 latest.each do |ont|
