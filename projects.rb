@@ -10,7 +10,7 @@ require 'pry'
 # Create valid project parameters
 default_project_params = {
     :name => "",
-    :acronym => "",
+    :acronym => nil,
     :creator => nil,
     :created => DateTime.new,
     :contacts => "",
@@ -28,15 +28,18 @@ projects = client.query('SELECT * from projects order by id;')
 uses_query = "SELECT DISTINCT ontology_id FROM uses WHERE project_id = %project_id%;"
 
 project_failures = {
+    :acronym => [],
+    :invalid => [],
     :no_user => [],
-    :invalid => []
 }
+# Track project acronyms to validate unique values.
+project_acronyms = []
 
 puts "Number of projects to migrate: #{projects.count}"
 pbar = ProgressBar.new("Migrating", projects.count)
 projects.each_with_index(:symbolize_keys => true) do |project, index|
 
-  pbar.inc
+  #pbar.inc
 
   #puts project.inspect
   # :id=>11,
@@ -76,21 +79,85 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
   homePage = 'http://' + homePage unless homePage.start_with?('http://')
   project_params[:homePage] = homePage
 
-  # TODO: create a unique acronym for each project?  For now, using project id.
-  #If there are no spaces, use the entire project name as the acronym
-  #If there are spaces
-  # - look for an acronym surrounded by '()' - EG: Resource of Asian Primary Immunodeficiency Diseases (RAPID)
-  # - look for 'acronym:' EG: NViz: A Visualization Tool for Refining Mappings between Biomedical Ontologies
-  # - look for 'acronym - ' EG: Pandora - Protein ANnotation Diagram ORiented Analysis
-  # - if the name is less than 16 characters, replace space with underscore EG: Mobile RadLex
-  # - otherwise, take the first letter of each word and combine EG: Multiscale Ontology for Skin Physiology becomes MOSP
-  #
-  # For the cases where we find an acronym in the title, we should remove it, EG:
-  # Resource of Asian Primary Immunodeficiency Diseases (RAPID)
-  # becomes
-  # Resource of Asian Primary Immunodeficiency Diseases
+  # Create a unique acronym for each project.
+  project_params[:acronym] = nil
+  name = project[:name].strip
+  if not name.include?(' ')
+    # If there are no spaces, use the entire project name as the acronym.
+    project_params[:acronym] = name
+  else
+    if project_params[:acronym].nil?
+      # Look for an acronym surrounded by '()'
+      # e.g.: Resource of Asian Primary Immunodeficiency Diseases (RAPID)
+      m = /\(.*\)/.match(name)
+      if not m.nil?
+        # Assume we can work with the first match.
+        project_params[:acronym] = m[0].delete('(').delete(')').gsub(/[[:space:]]/,'')
+        project_params[:name] = name.sub(m[0],'').strip
+      end
+    end
+    if project_params[:acronym].nil?
+      # Look for 'acronym:'
+      # e.g.: NViz: A Visualization Tool for Refining Mappings between Biomedical Ontologies
+      m = /\b.*:/.match(name)
+      if not m.nil?
+        # Assume we can work with the first match.
+        project_params[:acronym] = m[0].delete(':').gsub(/[[:space:]]/,'')
+        project_params[:name] = name.sub(m[0],'').strip
+      end
+    end
+    if project_params[:acronym].nil?
+      # Look for 'acronym -'
+      # e.g.: Pandora - Protein ANnotation Diagram ORiented Analysis
+      l = name.strip.split(/\W+-\W+/)
+      if l.size > 1
+        a = l.min_by{|s| s.strip.size }.strip
+        r = name.gsub(a, '').gsub(/\W+-\W+/,'').strip
+        project_params[:acronym] = a
+        project_params[:name] = r
+      end
+      # Replace this regex match with the alternate method above, because project
+      # names can place the acronym at the beginning or the end of the name.
+      #m = /\b.*-/.match(name)
+      #if not m.nil?
+      #  # Assume we can work with the first match.
+      #  project_params[:acronym] = m[0].delete('-').gsub(/[[:space:]]/,'')
+      #  project_params[:name] = name.sub(m[0],'').strip
+      #end
+    end
+    if project_params[:acronym].nil? and name.length < 16
+      # If the name is less than 16 characters, replace space with underscore
+      project_params[:acronym] = name.gsub(/[[:space:]]/,'_')
+    end
+    if project_params[:acronym].nil?
+      # Take the first letter of each word and combine.
+      # e.g.: Multiscale Ontology for Skin Physiology becomes MOSP
+      #a = name.gsub(/(?<F>\b[[:upper:]])(?<L>.*?\b)/,'\k<F>').gsub(/[[:lower:]]/,'').gsub(/\W/,'')
+      #a = name.gsub(/(?<F>\b.)(?<L>.*?\b)/,'\k<F>').gsub(/[[:lower:]]/,'').gsub(/\W/,'')
+      a = name.gsub(/(?<F>\b.)(?<L>.*?\b)/,'\k<F>').gsub(/\W/,'').upcase
+      project_params[:acronym] = a
+    end
+  end
+  if project_params[:acronym].nil?
+    # Failed to set a project acronym.
+    project_failures[:acronym].push(project)
+    next
+  end
+  # validate acronym is unique.
+  if project_acronyms.include?(project_params[:acronym])
+    # Failed to set a unique project acronym.
+    project_failures[:acronym].push(project)
+    puts project[:name] + " => " + project_params[:acronym]
+    next
+  else
+    project_acronyms.push(project_params[:acronym])
+  end
+  #puts project[:name] + " => " + project_params[:acronym]
 
-  project_params[:acronym] = project[:id].to_s
+
+  # TODO: remove this after debug for acronyms
+  #next
+
 
   # Get the project ontologies.
   project_params[:ontologyUsed] = []
@@ -150,6 +217,11 @@ end
 
 pbar.finish
 puts "Project migration failures (in the order failures are evaluated), if any:"
+if not project_failures[:acronym].empty?
+  puts
+  puts "Projects with faulty acronyms:"
+  puts project_failures[:acronym]
+end
 if not project_failures[:no_user].empty?
   puts
   puts "Projects with no matching user:"
