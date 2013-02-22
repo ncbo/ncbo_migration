@@ -8,6 +8,5 @@ require_relative 'categories'
 require_relative 'groups'
 require_relative 'ontologies'
 require_relative 'reviews'
-# TODO: add projects
-#require_relative 'projects'
+require_relative 'projects'
 
