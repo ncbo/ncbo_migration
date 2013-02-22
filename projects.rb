@@ -7,6 +7,8 @@ require 'progressbar'
 require_relative 'helpers/rest_helper'
 require 'pry'
 
+DEBUG = false
+
 # Create valid project parameters
 default_project_params = {
     :name => "",
@@ -23,23 +25,23 @@ default_project_params = {
 ont_lookup = RestHelper.ontologies
 
 client = Mysql2::Client.new(host: ROR_DB_HOST, username: ROR_DB_USERNAME, password: ROR_DB_PASSWORD, database: "bioportal")
-projects = client.query('SELECT * from projects order by id;')
+projects = client.query('SELECT * FROM projects ORDER BY name, updated_at DESC;')
 
 uses_query = "SELECT DISTINCT ontology_id FROM uses WHERE project_id = %project_id%;"
 
 project_failures = {
-    :acronym => [],
+    :acronym => {},
     :invalid => [],
     :no_user => [],
 }
 # Track project acronyms to validate unique values.
-project_acronyms = []
+project_acronyms = {}
 
 puts "Number of projects to migrate: #{projects.count}"
 pbar = ProgressBar.new("Migrating", projects.count)
 projects.each_with_index(:symbolize_keys => true) do |project, index|
 
-  #pbar.inc
+  pbar.inc if not DEBUG
 
   #puts project.inspect
   # :id=>11,
@@ -80,7 +82,12 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
   project_params[:homePage] = homePage
 
   # Create a unique acronym for each project.
-  project_params[:acronym] = nil
+  # Hard code an acronym for 'Evidence Ontology' to avoid a conflict with 'Electrophysiology Ontology'
+  if project[:name] == 'Evidence Ontology'
+    project_params[:acronym] = 'ECO'  # From description
+  else
+    project_params[:acronym] = nil
+  end
   name = project[:name].strip
   if not name.include?(' ')
     # If there are no spaces, use the entire project name as the acronym.
@@ -116,7 +123,7 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
         project_params[:acronym] = a
         project_params[:name] = r
       end
-      # Replace this regex match with the alternate method above, because project
+      # Replaced this regex match with the alternate method above, because project
       # names can place the acronym at the beginning or the end of the name.
       #m = /\b.*-/.match(name)
       #if not m.nil?
@@ -140,24 +147,22 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
   end
   if project_params[:acronym].nil?
     # Failed to set a project acronym.
-    project_failures[:acronym].push(project)
+    project_failures[:acronym][project[:id]] = [project, project_params]
     next
   end
   # validate acronym is unique.
-  if project_acronyms.include?(project_params[:acronym])
+  if project_acronyms.keys.include?(project_params[:acronym])
     # Failed to set a unique project acronym.
-    project_failures[:acronym].push(project)
-    puts project[:name] + " => " + project_params[:acronym]
+    project_failures[:acronym][project[:id]] = project
+    if DEBUG
+      puts
+      puts 'DUPLICATE: ' + project_params[:acronym] + ' => ' + project.inspect
+      puts 'CONFLICTS WITH: ' + project_acronyms[project_params[:acronym]].inspect
+    end
     next
   else
-    project_acronyms.push(project_params[:acronym])
+    project_acronyms[project_params[:acronym]] = project
   end
-  #puts project[:name] + " => " + project_params[:acronym]
-
-
-  # TODO: remove this after debug for acronyms
-  #next
-
 
   # Get the project ontologies.
   project_params[:ontologyUsed] = []
@@ -216,19 +221,22 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
 end
 
 pbar.finish
-puts "Project migration failures (in the order failures are evaluated), if any:"
-if not project_failures[:acronym].empty?
-  puts
-  puts "Projects with faulty acronyms:"
-  puts project_failures[:acronym]
+if DEBUG
+  puts "Project migration failures (in the order failures are evaluated), if any:"
+  #if not project_failures[:acronym].keys.empty?
+  #  puts
+  #  puts "Projects with faulty acronyms:"
+  #  project_failures[:acronym].each {|k,v| puts "project-id: #{k}; project-SQL: #{v}" }
+  #end
+  if not project_failures[:no_user].empty?
+    puts
+    puts "Projects with no matching user:"
+    puts project_failures[:no_user]
+  end
+  if not project_failures[:invalid].empty?
+    puts
+    puts "Projects with invalid model data:"
+    puts project_failures[:invalid]
+  end
 end
-if not project_failures[:no_user].empty?
-  puts
-  puts "Projects with no matching user:"
-  puts project_failures[:no_user]
-end
-if not project_failures[:invalid].empty?
-  puts
-  puts "Projects with invalid model data:"
-  puts project_failures[:invalid]
-end
+
