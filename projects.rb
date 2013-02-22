@@ -7,7 +7,7 @@ require 'progressbar'
 require_relative 'helpers/rest_helper'
 require 'pry'
 
-DEBUG = false
+DEBUG = true
 
 # Create valid project parameters
 default_project_params = {
