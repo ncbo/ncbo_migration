@@ -109,7 +109,7 @@ latest.each do |ont|
   end
   
   # Admins
-  user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue binding.pry
+  user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue []
   user_ids.each do |user_id|
     begin
       old_user = RestHelper.user(user_id)
@@ -208,7 +208,7 @@ submissions.each do |ont|
   os.homepage           = ont.homepage
   os.publication        = ont.publication.eql?("") ? nil : ont.publication
   os.documentation      = ont.documentation.eql?("") ? nil : ont.documentation
-  os.version            = ont.versionNumber
+  os.version            = ont.versionNumber.to_s
   os.uri                = ont.urn
   os.naturalLanguage    = ont.naturalLanguage
   os.creationDate       = DateTime.parse(ont.dateCreated)
@@ -299,7 +299,7 @@ submissions.each do |ont|
       end
     end
   rescue Exception => e
-    puts "Could not save ontology submission, #{ont.abbreviation}, #{ont.id}, #{os.errors || ""}, #{e.message}"
+    puts "Could not save ontology submission (error), #{ont.abbreviation}, #{ont.id}, #{os.errors || ""}, #{e.message}, \n  #{e.backtrace.join("\n  ")}"
   end
   
   pbar.inc
