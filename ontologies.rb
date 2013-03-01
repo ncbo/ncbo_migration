@@ -5,7 +5,7 @@ require 'progressbar'
 
 require_relative 'helpers/rest_helper'
 
-only_migrate_ontologies = []
+only_migrate_ontologies = ["NCIt", "GO"]
 
 errors = []
 errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty?
@@ -248,7 +248,7 @@ submissions.each do |ont|
   if skip_formats.include?(ont.format) || !DOWNLOAD_FILES
     os.summaryOnly = true
     skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
-  elsif !os.summaryOnly
+  elsif os.summaryOnly.parsed_value
     begin
       # Get file
       if os.pullLocation

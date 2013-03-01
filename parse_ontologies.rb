@@ -18,16 +18,15 @@ if only_parse.empty?
   pbar = ProgressBar.new("Searching", submissions.length)
   submissions.each do |os|
     os.load
-    os.ontology.load
     pbar.inc
   
-    if os.parsed? || os.summaryOnly
-      already_parsed_or_summary << os.acronym
+    if os.submissionStatus.parsed? || os.summaryOnly.parsed_value
+      already_parsed_or_summary << os.ontology.acronym
       next
     end
   
     if !os.valid?
-      errors << "#{os.acronym}, #{os.errors}"
+      errors << "#{os.ontology.acronym}, #{os.errors}"
       next
     end
   
