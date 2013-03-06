@@ -3,3 +3,6 @@ settings.rb
 test/data*
 parsing*
 Gemfile.lock
+
+.ruby-version
+repo*

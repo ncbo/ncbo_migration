@@ -248,7 +248,7 @@ submissions.each do |ont|
   if skip_formats.include?(ont.format) || !DOWNLOAD_FILES
     os.summaryOnly = true
     skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
-  elsif os.summaryOnly.parsed_value
+  elsif !os.summaryOnly.parsed_value
     begin
       # Get file
       if os.pullLocation
