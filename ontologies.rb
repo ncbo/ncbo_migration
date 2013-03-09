@@ -2,10 +2,12 @@ require_relative 'helpers/setup_ontologies_linked_data'
 
 require 'date'
 require 'progressbar'
+require 'open-uri'
 
 require_relative 'helpers/rest_helper'
 
-only_migrate_ontologies = ["NCIt", "GO"]
+only_migrate_ontologies = []
+only_migrate_formats = []
 
 errors = []
 errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty?
@@ -18,7 +20,7 @@ LinkedData::Models::SubmissionStatus.init
 LinkedData::Models::OntologyFormat.init
 
 # Don't process the following formats
-skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "UMLS", "LEXGRID-XML"]
+skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "LEXGRID-XML"]
 
 # Transform old formats to new names
 format_mapping = {
@@ -61,6 +63,11 @@ latest = RestHelper.ontologies
 # Remove all other ontologies if user specifies only migrating certain ones
 if only_migrate_ontologies && !only_migrate_ontologies.empty?
   latest.delete_if {|o| !only_migrate_ontologies.include?(o.abbreviation)}
+end
+
+# Remove all ontologies that aren't in the requested format
+if only_migrate_formats && !only_migrate_formats.empty?
+  latest.delete_if {|o| !only_migrate_formats.include?(format_mapping[o.format])}
 end
 
 # Ontology-level checks
@@ -188,6 +195,7 @@ submissions.each do |ont|
   
   # Check to make sure Ontology is persistent, otherwise lookup again
   o = LinkedData::Models::Ontology.find(acronym)
+  next if o.nil?
   
   # Submission
   os                    = LinkedData::Models::OntologySubmission.new
@@ -244,8 +252,13 @@ submissions.each do |ont|
     os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format)
   end
   
+  # UMLS ontologies get a special download location
+  if format.eql?("UMLS")
+    os.pullLocation = RestHelper.new_iri("#{UMLS_DOWNLOAD_SITE}/#{acronym.upcase}.ttl")
+  end
+  
   # Ontology file
-  if skip_formats.include?(ont.format) || !DOWNLOAD_FILES
+  if skip_formats.include?(format) || !DOWNLOAD_FILES
     os.summaryOnly = true
     skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
   elsif !os.summaryOnly.parsed_value
@@ -257,6 +270,10 @@ submissions.each do |ont|
           file, filename = RestHelper.get_file(os.pullLocation.value)
           file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
           os.uploadFilePath = File.expand_path(file_location, __FILE__)
+          if format.eql?("UMLS")
+            semantic_types = open("#{UMLS_DOWNLOAD_SITE}/umls_semantictypes.ttl") rescue File.new
+            File.open(os.uploadFilePath.to_s, 'a+') {|f| f.write(semantic_types.read) }
+          end
         else
           bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.value}"
           os.pullLocation = nil

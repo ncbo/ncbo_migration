@@ -3,6 +3,7 @@ API_KEY               = ""
 DOWNLOAD_FILES        = true
 ALL_ONTOLOGY_VERSIONS = false
 REPOSITORY_FOLDER     = "./repo"
+UMLS_DOWNLOAD_SITE    = "http://localhost/umls"
 # MySQL host for users.
 USERS_DB_HOST         = ""
 USERS_DB_USERNAME     = ""
