@@ -4,6 +4,7 @@ gem 'mysql2'
 gem 'recursive-open-struct'
 gem 'progressbar'
 gem 'pry'
+gem 'rsolr'
 
 gem 'goo', :git => 'https://github.com/ncbo/goo.git'
 gem 'sparql_http', :git => 'https://github.com/ncbo/sparql_http.git'
