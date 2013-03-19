@@ -1,4 +1,4 @@
-require_relative 'helpers/setup_ontologies_linked_data'
+require_relative 'settings'
 
 require 'logger'
 require 'progressbar'
