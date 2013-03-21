@@ -6,3 +6,7 @@ Gemfile.lock
 
 .ruby-version
 repo*
+
+Gemfile.local
+
+.DS_Store
