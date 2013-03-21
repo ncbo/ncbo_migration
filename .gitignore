@@ -8,3 +8,5 @@ Gemfile.lock
 repo*
 
 Gemfile.local
+
+.DS_Store
