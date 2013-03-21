@@ -10,3 +10,5 @@ repo*
 Gemfile.local
 
 .DS_Store
+
+*.swp
