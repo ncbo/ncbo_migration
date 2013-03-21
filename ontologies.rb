@@ -1,10 +1,10 @@
-require_relative 'helpers/setup_ontologies_linked_data'
+require_relative 'settings'
+require_relative 'helpers/rest_helper'
 
 require 'date'
 require 'progressbar'
 require 'open-uri'
 
-require_relative 'helpers/rest_helper'
 
 only_migrate_ontologies = []
 only_migrate_formats = []

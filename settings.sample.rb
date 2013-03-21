@@ -13,3 +13,10 @@ ROR_DB_HOST           = ""
 ROR_DB_USERNAME       = ""
 ROR_DB_PASSWORD       = ""
 
+## DO NOT EDIT BELOW THIS LINE
+# Configure ontologieS_linked_data
+require "ontologies_linked_data"
+repo = Kernel.const_defined?("REPOSITORY_FOLDER") ? REPOSITORY_FOLDER : "./repo"
+LinkedData.config do |config|
+  config.repository_folder = repo
+end
