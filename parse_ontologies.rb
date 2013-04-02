@@ -17,7 +17,6 @@ if only_parse.empty?
   puts "Searching #{submissions.length} submissions for unparsed entries..."
   pbar = ProgressBar.new("Searching", submissions.length)
   submissions.each do |os|
-    os.load
     pbar.inc
   
     if os.submissionStatus.parsed? || os.summaryOnly.parsed_value
@@ -35,9 +34,8 @@ if only_parse.empty?
 else
   only_parse.each do |o|
     ont = LinkedData::Models::Ontology.find(o)
-    ont.load unless ont.loaded?
     sub = ont.submissions.first
-    ontologies_to_parse << sub.load
+    ontologies_to_parse << sub
   end
 end
 
@@ -50,8 +48,6 @@ labels = []
 puts "", "Parsing #{ontologies_to_parse.length} submissions..."
 pbar = ProgressBar.new("Parsing", ontologies_to_parse.length)
 ontologies_to_parse.each do |os|
-  os.ontology.load unless os.ontology.loaded?
-  
   log_file = File.open("./parsing/parsing_#{os.ontology.acronym}.log", "w")
   logger = Logger.new(log_file)
   logger.level = Logger::DEBUG
