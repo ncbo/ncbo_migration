@@ -65,7 +65,9 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   ratings = client.query(rating_query.gsub("%review_id%", review[:id].to_s))
 
   # If the review contains no text and no ratings, skip it.
-  if review[:review].empty? and ratings.count == 0
+  #if review[:review].empty? and ratings.count == 0
+  # If the review contains no text (regardless of ratings, skip it).
+  if review[:review].empty?
     review_failures[:no_content].push(review)
     next
   end
