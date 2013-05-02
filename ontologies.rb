@@ -5,8 +5,8 @@ require 'date'
 require 'progressbar'
 require 'open-uri'
 
-
-only_migrate_ontologies = []
+only_migrate_ontologies = ['NCIt', 'MFOEM', 'EFO', 'GO', 'OMIM', 'OBI', 'PW', 'PDQ', 'PR']
+#only_migrate_ontologies = []
 only_migrate_formats = []
 
 errors = []
