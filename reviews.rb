@@ -11,7 +11,7 @@ require 'pry'
 default_review_params = {
     :creator => nil,
     :created => DateTime.new,
-    :body => "",
+    :body => nil,
     :ontologyReviewed => nil,
     :usabilityRating => 0,
     :coverageRating => 0,
@@ -41,6 +41,7 @@ review_failures = {
     :test_content => [],
     :invalid => []
 }
+review_saved_count = 0
 
 puts "Number of reviews to migrate: #{reviews.count}"
 pbar = ProgressBar.new("Migrating", reviews.count)
@@ -160,6 +161,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   revLD = LinkedData::Models::Review.new(review_params)
   if revLD.valid?
     revLD.save
+    review_saved_count += 1
   else
     review_failures[:invalid].push(review)
     puts "Review is invalid."
@@ -171,6 +173,8 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
 end
 
 pbar.finish
+puts
+puts "Successful migrations: #{review_saved_count}"
 puts
 puts "Review migration failures (in the order failures are evaluated)."
 puts
