@@ -7,18 +7,30 @@ require 'progressbar'
 require_relative 'helpers/rest_helper'
 require 'pry'
 
+# Ensure we start with a clean slate.
+LinkedData::Models::Review.all.each do |m|
+    m.load
+    m.delete
+end
+if LinkedData::Models::Review.all.empty?
+    puts "Cleared all prior reviews from the triple store."
+else
+    puts "Failed to clear all prior reviews from the triple store!"
+    exit(1)
+end
 
 default_review_params = {
-    :creator => nil,
-    :created => DateTime.new,
-    :body => nil,
-    :ontologyReviewed => nil,
-    :usabilityRating => 0,
-    :coverageRating => 0,
-    :qualityRating => 0,
-    :formalityRating => 0,
-    :correctnessRating => 0,
-    :documentationRating => 0
+    :creator => nil,            # required, instance of  LinkedData::Models::User
+    :created => DateTime.new,   # required, auto-set with lambda
+    :updated => DateTime.new,   # required, auto-set with lambda
+    :body => nil,               # required
+    :ontologyReviewed => nil,   # required, instance of LinkedData::Models::Ontology
+    :usabilityRating => 0,      # optional
+    :coverageRating => 0,       # optional
+    :qualityRating => 0,        # optional
+    :formalityRating => 0,      # optional
+    :correctnessRating => 0,    # optional
+    :documentationRating => 0   # optional
 }
 
 ont_lookup = RestHelper.ontologies
