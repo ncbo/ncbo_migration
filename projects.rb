@@ -9,17 +9,31 @@ require 'pry'
 
 DEBUG = true
 
+
+# Ensure we start with a clean slate.
+LinkedData::Models::Project.all.each do |m|
+    m.load
+    m.delete
+end
+if LinkedData::Models::Project.all.empty?
+    puts "Cleared all prior projects from the triple store."
+else
+    puts "Failed to clear all prior projects from the triple store!"
+    exit(1)
+end
+
 # Create valid project parameters
 default_project_params = {
-    :name => "",
-    :acronym => nil,
-    :creator => nil,
-    :created => DateTime.new,
-    :contacts => "",
-    :description => "",
-    :homePage => "",
-    :institution => "",
-    :ontologyUsed => nil,
+    :acronym => nil,            # required
+    :creator => nil,            # required, instance of user
+    :created => DateTime.new,   # required, auto-set with lambda
+    :updated => DateTime.new,   # required, auto-set with lambda
+    :name => nil,               # required
+    :description => nil,        # required
+    :homePage => nil,           # required, must be URI
+    :contacts => "",            # optional
+    :institution => "",         # optional
+    :ontologyUsed => [],        # optional, an array of LinkedData::Models::Ontology items
 }
 
 ont_lookup = RestHelper.ontologies
