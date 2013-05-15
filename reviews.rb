@@ -7,6 +7,17 @@ require 'progressbar'
 require_relative 'helpers/rest_helper'
 require 'pry'
 
+# Ensure we start with a clean slate.
+LinkedData::Models::Review.all.each do |m|
+    m.load
+    m.delete
+end
+if LinkedData::Models::Review.all.empty?
+    puts "Cleared all prior reviews from the triple store."
+else
+    puts "Failed to clear all prior reviews from the triple store!"
+    exit(1)
+end
 
 default_review_params = {
     :creator => nil,
