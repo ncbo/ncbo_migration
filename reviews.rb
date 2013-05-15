@@ -34,6 +34,7 @@ WHERE R.rating_type_id = T.id
 ORDER BY R.rating_type_id;
 EOS
 
+review_success = []
 review_failures = {
     :no_user => [],
     :no_ontology => [],
@@ -161,7 +162,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   revLD = LinkedData::Models::Review.new(review_params)
   if revLD.valid?
     revLD.save
-    review_saved_count += 1
+    review_success.push(review)
   else
     review_failures[:invalid].push(review)
     puts "Review is invalid."
@@ -174,7 +175,8 @@ end
 
 pbar.finish
 puts
-puts "Successful migrations: #{review_saved_count}"
+puts "Successful migrations: #{review_success.length}"
+puts review_success
 puts
 puts "Review migration failures (in the order failures are evaluated)."
 puts
