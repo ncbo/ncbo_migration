@@ -122,3 +122,6 @@ end
 file = File.new("./ont_metadata.turtle", "w+")
 file.write(output.string)
 file.close
+
+#command to put file in process
+#curl -T ont_metadata.turtle -H 'Content-Type: application/x-turtle' http://ncbostage-fsmaster1:8081/data/http://bioportal.bioontology.org/ontologies/metadata
