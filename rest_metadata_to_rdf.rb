@@ -11,6 +11,7 @@ ATTR_NAME_MAPPING = {
   "contactEmail" => "hasContactEmail",
   "contactName" => "hasContactName",
   "statusId" => "statusID",
+  "preferredNameSlot" => "preferredNameProperty",
   "synonymSlot" => "synonymProperty",
   "documentationSlot" => "documentationProperty",
   "format" => "hasOntologyLanguage",
