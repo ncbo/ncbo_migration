@@ -103,6 +103,9 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     end
 
     begin
+
+      binding.pry
+
       if os.valid?
         os.save
       elsif !os.exist?
@@ -136,5 +139,4 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
   rescue Exception => e
     binding.pry
   end
-
 end

@@ -93,6 +93,7 @@ bp_latest_onts.each do |bp_latest_ont|
         v.acronym = ont_view.abbreviation
       else
         v.acronym = "#{ont_view.abbreviation}-VIEW"
+        virtual_to_acronym[ont_view.ontologyId] = v.acronym.value
       end
 
       v.name = ont_view.displayLabel
