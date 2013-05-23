@@ -59,7 +59,31 @@ class RestHelper
   def self.views
     get_json_as_object(get_json("/views")[:success][:data][0][:list][0][:ontologyBean])
   end
-  
+
+  def self.ontology_views(virtual_id)
+    json = get_json("/views/versions/#{virtual_id}")
+    list = json[:success][:data][0][:list][0]
+    final_list = []
+
+    if (!list.empty?)
+      list.each do |view_version_list|
+        view_version_list[1].each do |version|
+          version_list = version[:ontologyBean]
+
+          if version_list.kind_of?(Array)
+            version_list.each do |v|
+              final_list << v
+            end
+          else
+            final_list << version_list
+          end
+        end
+      end
+    end
+
+    return get_json_as_object(final_list)
+  end
+
   def self.ontology(version_id)
     get_json_as_object(get_json("/ontologies/#{version_id}")[:success][:data][0][:list][0][:ontologyBean])
   end
