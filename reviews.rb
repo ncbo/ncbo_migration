@@ -9,7 +9,6 @@ require 'pry'
 
 # Ensure we start with a clean slate.
 LinkedData::Models::Review.all.each do |m|
-    m.load
     m.delete
 end
 if LinkedData::Models::Review.all.empty?
@@ -112,10 +111,10 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   end
 
   # Use the ontology abbreviation to lookup the matching ontology data in the triple store.
-  ontLD = LinkedData::Models::Ontology.find(ontMatch.abbreviation)
+  ontLD = LinkedData::Models::Ontology.find(ontMatch.abbreviation).first
   if ontLD.nil?
     # Abbreviation failed, try the ontology display label (name).
-    ontLD = LinkedData::Models::Ontology.where :name => ontMatch.displayLabel
+    ontLD = LinkedData::Models::Ontology.where(:name => ontMatch.displayLabel).to_a
     if ontLD.empty?
       ontLD = nil
     else
@@ -137,7 +136,7 @@ reviews.each_with_index(:symbolize_keys => true) do |review, index|
   end
   next if user.nil?
   # Try to find this user in the triple store.
-  userLD = LinkedData::Models::User.find(user.username)
+  userLD = LinkedData::Models::User.find(user.username).first
   if userLD.nil?
     review_failures[:no_user].push(review)
     next
