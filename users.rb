@@ -31,7 +31,8 @@ users.each_with_index(:symbolize_keys => true) do |user, index|
     apikey: user[:api_key],
   }
   new_user = LinkedData::Models::User.new(new_user_attrs)
-  new_user.attributes[:passwordHash] = user[:password]
+  password = user[:password].strip
+  new_user.passwordHash = password
   
   pbar.inc
   
@@ -39,10 +40,10 @@ users.each_with_index(:symbolize_keys => true) do |user, index|
   roles = client.query(role_query.gsub("%user_id%", user[:id].to_s))
   new_roles = []
   roles.each(:symbolize_keys => true).each do |role|
-    role = LinkedData::Models::Users::Role.find(role[:name].gsub("ROLE_", ""))
+    role = LinkedData::Models::Users::Role.find(role[:name].gsub("ROLE_", "")).first
     new_roles << role
   end
-  new_roles = LinkedData::Models::Users::Role.default if new_roles.length < 1
+  new_roles = [LinkedData::Models::Users::Role.default] if new_roles.length < 1
   new_user.role = new_roles
   
   if new_user.valid?
@@ -52,17 +53,18 @@ users.each_with_index(:symbolize_keys => true) do |user, index|
   end
   
   # Some simple checks
-  retrieved_user = LinkedData::Models::User.find(user[:username].strip)
+  retrieved_user = LinkedData::Models::User.find(user[:username].strip).include(LinkedData::Models::User.attributes(:all)).first
   errors = []
   if retrieved_user.nil?
     errors << "ERRORS: #{user[:username]}"
     errors << "retrieval"
   else
     errors << "ERRORS: #{user[:username]}"
-    if !retrieved_user.passwordHash.eql?(user[:password])
+    unless retrieved_user.passwordHash.eql?(password)
+      binding.pry
       errors << "hash"
     end
-    if !retrieved_user.apikey.eql?(user[:api_key])
+    unless retrieved_user.apikey.eql?(user[:api_key])
       errors << "apikey"
     end
   end
