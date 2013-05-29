@@ -14,7 +14,7 @@ ROR_DB_USERNAME       = ""
 ROR_DB_PASSWORD       = ""
 GOO_HOST              = "localhost"
 GOO_PORT              = 9000
-SEARCH_SERVER_URL     = "http://ncbo-dev-app-02.stanford.edu:8080/solr/" 
+SEARCH_SERVER_URL     = "http://ncbo-dev-app-02.stanford.edu:8080/solr/"
 
 ## DO NOT EDIT BELOW THIS LINE
 # Configure ontologieS_linked_data
