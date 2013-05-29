@@ -12,7 +12,6 @@ DEBUG = true
 
 # Ensure we start with a clean slate.
 LinkedData::Models::Project.all.each do |m|
-    m.load
     m.delete
 end
 if LinkedData::Models::Project.all.empty?
@@ -77,7 +76,7 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
   end
   next if user.nil?
   # Try to find this user in the triple store.
-  userLD = LinkedData::Models::User.find(user.username)
+  userLD = LinkedData::Models::User.find(user.username).first
   if userLD.nil?
     project_failures[:no_user].push(project)
     next
@@ -93,7 +92,7 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
   project_params[:institution] = project[:institution].strip
   homePage = project[:homepage].strip
   homePage = 'http://' + homePage unless homePage.start_with?('http://')
-  project_params[:homePage] = homePage
+  project_params[:homePage] = RDF::IRI.new(homePage)
 
   # Create a unique acronym for each project.
   # Hard code an acronym for 'Evidence Ontology' to avoid a conflict with 'Electrophysiology Ontology'
@@ -201,10 +200,10 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
     next if ontMatch.nil?
 
     # Use the ontology abbreviation to lookup the matching ontology data in the triple store.
-    ontLD = LinkedData::Models::Ontology.find(ontMatch.abbreviation)
+    ontLD = LinkedData::Models::Ontology.find(ontMatch.abbreviation).first
     if ontLD.nil?
       # Abbreviation failed, try the ontology display label (name).
-      ontLD = LinkedData::Models::Ontology.where :name => ontMatch.displayLabel
+      ontLD = LinkedData::Models::Ontology.where(:name => ontMatch.displayLabel).to_a
       if ontLD.empty?
         ontLD = nil
       else
