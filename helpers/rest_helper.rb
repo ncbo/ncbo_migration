@@ -139,7 +139,7 @@ class RestHelper
       http_session.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http_session.use_ssl = (uri.scheme == 'https')
       http_session.start do |http|
-        http.request_get(uri.request_uri) do |res|
+        http.request_get(uri.request_uri, {"Accept-Encoding" => "gzip"}) do |res|
           if res.kind_of?(Net::HTTPRedirection)
             new_loc = res['location']
             if new_loc.match(/^(http:\/\/|https:\/\/)/)
@@ -151,18 +151,28 @@ class RestHelper
           end
     
           raise Net::HTTPBadResponse.new("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
-    
+          
           file_size = res.read_header["content-length"].to_i
           begin
             filename = res.read_header["content-disposition"].match(/filename=\"(.*)\"/)[1] if filename.nil?
           rescue Exception => e
-            filename = LinkedData::Utils::Namespaces.last_iri_fragment(uri.request_uri) if filename.nil?
+            filename = LinkedData::Utils::Triples.last_iri_fragment(uri.request_uri) if filename.nil?
           end
           bar = ProgressBar.new(filename, file_size)
           bar.file_transfer_mode
           res.read_body do |segment|
             bar.inc(segment.size)
             file.write(segment)
+          end
+          
+          if res.header['Content-Encoding'].eql?('gzip')
+            uncompressed_file = Tempfile.new("uncompressed-ont-rest-file")
+            file.rewind
+            sio = StringIO.new(file.read)
+            gz = Zlib::GzipReader.new(sio)
+            uncompressed_file.write(gz.read())
+            file.close
+            file = uncompressed_file
           end
         end
       end
@@ -177,7 +187,7 @@ class RestHelper
     ftp = Net::FTP.new(url.host, url.user, url.password)
     ftp.passive = true
     ftp.login
-    filename = LinkedData::Utils::Namespaces.last_iri_fragment(url.path)
+    filename = LinkedData::Utils::Triples.last_iri_fragment(url.path)
     tmp = Tempfile.new(filename)
     file_size = ftp.size(url.path)
     bar = ProgressBar.new(filename, file_size)

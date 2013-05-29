@@ -7,7 +7,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     end
 
     # Check to make sure Ontology is persistent, otherwise lookup again
-    o = LinkedData::Models::Ontology.find(acronym)
+    o = LinkedData::Models::Ontology.find(acronym).include(LinkedData::Models::Ontology.attributes(:all)).first
     return if o.nil?
 
     # Submission
@@ -38,7 +38,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     os.status             = ont.versionStatus
     os.summaryOnly        = ont.isMetadataOnly == 1
     os.pullLocation       = RestHelper.new_iri(ont.downloadLocation)
-    os.submissionStatus   = LinkedData::Models::SubmissionStatus.find("UPLOADED")
+    os.submissionStatus   = LinkedData::Models::SubmissionStatus.find("UPLOADED").first
     os.ontology           = o
 
     pbar.inc
@@ -55,14 +55,14 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     else
       contact = contact.first
     end
-    os.contact = contact
+    os.contact = [contact]
 
     # Ont format
     format = format_mapping[ont.format]
     if format.nil? || format.empty?
       bad_formats << "#{ont.abbreviation}, #{ont.id}, #{format}"
     else
-      os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format)
+      os.hasOntologyLanguage = LinkedData::Models::OntologyFormat.find(format).first
     end
 
     # UMLS ontologies get a special download location
@@ -74,13 +74,13 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     if skip_formats.include?(format) || !DOWNLOAD_FILES
       os.summaryOnly = true
       skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
-    elsif !os.summaryOnly.parsed_value
+    elsif !os.summaryOnly
       begin
         # Get file
         if os.pullLocation
-          if os.remote_file_exists?(os.pullLocation.value)
+          if os.remote_file_exists?(os.pullLocation.to_s)
             # os.download_and_store_ontology_file
-            file, filename = RestHelper.get_file(os.pullLocation.value)
+            file, filename = RestHelper.get_file(os.pullLocation.to_s)
             file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
             os.uploadFilePath = File.expand_path(file_location, __FILE__)
             if format.eql?("UMLS")
@@ -88,7 +88,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
               File.open(os.uploadFilePath.to_s, 'a+') {|f| f.write(semantic_types.read) }
             end
           else
-            bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.value}"
+            bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.to_s}"
             os.pullLocation = nil
             os.summaryOnly = true
           end
@@ -103,9 +103,6 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     end
 
     begin
-
-      binding.pry
-
       if os.valid?
         os.save
       elsif !os.exist?

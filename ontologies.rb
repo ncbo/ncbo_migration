@@ -7,8 +7,7 @@ require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
 
-only_migrate_ontologies = ['AAO', 'BRO', 'BTO', 'WBbt']
-#only_migrate_ontologies = []
+only_migrate_ontologies = []
 only_migrate_formats = []
 migrate_views = true
 
@@ -19,10 +18,6 @@ errors << "Could not find users, please run user migration: bundle exec ruby use
 errors << "Could not find categories, please run user migration: bundle exec ruby categories.rb" if LinkedData::Models::Category.all.empty?
 errors << "Could not find groups, please run user migration: bundle exec ruby groups.rb" if LinkedData::Models::Group.all.empty?
 abort("ERRORS:\n#{errors.join("\n")}") unless errors.empty?
-
-# Prep Goo enums
-LinkedData::Models::SubmissionStatus.init
-LinkedData::Models::OntologyFormat.init
 
 # Don't process the following formats
 skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "LEXGRID-XML"]
@@ -47,7 +42,7 @@ Kernel.const_defined?("DOWNLOAD_FILES") ? nil : DOWNLOAD_FILES = true
 Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = false
 
 # Hard-coded master files for ontologies that have zips with multiple files
-master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl"}
+master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl", "CTX" => "XCTontologyvtemp2.owl"}
 
 acronyms = Set.new
 names = Set.new
@@ -96,7 +91,7 @@ latest.delete_if {|o| duplicates.include?(o.abbreviation)}
 # Process latest and save ontology objects
 puts "", "Number of ontologies to migrate: #{latest.length}"
 pbar = ProgressBar.new("Migrating", latest.length)
-latest.each do |ont|
+latest.dup.each do |ont|
   if ont.abbreviation.nil?
     missing_abbreviation << "#{ont.displayLabel}, #{ont.id}"
     next
@@ -113,10 +108,10 @@ latest.each do |ont|
   o.acl = []
   if !ont.userAcl.nil? && !ont.userAcl[0].eql?("")
     users = ont.userAcl[0][:userEntry].kind_of?(Array) ? ont.userAcl[0][:userEntry] : [ ont.userAcl[0][:userEntry] ]
-    users.each do |user|
+    users.dup.each do |user|
       old_user = RestHelper.user(user[:userId])
-      new_user = LinkedData::Models::User.find(old_user.username)
-      o.acl << new_user
+      new_user = LinkedData::Models::User.find(old_user.username).include(LinkedData::Models::User.attributes(:all)).first
+      o.acl = [new_user] + o.acl
     end
   end
   
@@ -129,11 +124,11 @@ latest.each do |ont|
       missing_users << "#{ont.id}, #{user_id}"
       next
     end
-    new_user = LinkedData::Models::User.find(old_user.username)
+    new_user = LinkedData::Models::User.find(old_user.username).include(LinkedData::Models::User.attributes(:all)).first
     if o.administeredBy.nil?
       o.administeredBy = [new_user]
     else
-      o.administeredBy << new_user
+      o.administeredBy = [new_user] + o.administeredBy
     end
   end
   
@@ -143,11 +138,11 @@ latest.each do |ont|
     if ont.groupIds[0][:int].kind_of?(Array)
       ont.groupIds[0][:int].each do |group_id|
         group_acronym = RestHelper.safe_acronym(RestHelper.group(group_id).acronym)
-        o.group << LinkedData::Models::Group.find(group_acronym)
+        o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first] + o.group
       end
     else
       group_acronym = RestHelper.safe_acronym(RestHelper.group(ont.groupIds[0][:int]).acronym)
-      o.group = LinkedData::Models::Group.find(group_acronym)
+      o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first]
     end
   end
   
@@ -157,13 +152,13 @@ latest.each do |ont|
     if ont.categoryIds[0][:int].kind_of?(Array)
       ont.categoryIds[0][:int].each do |cat_id|
         category_acronym = RestHelper.safe_acronym(RestHelper.category(cat_id).name)
-        category = LinkedData::Models::Category.find(category_acronym)
-        o.hasDomain << category
+        category = LinkedData::Models::Category.find(category_acronym).include(LinkedData::Models::Category.attributes(:all)).first
+        o.hasDomain = [category] + o.hasDomain
       end
     else
       category_acronym = RestHelper.safe_acronym(RestHelper.category(ont.categoryIds[0][:int]).name)
-      category = LinkedData::Models::Category.find(category_acronym)
-      o.hasDomain << category
+      category = LinkedData::Models::Category.find(category_acronym).include(LinkedData::Models::Category.attributes(:all)).first
+      o.hasDomain = [category] + o.hasDomain
     end
   end
   
@@ -191,7 +186,7 @@ end
 puts "", "Number of submissions to migrate: #{submissions.length}"
 pbar = ProgressBar.new("Migrating", submissions.length*2)
 submissions.each do |ont|
-  migrate_submission(ont_view, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
+  migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
 end
 pbar.finish
 
