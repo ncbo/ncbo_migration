@@ -30,8 +30,8 @@ end
 relations.each do |relation|
   child_acronym = RestHelper.safe_acronym(RestHelper.category(relation.child).name)
   parent_acronym = RestHelper.safe_acronym(RestHelper.category(relation.parent).name)
-  child = LinkedData::Models::Category.find(child_acronym)
-  parent = LinkedData::Models::Category.find(parent_acronym)
+  child = LinkedData::Models::Category.find(child_acronym).include(LinkedData::Models::Category.attributes).first
+  parent = LinkedData::Models::Category.find(parent_acronym).first
   child.parentCategory = parent
   if child.valid?
     child.save
