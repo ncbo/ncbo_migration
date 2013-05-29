@@ -7,7 +7,9 @@ require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
 
-only_migrate_ontologies = ['AAO', 'BRO', 'BTO', 'WBbt']
+#only_migrate_ontologies = ['AAO', 'BRO', 'BTO', 'WBbt']
+only_migrate_ontologies = ['ICD10']
+
 #only_migrate_ontologies = []
 only_migrate_formats = []
 migrate_views = true
@@ -191,7 +193,7 @@ end
 puts "", "Number of submissions to migrate: #{submissions.length}"
 pbar = ProgressBar.new("Migrating", submissions.length*2)
 submissions.each do |ont|
-  migrate_submission(ont_view, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
+  migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
 end
 pbar.finish
 
