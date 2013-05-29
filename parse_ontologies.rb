@@ -7,7 +7,7 @@ require 'progressbar'
 only_parse = []
 
 
-submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}, summaryOnly: false)
+submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}, summaryOnly: false).include(:submissionStatus, :summaryOnly).to_a
 
 errors = []
 already_parsed_or_summary = []
@@ -19,7 +19,7 @@ if only_parse.empty?
   submissions.each do |os|
     pbar.inc
   
-    if os.submissionStatus.parsed? || os.summaryOnly.parsed_value
+    if os.submissionStatus.parsed? || os.summaryOnly
       already_parsed_or_summary << os.ontology.acronym
       next
     end
@@ -33,7 +33,7 @@ if only_parse.empty?
   end
 else
   only_parse.each do |o|
-    ont = LinkedData::Models::Ontology.find(o)
+    ont = LinkedData::Models::Ontology.find(o).include(submissions: {ontology: :acronym}).first
     sub = ont.submissions.first
     ontologies_to_parse << sub
   end
