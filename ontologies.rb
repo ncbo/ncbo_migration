@@ -8,7 +8,9 @@ require 'open-uri'
 require_relative 'helpers/ontology_helper'
 
 #only_migrate_ontologies = ['AAO', 'BRO', 'BTO', 'WBbt']
-only_migrate_ontologies = ['ICD10']
+# UMLS ONLY
+#only_migrate_ontologies = ['AIR', 'ICPC', 'ICD10']
+only_migrate_ontologies = ['AIR', 'BRO', 'ICPC', 'ICD10']
 
 #only_migrate_ontologies = []
 only_migrate_formats = []
