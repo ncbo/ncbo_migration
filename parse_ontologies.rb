@@ -55,7 +55,7 @@ ontologies_to_parse.each do |os|
   begin
     os.process_submission(logger)
   rescue Timeout::Error => timeout
-    timeouts << "#{os.ontology.acronym}, #{os.submissionId}"
+    timeouts << "#{os.ontology.acronym}, #{os.submissionId}, #{timeout.backtrace.join("\n\t")}"
   rescue Exception => e
     if e.message.include?("Class model only allows one label. TODO: internationalization")
       labels << "#{os.ontology.acronym}, #{os.submissionId}"
