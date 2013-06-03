@@ -15,6 +15,7 @@ ROR_DB_PASSWORD       = ""
 GOO_HOST              = "localhost"
 GOO_PORT              = 9000
 SEARCH_SERVER_URL     = "http://ncbo-dev-app-02.stanford.edu:8080/solr/"
+ANNOTATOR_DICT_FILE   = "./test/dictionary.txt"
 
 ## DO NOT EDIT BELOW THIS LINE
 # Configure ontologieS_linked_data
@@ -25,4 +26,9 @@ LinkedData.config do |config|
   config.goo_host = GOO_HOST
   config.goo_port = GOO_PORT
   config.search_server_url = SEARCH_SERVER_URL
+end
+
+require "ncbo_annotator"
+Annotator.config do |settings|
+  settings.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
 end
