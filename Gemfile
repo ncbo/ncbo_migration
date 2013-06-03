@@ -6,6 +6,7 @@ gem 'progressbar'
 gem 'pry'
 gem 'rsolr'
 gem 'sparql-client', :git => 'https://github.com/ncbo/sparql-client.git'
+gem 'ncbo_annotator', :git => 'https://github.com/ncbo/ncbo_annotator.git'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
 gemfile_local = File.expand_path("../Gemfile.local", __FILE__)
