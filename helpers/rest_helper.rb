@@ -68,6 +68,7 @@ class RestHelper
     if (!list.empty?)
       list.each do |view_version_list|
         view_version_list[1].each do |version|
+          next if version == ""
           version_list = version[:ontologyBean]
 
           if version_list.kind_of?(Array)
