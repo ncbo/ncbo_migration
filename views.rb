@@ -7,10 +7,6 @@ require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
 
-# Prep Goo enums
-LinkedData::Models::SubmissionStatus.init
-LinkedData::Models::OntologyFormat.init
-
 # Don't process the following formats
 skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "LEXGRID-XML"]
 
@@ -57,15 +53,11 @@ bp_latest_views.each do |view|
   virtual_to_acronym[view.ontologyId] = view.abbreviation
 end
 
-onts = LinkedData::Models::Ontology.all(load_attrs: [:acronym => true, :viewOf => true])
+onts = LinkedData::Models::Ontology.where.filter(Goo::Filter.new(:viewOf).unbound).include(:acronym).to_a
 onts_by_acronym = {}
 
 onts.each do |ont|
-  if ont.viewOf.nil?
-    onts_by_acronym[ont.acronym.value] = ont
-  else
-    onts.delete(ont)
-  end
+  onts_by_acronym[ont.acronym] = ont
 end
 
 bp_latest_onts = RestHelper.ontologies
@@ -73,8 +65,10 @@ bp_latest_onts.select! { |bp_latest_ont| onts_by_acronym.include?(bp_latest_ont.
 
 bp_latest_onts.each do |bp_latest_ont|
   bp_ont_views = RestHelper.ontology_views(bp_latest_ont.ontologyId)
+  next if bp_ont_views.length == 0
 
-  pbar = ProgressBar.new("Number of views to migrate for ontology #{bp_latest_ont.abbreviation}: #{bp_ont_views.length}", bp_ont_views.length)
+  puts "Number of views to migrate for ontology #{bp_latest_ont.abbreviation}: #{bp_ont_views.length}"
+  pbar = ProgressBar.new("#{bp_latest_ont.abbreviation} views", bp_ont_views.length)
   view_ontology_ids = []
 
   bp_ont_views.each do |ont_view|
@@ -87,13 +81,13 @@ bp_latest_onts.each do |bp_latest_ont|
       v = LinkedData::Models::Ontology.new
       v.viewOf = onts_by_acronym[bp_latest_ont.abbreviation]
 
-      o = LinkedData::Models::Ontology.find(ont_view.abbreviation)
+      o = LinkedData::Models::Ontology.find(ont_view.abbreviation).first
 
       if (o.nil?)
         v.acronym = ont_view.abbreviation
       else
         v.acronym = "#{ont_view.abbreviation}-VIEW"
-        virtual_to_acronym[ont_view.ontologyId] = v.acronym.value
+        virtual_to_acronym[ont_view.ontologyId] = v.acronym
       end
 
       v.name = ont_view.displayLabel
@@ -109,11 +103,11 @@ bp_latest_onts.each do |bp_latest_ont|
           missing_users << "#{bp_latest_ont.id}, #{user_id}"
           next
         end
-        new_user = LinkedData::Models::User.find(old_user.username)
+        new_user = LinkedData::Models::User.find(old_user.username).first
         if v.administeredBy.nil?
           v.administeredBy = [new_user]
         else
-          v.administeredBy << new_user
+          v.administeredBy = v.administeredBy + [new_user]
         end
       end
 
