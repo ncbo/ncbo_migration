@@ -84,9 +84,9 @@ bp_latest_onts.each do |bp_latest_ont|
       o = LinkedData::Models::Ontology.find(ont_view.abbreviation).first
 
       if (o.nil?)
-        v.acronym = ont_view.abbreviation
+        v.acronym = RestHelper.safe_acronym(ont_view.abbreviation)
       else
-        v.acronym = "#{ont_view.abbreviation}-VIEW"
+        v.acronym = "#{RestHelper.safe_acronym(ont_view.abbreviation)}-VIEW"
         virtual_to_acronym[ont_view.ontologyId] = v.acronym
       end
 
