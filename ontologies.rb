@@ -221,3 +221,5 @@ puts bad_urls.empty? ? "None" : bad_urls.join("\n")
 puts ""
 puts "Multiple files in zip:"
 puts zip_multiple_files.empty? ? "None" : zip_multiple_files.join("\n")
+
+require_relative "semantic_types"
