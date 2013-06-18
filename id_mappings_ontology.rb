@@ -9,7 +9,7 @@ redis = Redis.new(host: LinkedData.settings.redis_host, port: LinkedData.setting
 
 # Delete old data
 puts "Deleting old redis keys"
-key_prefix = ["ri:acronym_from_virtual:", "ri:virtual_from_acronym:", "ri:virtual_from_version:"]
+key_prefix = ["old_to_new:acronym_from_virtual:", "old_to_new:virtual_from_acronym:", "old_to_new:virtual_from_version:"]
 key_prefix.each do |key|
   keys = redis.keys("#{key}*")
   redis.del(keys) unless keys.empty?
@@ -24,16 +24,16 @@ redis.pipelined do
     acronym = RestHelper.safe_acronym(o.abbreviation)
 
     # Virtual id from acronym
-    redis.set "ri:acronym_from_virtual:#{o.ontologyId}", acronym
+    redis.set "old_to_new:acronym_from_virtual:#{o.ontologyId}", acronym
     
     # Acronym from virtual id
-    redis.set "ri:virtual_from_acronym:#{acronym}", o.ontologyId
+    redis.set "old_to_new:virtual_from_acronym:#{acronym}", o.ontologyId
     
     # This call works for views and ontologies (gets all versions from related virtual id)
     versions = RestHelper.ontology_versions(o.ontologyId)
     versions.each do |ov|
       # Version to virtual mapping
-      redis.set "ri:virtual_from_version:#{ov.id}", o.ontologyId
+      redis.set "old_to_new:virtual_from_version:#{ov.id}", o.ontologyId
     end
     
     pbar.inc
