@@ -202,7 +202,7 @@ class RestHelper
   end
     
   def self.safe_acronym(acr)
-    CGI.escape(acr.gsub(" ", "_"))
+    CGI.escape(acr.to_s.gsub(" ", "_"))
   end
   
   def self.new_iri(iri)
