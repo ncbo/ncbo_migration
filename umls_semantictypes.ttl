@@ -1,0 +1,667 @@
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix umls: <http://bioportal.bioontology.org/ontologies/umls/> .
+
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T116> a owl:Class;
+skos:notation "T116"^^xsd:string;
+skos:prefLabel "Amino Acid, Peptide, or Protein"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T121> a owl:Class;
+skos:notation "T121"^^xsd:string;
+skos:prefLabel "Pharmacologic Substance"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T130> a owl:Class;
+skos:notation "T130"^^xsd:string;
+skos:prefLabel "Indicator, Reagent, or Diagnostic Aid"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T119> a owl:Class;
+skos:notation "T119"^^xsd:string;
+skos:prefLabel "Lipid"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T126> a owl:Class;
+skos:notation "T126"^^xsd:string;
+skos:prefLabel "Enzyme"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T123> a owl:Class;
+skos:notation "T123"^^xsd:string;
+skos:prefLabel "Biologically Active Substance"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T109> a owl:Class;
+skos:notation "T109"^^xsd:string;
+skos:prefLabel "Organic Chemical"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T131> a owl:Class;
+skos:notation "T131"^^xsd:string;
+skos:prefLabel "Hazardous or Poisonous Substance"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T110> a owl:Class;
+skos:notation "T110"^^xsd:string;
+skos:prefLabel "Steroid"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T125> a owl:Class;
+skos:notation "T125"^^xsd:string;
+skos:prefLabel "Hormone"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T114> a owl:Class;
+skos:notation "T114"^^xsd:string;
+skos:prefLabel "Nucleic Acid, Nucleoside, or Nucleotide"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T111> a owl:Class;
+skos:notation "T111"^^xsd:string;
+skos:prefLabel "Eicosanoid"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T118> a owl:Class;
+skos:notation "T118"^^xsd:string;
+skos:prefLabel "Carbohydrate"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T124> a owl:Class;
+skos:notation "T124"^^xsd:string;
+skos:prefLabel "Neuroreactive Substance or Biogenic Amine"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T127> a owl:Class;
+skos:notation "T127"^^xsd:string;
+skos:prefLabel "Vitamin"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T195> a owl:Class;
+skos:notation "T195"^^xsd:string;
+skos:prefLabel "Antibiotic"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T129> a owl:Class;
+skos:notation "T129"^^xsd:string;
+skos:prefLabel "Immunologic Factor"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T024> a owl:Class;
+skos:notation "T024"^^xsd:string;
+skos:prefLabel "Tissue"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T115> a owl:Class;
+skos:notation "T115"^^xsd:string;
+skos:prefLabel "Organophosphorus Compound"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T073> a owl:Class;
+skos:notation "T073"^^xsd:string;
+skos:prefLabel "Manufactured Object"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T081> a owl:Class;
+skos:notation "T081"^^xsd:string;
+skos:prefLabel "Quantitative Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T170> a owl:Class;
+skos:notation "T170"^^xsd:string;
+skos:prefLabel "Intellectual Product"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T029> a owl:Class;
+skos:notation "T029"^^xsd:string;
+skos:prefLabel "Body Location or Region"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T184> a owl:Class;
+skos:notation "T184"^^xsd:string;
+skos:prefLabel "Sign or Symptom"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T033> a owl:Class;
+skos:notation "T033"^^xsd:string;
+skos:prefLabel "Finding"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T037> a owl:Class;
+skos:notation "T037"^^xsd:string;
+skos:prefLabel "Injury or Poisoning"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T191> a owl:Class;
+skos:notation "T191"^^xsd:string;
+skos:prefLabel "Neoplastic Process"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T023> a owl:Class;
+skos:notation "T023"^^xsd:string;
+skos:prefLabel "Body Part, Organ, or Organ Component"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T005> a owl:Class;
+skos:notation "T005"^^xsd:string;
+skos:prefLabel "Virus"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T047> a owl:Class;
+skos:notation "T047"^^xsd:string;
+skos:prefLabel "Disease or Syndrome"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T019> a owl:Class;
+skos:notation "T019"^^xsd:string;
+skos:prefLabel "Congenital Abnormality"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T169> a owl:Class;
+skos:notation "T169"^^xsd:string;
+skos:prefLabel "Functional Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T190> a owl:Class;
+skos:notation "T190"^^xsd:string;
+skos:prefLabel "Anatomical Abnormality"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T022> a owl:Class;
+skos:notation "T022"^^xsd:string;
+skos:prefLabel "Body System"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T018> a owl:Class;
+skos:notation "T018"^^xsd:string;
+skos:prefLabel "Embryonic Structure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T101> a owl:Class;
+skos:notation "T101"^^xsd:string;
+skos:prefLabel "Patient or Disabled Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T093> a owl:Class;
+skos:notation "T093"^^xsd:string;
+skos:prefLabel "Health Care Related Organization"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T089> a owl:Class;
+skos:notation "T089"^^xsd:string;
+skos:prefLabel "Regulation or Law"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T061> a owl:Class;
+skos:notation "T061"^^xsd:string;
+skos:prefLabel "Therapeutic or Preventive Procedure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T062> a owl:Class;
+skos:notation "T062"^^xsd:string;
+skos:prefLabel "Research Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T046> a owl:Class;
+skos:notation "T046"^^xsd:string;
+skos:prefLabel "Pathologic Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T041> a owl:Class;
+skos:notation "T041"^^xsd:string;
+skos:prefLabel "Mental Process"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T055> a owl:Class;
+skos:notation "T055"^^xsd:string;
+skos:prefLabel "Individual Behavior"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T004> a owl:Class;
+skos:notation "T004"^^xsd:string;
+skos:prefLabel "Fungus"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T060> a owl:Class;
+skos:notation "T060"^^xsd:string;
+skos:prefLabel "Diagnostic Procedure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T070> a owl:Class;
+skos:notation "T070"^^xsd:string;
+skos:prefLabel "Natural Phenomenon or Process"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T197> a owl:Class;
+skos:notation "T197"^^xsd:string;
+skos:prefLabel "Inorganic Chemical"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T057> a owl:Class;
+skos:notation "T057"^^xsd:string;
+skos:prefLabel "Occupational Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T083> a owl:Class;
+skos:notation "T083"^^xsd:string;
+skos:prefLabel "Geographic Area"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T074> a owl:Class;
+skos:notation "T074"^^xsd:string;
+skos:prefLabel "Medical Device"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T002> a owl:Class;
+skos:notation "T002"^^xsd:string;
+skos:prefLabel "Plant"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T065> a owl:Class;
+skos:notation "T065"^^xsd:string;
+skos:prefLabel "Educational Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T092> a owl:Class;
+skos:notation "T092"^^xsd:string;
+skos:prefLabel "Organization"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T204> a owl:Class;
+skos:notation "T204"^^xsd:string;
+skos:prefLabel "Eukaryote"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T025> a owl:Class;
+skos:notation "T025"^^xsd:string;
+skos:prefLabel "Cell"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T196> a owl:Class;
+skos:notation "T196"^^xsd:string;
+skos:prefLabel "Element, Ion, or Isotope"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T067> a owl:Class;
+skos:notation "T067"^^xsd:string;
+skos:prefLabel "Phenomenon or Process"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T080> a owl:Class;
+skos:notation "T080"^^xsd:string;
+skos:prefLabel "Qualitative Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T102> a owl:Class;
+skos:notation "T102"^^xsd:string;
+skos:prefLabel "Group Attribute"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T098> a owl:Class;
+skos:notation "T098"^^xsd:string;
+skos:prefLabel "Population Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T040> a owl:Class;
+skos:notation "T040"^^xsd:string;
+skos:prefLabel "Organism Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T034> a owl:Class;
+skos:notation "T034"^^xsd:string;
+skos:prefLabel "Laboratory or Test Result"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T201> a owl:Class;
+skos:notation "T201"^^xsd:string;
+skos:prefLabel "Clinical Attribute"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T097> a owl:Class;
+skos:notation "T097"^^xsd:string;
+skos:prefLabel "Professional or Occupational Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T064> a owl:Class;
+skos:notation "T064"^^xsd:string;
+skos:prefLabel "Governmental or Regulatory Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T054> a owl:Class;
+skos:notation "T054"^^xsd:string;
+skos:prefLabel "Social Behavior"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T007> a owl:Class;
+skos:notation "T007"^^xsd:string;
+skos:prefLabel "Bacterium"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T044> a owl:Class;
+skos:notation "T044"^^xsd:string;
+skos:prefLabel "Molecular Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T053> a owl:Class;
+skos:notation "T053"^^xsd:string;
+skos:prefLabel "Behavior"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T069> a owl:Class;
+skos:notation "T069"^^xsd:string;
+skos:prefLabel "Environmental Effect of Humans"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T039> a owl:Class;
+skos:notation "T039"^^xsd:string;
+skos:prefLabel "Physiologic Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T103> a owl:Class;
+skos:notation "T103"^^xsd:string;
+skos:prefLabel "Chemical"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T122> a owl:Class;
+skos:notation "T122"^^xsd:string;
+skos:prefLabel "Biomedical or Dental Material"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T015> a owl:Class;
+skos:notation "T015"^^xsd:string;
+skos:prefLabel "Mammal"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T020> a owl:Class;
+skos:notation "T020"^^xsd:string;
+skos:prefLabel "Acquired Abnormality"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T030> a owl:Class;
+skos:notation "T030"^^xsd:string;
+skos:prefLabel "Body Space or Junction"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T026> a owl:Class;
+skos:notation "T026"^^xsd:string;
+skos:prefLabel "Cell Component"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T043> a owl:Class;
+skos:notation "T043"^^xsd:string;
+skos:prefLabel "Cell Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T059> a owl:Class;
+skos:notation "T059"^^xsd:string;
+skos:prefLabel "Laboratory Procedure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T052> a owl:Class;
+skos:notation "T052"^^xsd:string;
+skos:prefLabel "Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T056> a owl:Class;
+skos:notation "T056"^^xsd:string;
+skos:prefLabel "Daily or Recreational Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T079> a owl:Class;
+skos:notation "T079"^^xsd:string;
+skos:prefLabel "Temporal Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T091> a owl:Class;
+skos:notation "T091"^^xsd:string;
+skos:prefLabel "Biomedical Occupation or Discipline"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T042> a owl:Class;
+skos:notation "T042"^^xsd:string;
+skos:prefLabel "Organ or Tissue Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T192> a owl:Class;
+skos:notation "T192"^^xsd:string;
+skos:prefLabel "Receptor"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T031> a owl:Class;
+skos:notation "T031"^^xsd:string;
+skos:prefLabel "Body Substance"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T048> a owl:Class;
+skos:notation "T048"^^xsd:string;
+skos:prefLabel "Mental or Behavioral Dysfunction"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T058> a owl:Class;
+skos:notation "T058"^^xsd:string;
+skos:prefLabel "Health Care Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T120> a owl:Class;
+skos:notation "T120"^^xsd:string;
+skos:prefLabel "Chemical Viewed Functionally"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T100> a owl:Class;
+skos:notation "T100"^^xsd:string;
+skos:prefLabel "Age Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T171> a owl:Class;
+skos:notation "T171"^^xsd:string;
+skos:prefLabel "Language"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T032> a owl:Class;
+skos:notation "T032"^^xsd:string;
+skos:prefLabel "Organism Attribute"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T095> a owl:Class;
+skos:notation "T095"^^xsd:string;
+skos:prefLabel "Self-help or Relief Organization"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T078> a owl:Class;
+skos:notation "T078"^^xsd:string;
+skos:prefLabel "Idea or Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T090> a owl:Class;
+skos:notation "T090"^^xsd:string;
+skos:prefLabel "Occupation or Discipline"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T167> a owl:Class;
+skos:notation "T167"^^xsd:string;
+skos:prefLabel "Substance"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T068> a owl:Class;
+skos:notation "T068"^^xsd:string;
+skos:prefLabel "Human-caused Phenomenon or Process"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T168> a owl:Class;
+skos:notation "T168"^^xsd:string;
+skos:prefLabel "Food"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T028> a owl:Class;
+skos:notation "T028"^^xsd:string;
+skos:prefLabel "Gene or Genome"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T014> a owl:Class;
+skos:notation "T014"^^xsd:string;
+skos:prefLabel "Reptile"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T050> a owl:Class;
+skos:notation "T050"^^xsd:string;
+skos:prefLabel "Experimental Model of Disease"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T045> a owl:Class;
+skos:notation "T045"^^xsd:string;
+skos:prefLabel "Genetic Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T104> a owl:Class;
+skos:notation "T104"^^xsd:string;
+skos:prefLabel "Chemical Viewed Structurally"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T011> a owl:Class;
+skos:notation "T011"^^xsd:string;
+skos:prefLabel "Amphibian"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T013> a owl:Class;
+skos:notation "T013"^^xsd:string;
+skos:prefLabel "Fish"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T094> a owl:Class;
+skos:notation "T094"^^xsd:string;
+skos:prefLabel "Professional Society"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T087> a owl:Class;
+skos:notation "T087"^^xsd:string;
+skos:prefLabel "Amino Acid Sequence"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T066> a owl:Class;
+skos:notation "T066"^^xsd:string;
+skos:prefLabel "Machine Activity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T185> a owl:Class;
+skos:notation "T185"^^xsd:string;
+skos:prefLabel "Classification"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T049> a owl:Class;
+skos:notation "T049"^^xsd:string;
+skos:prefLabel "Cell or Molecular Dysfunction"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T008> a owl:Class;
+skos:notation "T008"^^xsd:string;
+skos:prefLabel "Animal"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T051> a owl:Class;
+skos:notation "T051"^^xsd:string;
+skos:prefLabel "Event"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T038> a owl:Class;
+skos:notation "T038"^^xsd:string;
+skos:prefLabel "Biologic Function"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T194> a owl:Class;
+skos:notation "T194"^^xsd:string;
+skos:prefLabel "Archaeon"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T086> a owl:Class;
+skos:notation "T086"^^xsd:string;
+skos:prefLabel "Nucleotide Sequence"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T012> a owl:Class;
+skos:notation "T012"^^xsd:string;
+skos:prefLabel "Bird"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T063> a owl:Class;
+skos:notation "T063"^^xsd:string;
+skos:prefLabel "Molecular Biology Research Technique"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T017> a owl:Class;
+skos:notation "T017"^^xsd:string;
+skos:prefLabel "Anatomical Structure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T082> a owl:Class;
+skos:notation "T082"^^xsd:string;
+skos:prefLabel "Spatial Concept"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T088> a owl:Class;
+skos:notation "T088"^^xsd:string;
+skos:prefLabel "Carbohydrate Sequence"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T099> a owl:Class;
+skos:notation "T099"^^xsd:string;
+skos:prefLabel "Family Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T001> a owl:Class;
+skos:notation "T001"^^xsd:string;
+skos:prefLabel "Organism"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T075> a owl:Class;
+skos:notation "T075"^^xsd:string;
+skos:prefLabel "Research Device"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T096> a owl:Class;
+skos:notation "T096"^^xsd:string;
+skos:prefLabel "Group"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T072> a owl:Class;
+skos:notation "T072"^^xsd:string;
+skos:prefLabel "Physical Object"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T071> a owl:Class;
+skos:notation "T071"^^xsd:string;
+skos:prefLabel "Entity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T200> a owl:Class;
+skos:notation "T200"^^xsd:string;
+skos:prefLabel "Clinical Drug"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T085> a owl:Class;
+skos:notation "T085"^^xsd:string;
+skos:prefLabel "Molecular Sequence"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T077> a owl:Class;
+skos:notation "T077"^^xsd:string;
+skos:prefLabel "Conceptual Entity"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T010> a owl:Class;
+skos:notation "T010"^^xsd:string;
+skos:prefLabel "Vertebrate"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T016> a owl:Class;
+skos:notation "T016"^^xsd:string;
+skos:prefLabel "Human"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T203> a owl:Class;
+skos:notation "T203"^^xsd:string;
+skos:prefLabel "Drug Delivery Device"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T021> a owl:Class;
+skos:notation "T021"^^xsd:string;
+skos:prefLabel "Fully Formed Anatomical Structure"@en .
+
+<http://bioportal.bioontology.org/ontologies/umls/sty/T116> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T109> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T121> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T120> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T130> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T120> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T119> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T109> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T126> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T123> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T120> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T109> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T104> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T131> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T120> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T110> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T119> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T125> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T114> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T109> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T111> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T119> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T118> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T109> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T124> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T127> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T195> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T121> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T129> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T024> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T021> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T115> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T109> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T073> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T072> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T081> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T078> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T170> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T029> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T082> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T184> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T033> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T033> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T037> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T067> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T191> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T047> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T023> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T021> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T005> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T001> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T047> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T046> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T019> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T190> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T169> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T078> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T190> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T017> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T022> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T169> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T018> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T017> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T101> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T096> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T093> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T092> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T089> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T170> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T061> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T058> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T062> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T057> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T046> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T038> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T041> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T040> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T055> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T053> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T004> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T204> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T060> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T058> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T070> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T067> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T197> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T104> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T057> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T052> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T083> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T082> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T074> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T073> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T002> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T204> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T065> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T057> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T092> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T204> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T001> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T025> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T021> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T196> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T104> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T080> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T078> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T102> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T098> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T096> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T040> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T039> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T034> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T033> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T201> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T032> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T097> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T096> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T064> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T057> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T054> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T053> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T007> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T001> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T044> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T039> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T053> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T052> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T069> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T068> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T039> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T038> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T103> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T167> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T122> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T120> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T015> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T010> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T020> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T190> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T030> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T082> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T026> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T021> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T043> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T039> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T059> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T058> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T056> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T052> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T079> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T078> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T091> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T090> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T042> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T039> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T192> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T123> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T031> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T167> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T048> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T047> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T058> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T057> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T120> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T103> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T100> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T096> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T171> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T032> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T095> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T092> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T078> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T090> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T167> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T072> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T068> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T067> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T168> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T167> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T028> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T021> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T014> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T010> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T050> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T046> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T045> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T044> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T104> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T103> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T011> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T010> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T013> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T010> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T094> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T092> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T087> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T085> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T066> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T052> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T185> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T170> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T049> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T046> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T008> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T204> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T038> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T070> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T194> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T001> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T086> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T085> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T012> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T010> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T063> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T062> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T017> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T072> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T082> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T078> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T088> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T085> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T099> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T096> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T001> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T072> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T075> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T073> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T096> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T077> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T200> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T073> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T085> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T082> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T010> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T008> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T016> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T015> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T203> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T074> .
+<http://bioportal.bioontology.org/ontologies/umls/sty/T021> rdfs:subClassOf <http://bioportal.bioontology.org/ontologies/umls/sty/T017> .
