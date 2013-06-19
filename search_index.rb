@@ -7,17 +7,18 @@ require 'benchmark'
 # clear the index
 LinkedData::Models::Class.indexClear()
 LinkedData::Models::Class.indexCommit()
-submissions = LinkedData::Models::OntologySubmission.where(summaryOnly: false, submissionStatus: [code: "RDF"]).all
+
+submissions = LinkedData::Models::OntologySubmission.where(summaryOnly: false, submissionStatus: [code: "RDF"]).include(:submissionId, ontology: LinkedData::Models::Ontology.attributes).all
 pbar = ProgressBar.new("Indexing Ontologies for search", submissions.length)
 logger = Logger.new("logs/indexing.log")
 logger.info("Began indexing all ontologies...")
 time = Benchmark.realtime do
   submissions.each do |s|
-    begin
+   # begin
       s.index logger, false
-    rescue Exception => e
-      logger.error e
-    end
+   # rescue Exception => e
+   #   logger.error e
+   # end
     pbar.inc
   end
 end
