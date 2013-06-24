@@ -49,6 +49,7 @@ labels = []
 puts "", "Parsing #{ontologies_to_parse.length} submissions..."
 pbar = ProgressBar.new("Parsing", ontologies_to_parse.length)
 ontologies_to_parse.each do |os|
+  next if os.ontology.acronym == "NCBITAXON"
   log_file = File.open("./parsing/parsing_#{os.ontology.acronym}.log", "w")
   logger = Logger.new(log_file)
   logger.level = Logger::DEBUG
