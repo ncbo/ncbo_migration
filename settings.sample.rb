@@ -32,3 +32,7 @@ require "ncbo_annotator"
 Annotator.config do |settings|
   settings.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
 end
+
+#for mappings we need sort to a folder with enough space for
+#intermediate files
+$TMP_SORT_FOLDER = File.join(repo,"tmp_sort")
