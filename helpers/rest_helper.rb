@@ -94,13 +94,19 @@ class RestHelper
   end
   
   def self.latest_ontology(virtual_id)
-    get_json_as_object(get_json("/virtual/ontology/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
+    get_json_as_object(get_json("/virtual/ontology/#{virtual_id}")[:success][:data][0][:ontologyBean])
   end
   
   def self.latest_ontology?(version_id)
     ont = ontology(version_id)
     latest = latest_ontology(ont.ontologyId)
     ont.id.to_i == latest.id.to_i
+  end
+  
+  def self.ontology_notes(virtual_id)
+    json = get_json("/virtual/notes/#{virtual_id}?threaded=true&archived=true")
+    json = json[:success][:data][0][:list][0].empty? ? [] : json[:success][:data][0][:list][0][:noteBean]
+    get_json_as_object(json)
   end
   
   def self.categories
