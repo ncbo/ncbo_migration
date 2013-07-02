@@ -70,6 +70,6 @@ mappings_to_process.each do |acr1,s1|
     end
     pairs_processed << [acr1,acr2].sort
   end
-  sub.clear
+  subp.clear
   puts "Finished #{acr1}: #{LinkedData::Models::Mapping.where.all.length} mappings in the system"
 end
