@@ -13,7 +13,7 @@ def create_reply(note, parent = nil)
   user = RestHelper.user(note[:author])
   
   reply = LinkedData::Models::Notes::Reply.new
-  reply.id = RDF::IRI.new("#{LinkedData::Models::Note.id_prefix.to_s}#{note[:id].sub('Note_', '')}")
+  reply.id = RDF::IRI.new("#{LinkedData::Models::Note.id_prefix.to_s}/#{note[:id].sub('Note_', '')}")
   reply.body = note[:body]
   reply.parent = parent if parent
   reply.creator = LinkedData::Models::User.find(user.username).first
@@ -77,11 +77,11 @@ def convert_note(note)
   ont = LinkedData::Models::Ontology.find(RestHelper.safe_acronym(RestHelper.latest_ontology(note.ontologyId).abbreviation)).first
   return if ont.nil?
   nn = LinkedData::Models::Note.new
-  nn.id = RDF::IRI.new("http://data.bioontology.org/notes/#{note.id.sub('Note_', '')}")
+  nn.id = RDF::IRI.new("#{LinkedData::Models::Note.id_prefix.to_s}#{note.id.sub('Note_', '')}")
   nn.creator = LinkedData::Models::User.find(user.username).first
   nn.created = DateTime.parse(Time.at((note.created || (Time.now.to_i * 1000)) / 1000).to_s)
-  nn.body = note.body.strip unless note.body.nil?
-  nn.subject = note.subject.strip unless note.subject.nil?
+  nn.body = note.body.strip
+  nn.subject = note.subject.strip
   nn.relatedOntology = [ont]
   nn.archived = note.archived
   nn.relatedClass
