@@ -7,6 +7,7 @@ require_relative 'users'
 require_relative 'categories'
 require_relative 'groups'
 require_relative 'ontologies'
+require_relative 'views'
 require_relative 'reviews'
 require_relative 'projects'
-
+require_relative 'notes'

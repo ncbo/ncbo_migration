@@ -45,7 +45,7 @@ end
 
 # Delete old data
 puts "Deleting old redis keys"
-termKeys = redis.keys("old_to_new:short_id_to_uri:*")
+termKeys = redis.keys("old_to_new:uri_from_short_id:*")
 chunks = (termKeys.length / 500_000.0).ceil
 curr_chunk = 1
 termKeys.each_slice(500_000) do |keys_chunk|
@@ -87,7 +87,7 @@ latest_submissions.each do |sub|
     redis.pipelined do
       class_page.each do |cls|
         short_id = shorten_uri(cls.id, sub.hasOntologyLanguage)
-        redis.set "old_to_new:short_id_to_uri:#{sub.ontology.acronym}:#{short_id}", cls.id
+        redis.set "old_to_new:uri_from_short_id:#{sub.ontology.acronym}:#{short_id}", cls.id
       end
     end
     
