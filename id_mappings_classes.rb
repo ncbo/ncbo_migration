@@ -45,7 +45,13 @@ end
 
 # Delete old data
 puts "Deleting old redis keys"
-termKeys = redis.keys("old_to_new:uri_from_short_id:*")
+if only_these_ontologies.empty?
+  termKeys = redis.keys("old_to_new:uri_from_short_id:*")
+else
+  # Get only keys for provided ontologies
+  termKeys = []
+  only_these_ontologies.each {|o| termKeys.concat!(redis.keys("old_to_new:uri_from_short_id:#{o}*"))}
+end
 chunks = (termKeys.length / 500_000.0).ceil
 curr_chunk = 1
 termKeys.each_slice(500_000) do |keys_chunk|
