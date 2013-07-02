@@ -84,7 +84,14 @@ def convert_note(note)
   nn.subject = note.subject.strip
   nn.relatedOntology = [ont]
   nn.archived = note.archived
-  nn.relatedClass
+
+  # Add class to note
+  if note.appliesToList.first && note.appliesToList.first[:appliesTo][:type].eql?("Class")
+    classId = note.appliesToList.first[:appliesTo][:id]
+    submisison = ont.latest_submission
+    relatedClass = LinkedData::Models::Class.find(classId).in(submission).first rescue nil
+    nn.relatedClass = relatedClass unless relatedClass.nil?
+  end
 
   # Needs all versions available
   # nn.createdInSubmission = note.createdInOntologyVersion
