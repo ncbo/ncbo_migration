@@ -80,17 +80,18 @@ def convert_note(note)
   nn.id = RDF::IRI.new("#{LinkedData::Models::Note.id_prefix.to_s}#{note.id.sub('Note_', '')}")
   nn.creator = LinkedData::Models::User.find(user.username).first
   nn.created = DateTime.parse(Time.at((note.created || (Time.now.to_i * 1000)) / 1000).to_s)
-  nn.body = note.body.strip
-  nn.subject = note.subject.strip
+  nn.body = note.body.strip if note.body
+  nn.subject = note.subject.strip if note.subject
   nn.relatedOntology = [ont]
   nn.archived = note.archived
 
   # Add class to note
   if note.appliesToList.first && note.appliesToList.first[:appliesTo][:type].eql?("Class")
     classId = note.appliesToList.first[:appliesTo][:id]
-    submisison = ont.latest_submission
+    ont.bring(:submissions)
+    submission = ont.latest_submission unless ont.submissions.empty?
     relatedClass = LinkedData::Models::Class.find(classId).in(submission).first rescue nil
-    nn.relatedClass = relatedClass unless relatedClass.nil?
+    nn.relatedClass = [relatedClass] unless relatedClass.nil?
   end
 
   # Needs all versions available
