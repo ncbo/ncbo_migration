@@ -18,21 +18,6 @@ rescue JSON::ParserError
   return false
 end
 
-# Create valid project parameters
-DEFAULT_PROJECT_PARAMS = {
-    :acronym => nil,            # required
-    :creator => nil,            # required, instance of user
-    :created => DateTime.new,   # required, auto-set with lambda
-    :updated => DateTime.new,   # required, auto-set with lambda
-    :name => nil,               # required
-    :description => nil,        # required
-    :homePage => nil,           # required, must be URI
-    :contacts => "",            # optional
-    :institution => "",         # optional
-    :ontologyUsed => [],        # optional, an array of LinkedData::Models::Ontology items
-}
-
-
 # utility functions to cleanup latin-1 strings in projects
 
 # Monkey patch String to remove problematic characters
@@ -58,6 +43,20 @@ end
 def string_clean2utf8(s)
   return s.strip_control_and_extended_characters.encode('UTF-8').strip
 end
+
+# Create valid project parameters
+DEFAULT_PROJECT_PARAMS = {
+    :acronym => nil,            # required
+    :creator => nil,            # required, instance of user
+    :created => DateTime.new,   # required, auto-set with lambda
+    :updated => DateTime.new,   # required, auto-set with lambda
+    :name => nil,               # required
+    :description => nil,        # required
+    :homePage => nil,           # required, must be URI
+    :contacts => "",            # optional
+    :institution => "",         # optional
+    :ontologyUsed => [],        # optional, an array of LinkedData::Models::Ontology items
+}
 
 def project2params(project)
   project_params = DEFAULT_PROJECT_PARAMS
