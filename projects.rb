@@ -75,16 +75,17 @@ end
 
 
 # Ensure we start with a clean slate.
-LinkedData::Models::Project.all.each do |m|
-    m.delete
+begin
+  LinkedData::Models::Project.all.each do |m|
+      m.delete
+  end
+  if LinkedData::Models::Project.all.empty?
+      puts "Cleared all prior projects from the triple store."
+  end
+rescue Exception => e
+  puts "\n\nFailed to clear all prior projects from the triple store!\n\n"
+  raise e
 end
-if LinkedData::Models::Project.all.empty?
-    puts "Cleared all prior projects from the triple store."
-else
-    puts "Failed to clear all prior projects from the triple store!"
-    exit(1)
-end
-
 
 ont_lookup = RestHelper.ontologies
 
