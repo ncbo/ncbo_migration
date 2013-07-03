@@ -19,7 +19,7 @@ rescue JSON::ParserError
 end
 
 # Create valid project parameters
-default_project_params = {
+DEFAULT_PROJECT_PARAMS = {
     :acronym => nil,            # required
     :creator => nil,            # required, instance of user
     :created => DateTime.new,   # required, auto-set with lambda
@@ -60,7 +60,7 @@ def string_clean2utf8(s)
 end
 
 def project2params(project)
-  project_params = default_project_params
+  project_params = DEFAULT_PROJECT_PARAMS
   project_params[:name] =  string_clean2utf8 project[:name]
   project_params[:contacts] = string_clean2utf8 project[:people]
   project_params[:created] = project[:created_at].to_datetime
