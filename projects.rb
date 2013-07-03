@@ -9,16 +9,13 @@ require 'pry'
 
 DEBUG = true
 
-
-# Ensure we start with a clean slate.
-LinkedData::Models::Project.all.each do |m|
-    m.delete
-end
-if LinkedData::Models::Project.all.empty?
-    puts "Cleared all prior projects from the triple store."
-else
-    puts "Failed to clear all prior projects from the triple store!"
-    exit(1)
+# A utility to verify that data can be parsed as json strings
+require 'json'
+def valid_json? json_
+  JSON.parse(json_)
+  return true
+rescue JSON::ParserError
+  return false
 end
 
 # Create valid project parameters
@@ -35,9 +32,69 @@ default_project_params = {
     :ontologyUsed => [],        # optional, an array of LinkedData::Models::Ontology items
 }
 
+
+# utility functions to cleanup latin-1 strings in projects
+
+# Monkey patch String to remove problematic characters
+class String
+  def strip_control_characters()
+    self.chars.inject("") do |str, char|
+      unless char.ascii_only? and (char.ord < 32 or char.ord == 127)
+        str << char
+      end
+      str
+    end
+  end
+  def strip_control_and_extended_characters()
+    self.chars.inject("") do |str, char|
+      if char.ascii_only? and char.ord.between?(32,126)
+        str << char
+      end
+      str
+    end
+  end
+end
+
+def string_clean2utf8(s)
+  return s.strip_control_and_extended_characters.encode('UTF-8').strip
+end
+
+def project2params(project)
+  project_params = default_project_params
+  project_params[:name] =  string_clean2utf8 project[:name]
+  project_params[:contacts] = string_clean2utf8 project[:people]
+  project_params[:created] = project[:created_at].to_datetime
+  project_params[:updated] = project[:updated_at].to_datetime
+  project_params[:description] = string_clean2utf8 project[:description]
+  project_params[:institution] = string_clean2utf8 project[:institution]
+  homePage = string_clean2utf8 project[:homepage]
+  homePage = 'http://' + homePage unless homePage.start_with?('http://')
+  project_params[:homePage] = RDF::IRI.new(homePage)
+  return project_params
+end
+
+
+# Ensure we start with a clean slate.
+LinkedData::Models::Project.all.each do |m|
+    m.delete
+end
+if LinkedData::Models::Project.all.empty?
+    puts "Cleared all prior projects from the triple store."
+else
+    puts "Failed to clear all prior projects from the triple store!"
+    exit(1)
+end
+
+
 ont_lookup = RestHelper.ontologies
 
-client = Mysql2::Client.new(host: ROR_DB_HOST, username: ROR_DB_USERNAME, password: ROR_DB_PASSWORD, database: "bioportal")
+client = Mysql2::Client.new(
+    host: ROR_DB_HOST,
+    username: ROR_DB_USERNAME,
+    password: ROR_DB_PASSWORD,
+    encoding: "latin1",
+    database: "bioportal")
+
 projects = client.query('SELECT * FROM projects ORDER BY name, updated_at DESC;')
 
 uses_query = "SELECT DISTINCT ontology_id FROM uses WHERE project_id = %project_id%;"
@@ -82,17 +139,8 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
     next
   end
 
-  project_params = default_project_params
-  project_params[:name] = project[:name].strip
+  project_params = project2params project
   project_params[:creator] = userLD
-  project_params[:contacts] = project[:people].strip
-  project_params[:created] = project[:created_at].to_datetime
-  project_params[:updated] = project[:updated_at].to_datetime
-  project_params[:description] = project[:description].strip
-  project_params[:institution] = project[:institution].strip
-  homePage = project[:homepage].strip
-  homePage = 'http://' + homePage unless homePage.start_with?('http://')
-  project_params[:homePage] = RDF::IRI.new(homePage)
 
   # Create a unique acronym for each project.
   # Hard code an acronym for 'Evidence Ontology' to avoid a conflict with 'Electrophysiology Ontology'
@@ -179,7 +227,6 @@ projects.each_with_index(:symbolize_keys => true) do |project, index|
 
   # Get the project ontologies.
   project_params[:ontologyUsed] = []
-  uses_ontologies = nil
   uses_ontologies = client.query(uses_query.gsub("%project_id%", project[:id].to_s))
   uses_ontologies.each do |use_ont|
 
