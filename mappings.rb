@@ -33,6 +33,7 @@ puts "Initial submission bulk #{submissions.length}"
 
 processes = [LinkedData::Mappings::CUI, 
              LinkedData::Mappings::SameURI,
+             LinkedData::Mappings::XREF,
              LinkedData::Mappings::Loom]
 
 mappings_to_process = {}
