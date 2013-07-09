@@ -45,12 +45,12 @@ eof
 PROC_QUERY = <<eof
 PREFIX map: <http://protege.stanford.edu/ontologies/mappings/mappings.rdfs#>
 SELECT * {
-  ?id map:date ?date;
-      map:mapping_source ?source ;
-      map:mapping_source_contact_info ?contact_info ;
-      map:mapping_source_name ?source_name ;
-      map:mapping_source_site ?site ;
-      map:submitted_by ?creator .
+  ?id map:submitted_by ?creator .
+  OPTIONAL { ?id map:mapping_source ?source . }
+  OPTIONAL { ?id map:mapping_source_contact_info ?contact_info . }
+  OPTIONAL { ?id map:mapping_source_name ?source_name . }
+  OPTIONAL { ?id map:mapping_source_site ?site . }
+  OPTIONAL { ?id map:date ?date }
  FILTER (?id = <#ID>)
 }
 eof
