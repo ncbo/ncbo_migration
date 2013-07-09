@@ -68,7 +68,7 @@ def proc_by_uri(id)
     p.source = sol[:source]
     p.source_contanct_info = sol[:contact_info]
     p.source_name = sol[:source_name]
-    p.date = sol[:date].object
+    p.date = sol[:date] ? sol[:date].object : nil
     p.valid?
     p.save
     return p
