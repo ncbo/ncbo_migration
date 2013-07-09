@@ -77,7 +77,12 @@ def proc_by_uri(id)
 end
 
 def ontology_acronym(ont_id)
-  return RestHelper.latest_ontology(ont_id.split("/")[-1].to_i).abbreviation
+  begin
+    return RestHelper.latest_ontology(ont_id.split("/")[-1].to_i).abbreviation
+  rescue OpenURI::HTTPError => e
+    #puts "ontology not found #{ont_id}"
+  end
+  nil
 end
 
 def goo_ontology_from_acronym(acronym)
