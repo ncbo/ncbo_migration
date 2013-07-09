@@ -141,14 +141,16 @@ mapping_ids.each do |mapping_id|
     source_term = sol_mapping[:source].to_s
     source_acr = ontology_acronym(source_ontology)
     source_ontology_object = goo_ontology_from_acronym(source_acr)
-    if source_ontology_object && target_ontology_object
-      termm_s = LinkedData::Mappings.create_term_mapping([target_term],target_acr)
-      termm_t = LinkedData::Mappings.create_term_mapping([source_term],source_acr)
-      proccess = proc_by_uri(process_id)
-      mapping_id = LinkedData::Mappings.create_mapping([termm_s, termm_t])
-      LinkedData::Mappings.connect_mapping_process(mapping_id, process)
-    else
-      binding.pry
+    if source_acr && target_acr
+      if source_ontology_object && target_ontology_object
+        termm_s = LinkedData::Mappings.create_term_mapping([RDF::URI.new(target_term)],target_acr)
+        termm_t = LinkedData::Mappings.create_term_mapping([RDF::URI.new(source_term)],source_acr)
+        process = proc_by_uri(process_id)
+        mapping_id = LinkedData::Mappings.create_mapping([termm_s, termm_t])
+        LinkedData::Mappings.connect_mapping_process(mapping_id, process)
+      else
+        binding.pry
+      end
     end
 
     transformed << mapping_id
