@@ -61,7 +61,6 @@ def proc_by_uri(id)
   p= LinkedData::Models::MappingProcess.new
   p.id = RDF::URI.new(id)
   if p.exist?
-    binding.pry
     return LinkedData::Models::MappingProcess.find(p.id).first
   end
   map_epr = SPARQL::Client.new(MAPPINGS_EPR)
