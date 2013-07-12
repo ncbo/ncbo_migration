@@ -74,3 +74,5 @@ mappings_to_process.each do |acr1,s1|
   subp.clear
   puts "Finished #{acr1}: #{LinkedData::Models::Mapping.where.all.length} mappings in the system"
 end
+
+puts "FINISHED SCRIPT"
