@@ -18,7 +18,7 @@ end
 
 FileUtils.mkdir_p("./logs")
 
-only_mappings = []
+#only_mappings = ["NCIT", "NCBITAXON"]
 
 puts "Loading submissions ..."
 attributes = LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]
@@ -31,10 +31,11 @@ submissions = LinkedData::Models::OntologySubmission
 
 puts "Initial submission bulk #{submissions.length}"
 
-processes = [LinkedData::Mappings::CUI, 
+processes = [LinkedData::Mappings::Loom,
+             LinkedData::Mappings::CUI, 
              LinkedData::Mappings::SameURI,
-             LinkedData::Mappings::XREF,
-             LinkedData::Mappings::Loom]
+             LinkedData::Mappings::XREF]
+
 
 mappings_to_process = {}
 submissions.each do |s|
@@ -50,13 +51,17 @@ end
 
 pairs_processed = Set.new
 logger = Logger.new("logs/mappings.log")
+logger = Logger.new(STDOUT)
 logger.info("start processing ontologies")
 count = 0
-mappings_to_process.each do |acr1,s1|
+acronyms_sorted = mappings_to_process.keys.sort
+acronyms_sorted.each do |acr1|
+  s1 = mappings_to_process[acr1]
   count += 1
   puts "#{count}/#{mappings_to_process.length} ontologies processed"
   subp = ProgressBar.new("[#{acr1}]",mappings_to_process.length)
-  mappings_to_process.each do |acr2,s2|
+  acronyms_sorted.each do |acr2|
+    s2 = mappings_to_process[acr2]
     subp.inc
     next if acr1 == acr2
     next if pairs_processed.include?([acr1,acr2].sort)
