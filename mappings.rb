@@ -18,6 +18,7 @@ end
 
 FileUtils.mkdir_p("./logs")
 
+only_mappings = []
 #only_mappings = ["NCIT", "NCBITAXON"]
 
 puts "Loading submissions ..."
