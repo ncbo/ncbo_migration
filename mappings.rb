@@ -52,7 +52,7 @@ end
 
 pairs_processed = Set.new
 logger = Logger.new("logs/mappings.log")
-logger = Logger.new(STDOUT)
+#logger = Logger.new(STDOUT)
 logger.info("start processing ontologies")
 count = 0
 acronyms_sorted = mappings_to_process.keys.sort
