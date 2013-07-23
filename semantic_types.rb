@@ -65,7 +65,8 @@ else
   ont_submision.uploadFilePath = uploadFilePath
   ont_submision.released = DateTime.now
   ont_submision.save
-  log_file = File.open("./parsing/parsing_#{sty_acr}.log", "w")
+  FileUtils.mkdir_p("./logs")
+  log_file = File.open("./logs/parsing_#{sty_acr}.log", "w")
   logger = Logger.new(log_file)
   logger.level = Logger::DEBUG
   ont_submision.process_submission(logger)
