@@ -31,9 +31,11 @@ acronyms_sorted.each do |acr|
   sub = metrics_to_process[acr]
   sub.bring_remaining
   if sub.metrics.nil?
+    t0 = Time.now
     puts "processing metrics for #{acr}"
     sub.process_metrics(logger)
     sub.save
+    puts "processed metrics for #{acr} in #{Time.now - t0} sec."
   end
   subp.inc
 end
