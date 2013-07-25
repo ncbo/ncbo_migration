@@ -55,7 +55,7 @@ ontologies_to_parse.each do |os|
   logger.level = Logger::DEBUG
 
   begin
-    os.process_submission(logger,index_search=false)
+    os.process_submission(logger,index_search=false,run_metrics=false)
   rescue Timeout::Error => timeout
     timeouts << "#{os.ontology.acronym}, #{os.submissionId}, #{timeout.backtrace.join("\n\t")}"
   rescue Exception => e
