@@ -13,8 +13,8 @@ sty_acr = "STY"
 submissionId = 1
 ontologyFile = "./umls_semantictypes.ttl"
 
-sty = LDModels::Ontology.find(sty_acr).first
-if sty
+sty = LDModels::Ontology.find(sty_acr).include(LDModels::Ontology.attributes).first
+if sty && sty.submissions.length > 0
   puts "Semantic Types already in the system - skipping parsing"
   ont_sub = sty.latest_submission 
   classes = LinkedData::Models::Class.in(ont_sub).include(:prefLabel)
@@ -38,16 +38,19 @@ else
             "User for STY not found - unable to parse STY ont."
   end
 
-  ont = LDModels::Ontology.new(
-            acronym: sty_acr, 
-            name: "Semantic Types Ontology", administeredBy: [user]).save
-  contact = LDModels::Contact.where(name: "bioportal",
-                            email: "support@bioontology.org")
-                                              .first
-  if contact.nil?
-    contact = LDModels::Contact.new(  
-                           name: "bioportal", 
-                           email: "support@bioontology.org").save 
+  ont = sty
+  if ont.nil?
+    ont = LDModels::Ontology.new(
+              acronym: sty_acr,
+              name: "Semantic Types Ontology", administeredBy: [user]).save
+    contact = LDModels::Contact.where(name: "bioportal",
+                              email: "support@bioontology.org")
+                                                .first
+    if contact.nil?
+      contact = LDModels::Contact.new(  
+                             name: "bioportal", 
+                             email: "support@bioontology.org").save 
+    end
   end
 
   ont_submision =  LDModels::OntologySubmission.new(
