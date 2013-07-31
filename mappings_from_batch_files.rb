@@ -1,3 +1,8 @@
+require_relative 'settings'
+
+require 'logger'
+require 'progressbar'
+
 puts "Loading submissions ..."
 
 BatchProcess = LinkedData::Mappings::BatchProcess
@@ -11,7 +16,7 @@ submissions = LinkedData::Models::OntologySubmission
 
 
 puts "Initial submission bulk #{submissions.length}"
-
+only_mappings = []
 mappings_to_process = {}
 submissions.each do |s|
   next if !only_mappings.empty? && only_mappings.index(s.ontology.acronym) == nil
@@ -36,7 +41,7 @@ acronyms_sorted = mappings_to_process.keys.sort
 subp = ProgressBar.new("Processing",mappings_to_process.length)
 acronyms_sorted.each do |acr|
     submission = mappings_to_process[acr]
-    batch_triples = File.join([BatchProcess.mappings_ontology_folder(submission.ont),
+    batch_triples = File.join([BatchProcess.mappings_ontology_folder(submission.ontology),
                                 "batch_triples.nq"])
     if File.exist?(batch_triples)
       begin
