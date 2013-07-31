@@ -14,6 +14,7 @@ if ENV["MAP_CLEAN"] && ENV["MAP_CLEAN"] == "true"
       :host => LinkedData.settings.redis_host,
       :port => LinkedData.settings.redis_port)
   mappings = redis.keys("mappings:*")
+  binding.pry
   mappings.each do |k|
     redis.del(k)
   end
@@ -60,8 +61,18 @@ logger = Logger.new("logs/mappings.log")
 logger.info("start processing ontologies")
 count = 0
 acronyms_sorted = mappings_to_process.keys.sort
+resume_after = "CBO"
 acronyms_sorted.each do |acr1|
   s1 = mappings_to_process[acr1]
+  if resume_after
+     if acr1 <= resume_after
+       count += 1
+       acronyms_sorted.each do |acr2|
+         pairs_processed << [acr1,acr2].sort
+       end
+       next
+     end
+  end
   count += 1
   puts "#{count}/#{mappings_to_process.length} ontologies processed"
   subp = ProgressBar.new("[#{acr1}]",mappings_to_process.length)
