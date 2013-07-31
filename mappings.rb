@@ -12,7 +12,8 @@ if ENV["MAP_CLEAN"] && ENV["MAP_CLEAN"] == "true"
   puts "Cleaning mapping cache ..."
   redis = Redis.new(
       :host => LinkedData.settings.redis_host,
-      :port => LinkedData.settings.redis_port)
+      :port => LinkedData.settings.redis_port,
+      :timeout => 50000)
   mappings = redis.keys("mappings:*")
   binding.pry
   mappings.each do |k|
