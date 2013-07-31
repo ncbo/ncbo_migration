@@ -5,15 +5,19 @@ require 'progressbar'
 
 #USE CAREFULLY
 if ENV["MAP_CLEAN"] && ENV["MAP_CLEAN"] == "true"
-  LinkedData::Models::MappingProcess.all.each do |p|
-    p.delete
+  puts "Cleaning mapping graphs ..."
+  Goo.sparql_data_client.delete_graph(LinkedData::Models::Mapping.type_uri)
+  Goo.sparql_data_client.delete_graph(LinkedData::Models::TermMapping.type_uri)
+  Goo.sparql_data_client.delete_graph(LinkedData::Models::MappingProcess.type_uri)
+  puts "Cleaning mapping cache ..."
+  redis = Redis.new(
+      :host => LinkedData.settings.redis_host,
+      :port => LinkedData.settings.redis_port)
+  mappings = redis.keys("mappings:*")
+  mappings.each do |k|
+    redis.del(k)
   end
-  LinkedData::Models::TermMapping.all.each do |map|
-    map.delete
-  end
-  LinkedData::Models::Mapping.all.each do |map|
-    map.delete
-  end
+  puts "Done cleaning"
 end
 
 FileUtils.mkdir_p("./logs")
