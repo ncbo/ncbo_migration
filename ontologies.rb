@@ -105,6 +105,7 @@ latest.dup.each do |ont|
   o.viewingRestriction = ont.viewingRestriction
   o.doNotUpdate        = ont.isManual == 1
   o.flat               = ont.isFlat == 1
+  o.summaryOnly        = ont.isMetadataOnly == 1
 
   # ACL
   o.acl = []

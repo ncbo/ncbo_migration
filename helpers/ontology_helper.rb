@@ -36,7 +36,6 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     os.released           = DateTime.parse(ont.dateReleased)
     os.description        = ont.description
     os.status             = ont.versionStatus
-    os.summaryOnly        = ont.isMetadataOnly == 1
     os.pullLocation       = RestHelper.new_iri(ont.downloadLocation)
     os.submissionStatus   = LinkedData::Models::SubmissionStatus.find("UPLOADED").first
     os.ontology           = o
@@ -72,7 +71,8 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     # Ontology file
     if skip_formats.include?(format) || !DOWNLOAD_FILES
-      os.summaryOnly = true
+      o.summaryOnly = true
+      o.save
       skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
     elsif !os.summaryOnly
       begin
