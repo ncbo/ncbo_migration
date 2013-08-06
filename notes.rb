@@ -47,6 +47,7 @@ def convert_proposal(note, new_note)
     proposal.classId = id unless id.nil?
     proposal.label = values[:preferredName]
     synonym = values[:synonyms].select {|s| !s.nil? && !s.eql?("")}
+    synonym.map! {|s| s[:string].to_s rescue nil}.compact!
     proposal.synonym = synonym unless synonym.empty?
     proposal.definition = [values[:definition]]
     proposal.parent = values[:parent].first[:string] if values[:parent].is_a?(Hash)
@@ -117,15 +118,19 @@ def convert_note(note)
 end
 
 # Delete existing
-puts "Deleting #{LinkedData::Models::Note.all.length} notes and their replies"
-LinkedData::Models::Note.all.each {|n| n.delete}
-LinkedData::Models::Notes::Reply.all.each {|r| r.delete}
+if only_these_ontologies.empty?
+  puts "Deleting #{LinkedData::Models::Note.all.length} notes and their replies"
+  LinkedData::Models::Note.all.each {|n| n.delete}
+  LinkedData::Models::Notes::Reply.all.each {|r| r.delete}
+end
 
 ontologies = RestHelper.ontologies
 puts "Number of ontologies to migrate: #{ontologies.length}"
 pbar = ProgressBar.new("Migrating", ontologies.length*2)
 ontologies.each_with_index do |ont, ind|
   next if !only_these_ontologies.empty? && !only_these_ontologies.include?(ont.abbreviation)
+  ont.bring(:notes).notes.each {|n| n.delete} if !only_these_ontologies.empty?
+
   begin
     notes = RestHelper.ontology_notes(ont.ontologyId)
   rescue OpenURI::HTTPError
