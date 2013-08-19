@@ -7,7 +7,7 @@ require 'progressbar'
 only_parse = []
 
 
-submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}, summaryOnly: false).include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]).to_a
+submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}).include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
 
 errors = []
 already_parsed_or_summary = []
@@ -19,7 +19,7 @@ if only_parse.empty?
   submissions.each do |os|
     pbar.inc
   
-    if os.submissionStatus.parsed? || os.summaryOnly
+    if os.submissionStatus.parsed? || os.ontology.summaryOnly
       already_parsed_or_summary << os.ontology.acronym
       next
     end
@@ -34,7 +34,7 @@ if only_parse.empty?
   end
 else
   only_parse.each do |o|
-    ont = LinkedData::Models::Ontology.find(o).include(submissions: [ontology: [:acronym] ]).first
+    ont = LinkedData::Models::Ontology.find(o).include(submissions: [ontology: [:acronym, :summaryOnly] ]).first
     sub = ont.submissions.first
     ontologies_to_parse << sub
   end
@@ -49,6 +49,8 @@ labels = []
 puts "", "Parsing #{ontologies_to_parse.length} submissions..."
 pbar = ProgressBar.new("Parsing", ontologies_to_parse.length)
 ontologies_to_parse.each do |os|
+  next if os.ontology.summaryOnly
+
   log_file = File.open("./parsing/parsing_#{os.ontology.acronym}.log", "w")
   logger = Logger.new(log_file)
   logger.level = Logger::DEBUG
@@ -67,6 +69,8 @@ ontologies_to_parse.each do |os|
 
   pbar.inc
 end
+
+puts "", "Already parsed or summary:", already_parsed_or_summary.join("\n")
 
 puts "", "Timeouts:", timeouts.join("\n")
 
