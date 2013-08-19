@@ -7,10 +7,6 @@ require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
 
-#only_migrate_ontologies = ['AAO', 'BRO', 'BTO', 'WBbt']
-# UMLS ONLY
-#only_migrate_ontologies = ['AIR', 'ICPC', 'ICD10']
-#only_migrate_ontologies = ['AIR', 'BRO', 'ICPC', 'ICD10']
 only_migrate_ontologies = []
 only_migrate_formats = []
 migrate_views = true
@@ -44,7 +40,12 @@ Kernel.const_defined?("DOWNLOAD_FILES") ? nil : DOWNLOAD_FILES = true
 Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = false
 
 # Hard-coded master files for ontologies that have zips with multiple files
-master_file = {"OCRe" => "OCRe.owl", "ICPS" => "PatientSafetyIncident.owl", "CTX" => "XCTontologyvtemp2.owl"}
+master_file = {
+  "OCRe" => "OCRe.owl",
+  "ICPS" => "PatientSafetyIncident.owl",
+  "CTX" => "XCTontologyvtemp2.owl",
+  "CBO" => "cbo.owl"
+}
 
 acronyms = Set.new
 names = Set.new
