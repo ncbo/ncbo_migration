@@ -2,6 +2,7 @@ REST_URL              = "http://rest.bioontology.org/bioportal"
 API_KEY               = ""
 DOWNLOAD_FILES        = true
 ALL_ONTOLOGY_VERSIONS = false
+PARSE_ONLY_LATEST     = true
 REPOSITORY_FOLDER     = "./repo"
 UMLS_DOWNLOAD_SITE    = "http://localhost/umls"
 # MySQL host for users.
