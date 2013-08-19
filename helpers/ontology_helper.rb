@@ -1,3 +1,6 @@
+# Parse all versions or only latest
+Kernel.const_defined?("PARSE_ONLY_LATEST") ? nil : PARSE_ONLY_LATEST = true
+
 def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
   begin
     acronym = virtual_to_acronym[ont.ontologyId]
@@ -6,7 +9,6 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
       return
     end
 
-    # Check to make sure Ontology is persistent, otherwise lookup again
     o = LinkedData::Models::Ontology.find(acronym).include(LinkedData::Models::Ontology.attributes(:all)).first
     return if o.nil?
 
@@ -42,6 +44,11 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     pbar.inc
 
+    # Check latest version, archive if it isn't latest
+    if PARSE_ONLY_LATEST && ont.id.to_i != RestHelper.latest_ontology(ont.ontologyId).to_i
+      os.submissionStatus = LinkedData::Models::SubmissionStatus.find("ARCHIVED").first
+    end
+    
     # Contact
     contact_name = ont.contactName || ont.contactEmail
     contact = LinkedData::Models::Contact.where(name: contact_name, email: ont.contactEmail) unless ont.contactEmail.nil?
@@ -74,7 +81,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
       o.summaryOnly = true
       o.save
       skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
-    elsif !os.summaryOnly
+    elsif !o.summaryOnly
       begin
         # Get file
         if os.pullLocation
@@ -90,7 +97,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
           else
             bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.to_s}"
             os.pullLocation = nil
-            os.summaryOnly = true
+            o.summaryOnly = true
           end
         else
           file, filename = RestHelper.ontology_file(ont.id)
@@ -101,7 +108,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
         bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation || ""}, #{e.message}"
       end
     end
-
+    
     begin
       if os.valid?
         os.save
