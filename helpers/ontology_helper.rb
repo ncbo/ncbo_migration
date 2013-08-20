@@ -9,11 +9,9 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
       return
     end
 
-    puts "Getting ontology... (#{Time.now.httpdate})"
     o = LinkedData::Models::Ontology.find(acronym).include(LinkedData::Models::Ontology.attributes(:all)).first
     return if o.nil?
 
-    puts "Assigning properties... (#{Time.now.httpdate})"
     # Submission
     os                    = LinkedData::Models::OntologySubmission.new
     os.submissionId       = ont.internalVersionNumber
@@ -46,13 +44,11 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     pbar.inc
 
-    puts "Check if latest... (#{Time.now.httpdate})"
     # Check latest version, archive if it isn't latest
     if PARSE_ONLY_LATEST && ont.id.to_i != RestHelper.latest_ontology(ont.ontologyId).to_i
       os.submissionStatus = LinkedData::Models::SubmissionStatus.find("ARCHIVED").first
     end
     
-    puts "Create contact info... (#{Time.now.httpdate})"
     # Contact
     contact_name = ont.contactName || ont.contactEmail
     contact = LinkedData::Models::Contact.where(name: contact_name, email: ont.contactEmail) unless ont.contactEmail.nil?
@@ -67,7 +63,6 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     end
     os.contact = [contact]
 
-    puts "Determining ont format... (#{Time.now.httpdate})"
     # Ont format
     format = format_mapping[ont.format]
     if format.nil? || format.empty?
@@ -78,11 +73,9 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     # UMLS ontologies get a special download location
     if format.eql?("UMLS")
-      puts "Set UMLS download location... (#{Time.now.httpdate})"
       os.pullLocation = RestHelper.new_iri("#{UMLS_DOWNLOAD_SITE}/#{acronym.upcase}.ttl")
     end
 
-    puts "Get ontology file... (#{Time.now.httpdate})"
     # Ontology file
     if skip_formats.include?(format) || !DOWNLOAD_FILES
       o.summaryOnly = true
@@ -118,16 +111,14 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     
     begin
       if os.valid?
-        puts "Saving... (#{Time.now.httpdate})"
         os.save
       elsif !os.exist?
-        puts "Storing errors... (#{Time.now.httpdate})"
         if (
-          os.errors[:uploadFilePath] and
-          os.errors[:uploadFilePath].kind_of?(Array) and
-          os.errors[:uploadFilePath].first.kind_of?(Hash) and
-          os.errors[:uploadFilePath].first[:message] and
-          os.errors[:uploadFilePath].first[:message].start_with?("Zip file detected")
+        os.errors[:uploadFilePath] and
+            os.errors[:uploadFilePath].kind_of?(Array) and
+            os.errors[:uploadFilePath].first.kind_of?(Hash) and
+            os.errors[:uploadFilePath].first[:message] and
+            os.errors[:uploadFilePath].first[:message].start_with?("Zip file detected")
         )
           # Problem with multiple files
           if master_file.key?(o.acronym)
@@ -147,8 +138,6 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     rescue Exception => e
       puts "Could not save ontology/view submission (error), #{ont.abbreviation}, #{ont.id}, #{os.errors || ""}, #{e.message}, \n  #{e.backtrace.join("\n  ")}"
     end
-
-    puts "Moving to next ontology... (#{Time.now.httpdate})"
 
     pbar.inc
   rescue Exception => e
