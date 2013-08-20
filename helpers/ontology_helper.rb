@@ -9,7 +9,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
       return
     end
 
-    o = LinkedData::Models::Ontology.find(acronym).include(LinkedData::Models::Ontology.attributes(:all)).first
+    o = LinkedData::Models::Ontology.find(acronym).include(:acronym, :summaryOnly).first
     return if o.nil?
 
     # Submission
@@ -78,6 +78,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     # Ontology file
     if skip_formats.include?(format) || !DOWNLOAD_FILES
+      o.bring_remaining
       o.summaryOnly = true
       o.save
       skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
