@@ -16,13 +16,15 @@ ROR_DB_PASSWORD       = ""
 GOO_HOST              = "localhost"
 GOO_PORT              = 9000
 SEARCH_SERVER_URL     = "http://ncbo-dev-app-02.stanford.edu:8080/solr/"
-ANNOTATOR_DICT_FILE   = "./test/dictionary.txt"
+ANNOTATOR_DICT_FILE   = "./dictionary.txt"
 REDIS_HOST            = "localhost"
 REDIS_PORT            = 6379
 
 ## DO NOT EDIT BELOW THIS LINE
 # Configure ontologieS_linked_data
 require "ontologies_linked_data"
+require "ncbo_annotator"
+
 repo = Kernel.const_defined?("REPOSITORY_FOLDER") ? REPOSITORY_FOLDER : "./repo"
 LinkedData.config do |config|
   config.repository_folder = repo
@@ -33,9 +35,9 @@ LinkedData.config do |config|
   config.redis_port = REDIS_PORT
 end
 
-require "ncbo_annotator"
 Annotator.config do |settings|
   settings.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
+  settings.stop_words_default_file = "./default_stop_words.txt"
 end
 
 #for mappings we need sort to a folder with enough space for
