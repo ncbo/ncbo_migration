@@ -7,6 +7,7 @@ require 'ncbo_annotator'
 
 
 annotator = Annotator::Models::NcboAnnotator.new
+ontologies_for_sw_challenge=["NCIT","GAZ","NCBITAXON","MESH","HUGO", "VANDF","GO","REXO","RCD", "MEDDRA", "OMIM", "FMA"]
 
 begin
   annotator.create_term_cache
