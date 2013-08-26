@@ -5,7 +5,6 @@ gem 'recursive-open-struct'
 gem 'progressbar'
 gem 'pry'
 gem 'rsolr'
-gem 'ncbo_annotator', :git => 'https://github.com/ncbo/ncbo_annotator.git'
 gem 'redis'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
@@ -16,4 +15,5 @@ else
   gem 'sparql-client', :git => 'https://github.com/ncbo/sparql-client.git'
   gem 'goo', :git => 'https://github.com/ncbo/goo.git'
   gem 'ontologies_linked_data', :git => 'https://github.com/ncbo/ontologies_linked_data.git'
+  gem 'ncbo_annotator', :git => 'https://github.com/ncbo/ncbo_annotator.git'
 end
