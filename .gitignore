@@ -15,3 +15,5 @@ Gemfile.local
 *.swp
 
 *.turtle
+
+dictionary.txt
