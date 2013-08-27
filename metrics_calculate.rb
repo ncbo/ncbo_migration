@@ -4,13 +4,13 @@ require 'logger'
 require 'progressbar'
 
 FileUtils.mkdir_p("./logs")
-logger = Logger.new("logs/metrics.log")
+logger = Logger.new("logs/metrics_calculate.log")
 
 
 puts "Loading submissions ..."
 attributes = LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]
 submissions = LinkedData::Models::OntologySubmission
-                                         .where(submissionStatus: {code: "RDF"}, 
+                                         .where(submissionStatus: {code: "RDF"},
                                                 summaryOnly: false)
                                          .include(attributes)
                                          .to_a
@@ -25,17 +25,17 @@ submissions.each do |s|
   end
 end
 
-subp = ProgressBar.new("Processing metrics",metrics_to_process.length)
+subp = ProgressBar.new("Calculating metrics",metrics_to_process.length)
 acronyms_sorted = metrics_to_process.keys.sort
 acronyms_sorted.each do |acr|
   sub = metrics_to_process[acr]
   sub.bring_remaining
   if sub.metrics.nil?
     t0 = Time.now
-    puts "processing metrics for #{acr}"
+    puts "calculating metrics for #{acr}"
     sub.process_metrics(logger)
     sub.save
-    puts "processed metrics for #{acr} in #{Time.now - t0} sec."
+    puts "calculated metrics for #{acr} in #{Time.now - t0} sec."
   end
   subp.inc
 end
