@@ -101,6 +101,10 @@ class RestHelper
     get_json_as_object(get_json("/ontologies/versions/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
   end
   
+  def self.ontology_metrics(version_id)
+    get_json_as_object(get_json("/ontologies/metrics/#{version_id}")[:success][:data][:ontologyMetricsBean])
+  end
+  
   def self.latest_ontology(virtual_id)
     get_json_as_object(get_json("/virtual/ontology/#{virtual_id}")[:success][:data][0][:ontologyBean])
   end
@@ -109,6 +113,13 @@ class RestHelper
     ont = ontology(version_id)
     latest = latest_ontology(ont.ontologyId)
     ont.id.to_i == latest.id.to_i
+  end
+  
+  def self.roots(version_id)
+    relations = get_json_as_object(get_json("/concepts/#{version_id}/root")[:success][:data][0][:classBean][:relations][0][:entry])
+    relations.each do |rel|
+      return rel.list if rel.string.eql?("SubClass")
+    end
   end
   
   def self.ontology_notes(virtual_id)
