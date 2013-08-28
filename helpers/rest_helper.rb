@@ -31,7 +31,7 @@ class RestHelper
     end
     json
   end
-  
+
   def self.get_json_as_object(json)
     if json.kind_of?(Array)
       return json.map {|e| RecursiveOpenStruct.new(e)}
@@ -40,24 +40,24 @@ class RestHelper
     end
     json
   end
-  
+
   def self.user(user_id)
     json = get_json("/users/#{user_id}")
     get_json_as_object(json[:success][:data][0][:userBean])
   end
-  
+
   def self.category(cat_id)
     self.categories.each {|cat| return cat if cat.id.to_i == cat_id.to_i}
   end
-  
+
   def self.group(group_id)
     self.groups.each {|grp| return grp if grp.id.to_i == group_id.to_i}
   end
-  
+
   def self.ontologies
     get_json_as_object(get_json("/ontologies")[:success][:data][0][:list][0][:ontologyBean])
   end
-  
+
   def self.views
     get_json_as_object(get_json("/views")[:success][:data][0][:list][0][:ontologyBean])
   end
@@ -96,65 +96,65 @@ class RestHelper
   def self.ontology(version_id)
     get_json_as_object(get_json("/ontologies/#{version_id}")[:success][:data][0][:list][0][:ontologyBean])
   end
-  
+
   def self.ontology_versions(virtual_id)
     get_json_as_object(get_json("/ontologies/versions/#{virtual_id}")[:success][:data][0][:list][0][:ontologyBean])
   end
-  
+
   def self.ontology_metrics(version_id)
-    get_json_as_object(get_json("/ontologies/metrics/#{version_id}")[:success][:data][:ontologyMetricsBean])
+    get_json_as_object(get_json("/ontologies/metrics/#{version_id}")[:success][:data][0][:ontologyMetricsBean])
   end
-  
+
   def self.latest_ontology(virtual_id)
     get_json_as_object(get_json("/virtual/ontology/#{virtual_id}")[:success][:data][0][:ontologyBean])
   end
-  
+
   def self.latest_ontology?(version_id)
     ont = ontology(version_id)
     latest = latest_ontology(ont.ontologyId)
     ont.id.to_i == latest.id.to_i
   end
-  
+
   def self.roots(version_id)
     relations = get_json_as_object(get_json("/concepts/#{version_id}/root")[:success][:data][0][:classBean][:relations][0][:entry])
     relations.each do |rel|
       return rel.list if rel.string.eql?("SubClass")
     end
   end
-  
+
   def self.ontology_notes(virtual_id)
     json = get_json("/virtual/notes/#{virtual_id}?threaded=true&archived=true")
     json = json[:success][:data][0][:list][0].empty? ? [] : json[:success][:data][0][:list][0][:noteBean]
     get_json_as_object(json)
   end
-  
+
   def self.categories
     get_json_as_object(get_json("/categories")[:success][:data][0][:list][0][:categoryBean])
   end
-  
+
   def self.groups
     get_json_as_object(get_json("/groups")[:success][:data][0][:list][0][:groupBean])
   end
-  
+
   def self.concept(ontology_id, concept_id)
     json = get_json("/concepts/#{ontology_id}?conceptid=#{CGI.escape(concept_id)}")
     get_json_as_object(json[:success][:data][0][:classBean])
   end
-  
+
   def self.ontology_file(ontology_id)
     file, filename = get_file("#{REST_URL}/ontologies/download/#{ontology_id}?apikey=#{API_KEY}")
-    
+
     matches = filename.match(/(.*?)_v.+?(?:\.([^.]*)$|$)/)
     filename = "#{matches[1]}.#{matches[2]}" unless matches.nil?
-    
+
     return file, filename
   end
-  
+
   def self.get_file(uri, limit = 10)
     raise ArgumentError, 'HTTP redirect too deep' if limit == 0
 
     uri = URI(uri) unless uri.kind_of?(URI)
-    
+
     if uri.kind_of?(URI::FTP)
       file, filename = get_file_ftp(uri)
     else
@@ -175,9 +175,9 @@ class RestHelper
             end
             return get_file(uri, limit - 1)
           end
-    
+
           raise Net::HTTPBadResponse.new("#{uri.request_uri}: #{res.code}") if res.code.to_i >= 400
-          
+
           file_size = res.read_header["content-length"].to_i
           begin
             filename = res.read_header["content-disposition"].match(/filename=\"(.*)\"/)[1] if filename.nil?
@@ -190,7 +190,7 @@ class RestHelper
             bar.inc(segment.size)
             file.write(segment)
           end
-          
+
           if res.header['Content-Encoding'].eql?('gzip')
             uncompressed_file = Tempfile.new("uncompressed-ont-rest-file")
             file.rewind
@@ -204,10 +204,10 @@ class RestHelper
       end
       file.close
     end
-    
+
     return file, filename
   end
-  
+
   def self.get_file_ftp(url)
     url = URI.parse(url) unless url.kind_of?(URI)
     ftp = Net::FTP.new(url.host, url.user, url.password)
@@ -225,16 +225,16 @@ class RestHelper
     tmp.close
     return tmp, filename
   end
-    
+
   def self.safe_acronym(acr)
     CGI.escape(acr.to_s.gsub(" ", "_"))
   end
-  
+
   def self.new_iri(iri)
     return nil if iri.nil?
     RDF::IRI.new(iri)
   end
-  
+
   def self.lookup_property_uri(ontology_id, property_id)
     property_id = property_id.to_s
     return nil if property_id.nil? || property_id.eql?("")
