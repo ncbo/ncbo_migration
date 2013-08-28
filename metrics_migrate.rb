@@ -103,7 +103,6 @@ acronyms_common.each do |acronym|
     puts warningStr if DEBUG
     next
   end
-  #sub.bring_remaining
 
 
   # Retrieve the old metrics and assign values to a new metrics model.
@@ -127,9 +126,12 @@ acronyms_common.each do |acronym|
   #m.submission = sub.id.to_s  # reverse property cannot be assigned
   m.id = sub.id + '/metrics'
   m.save if m.valid?
+  sub.bring_remaining
+  sub.metrics = m
+  sub.save if sub.valid?
 
   $stdout.write "INFO: #{ontStr} ..."
-  if not m.valid?
+  if not sub.valid?
     failures.push "FAILURE: #{ontStr}."
     #$stdout.write " OOPS: trying again, ontology #{ontStr} ..."
     #status = runMetrics(ont_old)  # returns 0 on failure, 1 on success
