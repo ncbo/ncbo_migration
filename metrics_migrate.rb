@@ -6,9 +6,11 @@ require_relative 'helpers/rest_helper'
 require 'logger'
 require 'progressbar'
 
+# TODO: Use logger.
 #FileUtils.mkdir_p("./logs")
 #logger = Logger.new("logs/metrics_migrate.log")
 
+DEBUG = true
 
 if ENV['BP_ENV'] == 'STAGE'
   REST_URL ||= 'http://stagerest.bioontology.org/bioportal'
@@ -37,9 +39,9 @@ onts_new_by_acronym = {}
 onts_new.each {|o| onts_new_by_acronym[o.acronym] = o}
 
 # Find all the common ontology acronyms (abbreviations)
-acronymsOld = onts_old.map {|o| o.abbreviation }.to_set
-acronymsNew = onts_new.map {|o| o.acronym }.to_set
-acronymsAll = acronymsOld.intersection acronymsNew
+acronyms_old = onts_old.map {|o| o.abbreviation }.to_set
+acronyms_new = onts_new.map {|o| o.acronym }.to_set
+acronyms_common = acronyms_old.intersection acronyms_new
 
 # TODO: Issue warning about any old ontologies that are not in the new system?
 #if ont_new.nil?
@@ -49,10 +51,13 @@ acronymsAll = acronymsOld.intersection acronymsNew
 #  next
 #end
 
-acronymsAll.each do |acronym|
+acronyms_common.each do |acronym|
 
   ont_old = onts_old_by_acronym[acronym]
   ont_new = onts_new_by_acronym[acronym]
+
+  # TODO: use progress bar.
+
 
   # TODO: iterate through versions (submissions).
   #if ALL_ONTOLOGY_VERSIONS
@@ -61,7 +66,7 @@ acronymsAll.each do |acronym|
 
   ontologyCount += 1
   ontStrData = [UI_URL, ont_old.ontologyId, ont_old.id, ont_old.internalVersionNumber, ont_old.abbreviation, ont_old.format]
-  ontStr = sprintf("%s/%d (version: %5d, submission: %5d), %s (format: %s)", *ontStrData)
+  ontStr = sprintf("%s/%d (version: %5d, submission: %3d), %s (format: %s)", *ontStrData)
   #if not ont_old.format.start_with?('OWL')
   #    warningStr = "WARNING: skipping ontology, format != OWL: #{ontStr}."
   #    warnings.push warningStr
@@ -101,34 +106,37 @@ acronymsAll.each do |acronym|
   #sub.bring_remaining
 
 
-  # TODO: Get the old ontology metrics.
-
-  # TODO: Assign the values into the new ontology metrics and save.
-
-
-  binding.pry
-  exit!
-
-
-
-
-
-
-  exit!
-
+  # Retrieve the old metrics and assign values to a new metrics model.
+  ont_old_metrics = RestHelper.ontology_metrics(ont_old.id)
   ontologyCountValid += 1
+  m = LinkedData::Models::Metric.new()
+  m.classes = ont_old_metrics.numberOfClasses
+  m.individuals = ont_old_metrics.numberOfIndividuals
+  m.properties = ont_old_metrics.numberOfProperties
+  m.maxDepth = ont_old_metrics.maximumDepth
+  m.maxChildCount = ont_old_metrics.maximumNumberOfSiblings
+  m.averageChildCount = ont_old_metrics.averageNumberOfSiblings
+  m.classesWithOneChild = ont_old_metrics.classesWithOneSubclass[0][:string].length
+  m.classesWithMoreThan25Children = ont_old_metrics.classesWithMoreThanXSubclasses.length
+  m.classesWithNoDefinition = ont_old_metrics.classesWithNoDocumentation.length
+  # Ignore these metrics properties
+  #ont_old_metrics.classesWithNoAuthor
+  #ont_old_metrics.classesWithMoreThanOnePropertyValue
+
+  # Assign the metrics to a submission version and save
+  #m.submission = sub.id.to_s  # reverse property cannot be assigned
+  m.id = sub.id + '/metrics'
+  m.save if m.valid?
+
   $stdout.write "INFO: #{ontStr} ..."
-  status = runMetrics(ont_old)  # returns 0 on failure, 1 on success
-  if status == 0
+  if not m.valid?
     failures.push "FAILURE: #{ontStr}."
     #$stdout.write " OOPS: trying again, ontology #{ontStr} ..."
     #status = runMetrics(ont_old)  # returns 0 on failure, 1 on success
+  else
+    metricsCount += 1
   end
-  metricsCount += status
-
 end
-
-
 
 
 puts
