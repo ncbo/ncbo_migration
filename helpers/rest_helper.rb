@@ -118,7 +118,7 @@ class RestHelper
   def self.roots(version_id)
     relations = get_json_as_object(get_json("/concepts/#{version_id}/root")[:success][:data][0][:classBean][:relations][0][:entry])
     relations.each do |rel|
-      return rel.list if rel.string.eql?("SubClass")
+      return rel.list[0][:classBean] if rel.string.eql?("SubClass")
     end
   end
 
