@@ -41,7 +41,7 @@ Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = f
 
 # Hard-coded master files for ontologies that have zips with multiple files
 master_file = {
-  "OCRe" => "OCRe.owl",
+  "OCRE" => "OCRe.owl",
   "ICPS" => "PatientSafetyIncident.owl",
   "CTX" => "XCTontologyvtemp2.owl",
   "CBO" => "cbo.owl"
