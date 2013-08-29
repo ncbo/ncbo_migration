@@ -62,7 +62,7 @@ else
   ont_submision.hasOntologyLanguage = umls
   ont_submision.ontology = ont
   ont_submision.submissionStatus = 
-        LDModels::SubmissionStatus.where(:code => "UPLOADED").first
+        [LDModels::SubmissionStatus.where(:code => "UPLOADED").first]
 
   uploadFilePath = LDModels::OntologySubmission.copy_file_repository(
                                       sty_acr,
