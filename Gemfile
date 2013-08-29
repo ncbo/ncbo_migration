@@ -16,4 +16,7 @@ else
   gem 'goo', :git => 'https://github.com/ncbo/goo.git'
   gem 'ontologies_linked_data', :git => 'https://github.com/ncbo/ontologies_linked_data.git'
   gem 'ncbo_annotator', :git => 'https://github.com/ncbo/ncbo_annotator.git'
+  # Use the linked data client with default PROD triple store access (only during dev)
+  #gem 'faraday-http-cache', :git => 'https://github.com/ncbo/faraday-http-cache.git'
+  #gem 'ontologies_api_client', :git => 'https://github.com/ncbo/ontologies_api_ruby_client.git'
 end
