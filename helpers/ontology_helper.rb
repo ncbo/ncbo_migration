@@ -46,7 +46,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     # Check latest version, archive if it isn't latest
     if PARSE_ONLY_LATEST && ont.id.to_i != RestHelper.latest_ontology(ont.ontologyId).to_i
-      [os.submissionStatus = LinkedData::Models::SubmissionStatus.find("ARCHIVED").first]
+      os.submissionStatus = [LinkedData::Models::SubmissionStatus.find("ARCHIVED").first]
     end
     
     # Contact
