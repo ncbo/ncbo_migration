@@ -99,7 +99,7 @@ latest.dup.each do |ont|
     missing_abbreviation << "#{ont.displayLabel}, #{ont.id}"
     next
   end
-  
+
   o                    = LinkedData::Models::Ontology.new
   o.acronym            = ont.abbreviation
   o.name               = ont.displayLabel
@@ -118,7 +118,7 @@ latest.dup.each do |ont|
       o.acl = [new_user] + o.acl
     end
   end
-  
+
   # Admins
   user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue []
   user_ids.each do |user_id|
@@ -135,7 +135,7 @@ latest.dup.each do |ont|
       o.administeredBy = [new_user] + o.administeredBy
     end
   end
-  
+
   # Groups
   o.group = []
   if !ont.groupIds.nil? && !ont.groupIds[0].eql?("")
@@ -149,7 +149,7 @@ latest.dup.each do |ont|
       o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first]
     end
   end
-  
+
   # Categories
   o.hasDomain = []
   if !ont.categoryIds.nil? && !ont.categoryIds[0].eql?("")
@@ -165,13 +165,13 @@ latest.dup.each do |ont|
       o.hasDomain = [category] + o.hasDomain
     end
   end
-  
+
   if o.valid?
     o.save
   elsif !o.exist?
     puts "Couldn't save #{o.acronym}, #{o.errors}"
   end
-  
+
   pbar.inc
 end
 
@@ -180,8 +180,7 @@ submissions = []
 if ALL_ONTOLOGY_VERSIONS
   latest.each do |ont|
     versions = RestHelper.ontology_versions(ont.ontologyId)
-    versions = versions.kind_of?(Array) ? versions : [versions]
-    submissions = submissions + versions
+    submissions += versions.kind_of?(Array) ? versions : [versions]
   end
 else
   submissions = latest
