@@ -19,7 +19,7 @@ if only_parse.empty?
   submissions.each do |os|
     pbar.inc
   
-    if os.submissionStatus.parsed? || os.ontology.summaryOnly
+    if os.submissionStatus.ready? || os.ontology.summaryOnly
       already_parsed_or_summary << os.ontology.acronym
       next
     end
