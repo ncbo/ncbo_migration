@@ -165,6 +165,7 @@ class RestHelper
       http_session.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http_session.use_ssl = (uri.scheme == 'https')
       http_session.start do |http|
+        http.read_timeout = 1800
         http.request_get(uri.request_uri, {"Accept-Encoding" => "gzip"}) do |res|
           if res.kind_of?(Net::HTTPRedirection)
             new_loc = res['location']
