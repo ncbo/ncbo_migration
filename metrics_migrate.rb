@@ -1,16 +1,14 @@
-#!/usr/bin/env ruby
-
 require_relative 'settings'
 require_relative 'helpers/rest_helper'
 
 require 'logger'
 require 'progressbar'
 
-# TODO: Use logger.
-#FileUtils.mkdir_p("./logs")
-#logger = Logger.new("logs/metrics_migrate.log")
-
-DEBUG = true
+# Create new (and remove old) logfile
+FileUtils.mkdir_p("./logs")
+file = File.open('./logs/metrics_migrate.log', File::WRONLY | File::APPEND | File::CREAT)
+logger = Logger.new(file)
+logger.level = Logger::DEBUG
 
 if ENV['BP_ENV'] == 'STAGE'
   REST_URL ||= 'http://stagerest.bioontology.org/bioportal'
@@ -25,10 +23,9 @@ end
 metricsCount = 0
 ontologyCount = 0
 ontologyCountValid = 0
-warnings = []
 failures = []
 
-def count_classes_with(classes, total_classes)
+def count_classes(classes, total_classes, ontStr)
   # Parse the classesWith{stuff} properties (it's a mess!)
   # Example data
   #classesWithNoDocumentation=[{:string=>"limitpassed:10881"}]
@@ -75,12 +72,17 @@ def count_classes_with(classes, total_classes)
       end
     end
   end
-  raise RangeError, 'Count is larger than total classes' unless count <= total_classes
+  raise RangeError, "Count is larger than total classes for #{ontStr}" unless count <= total_classes
   return count
 end
 
 # Get all the ontology metadata in the old REST API production system
-onts_old = RestHelper.ontologies
+begin
+  onts_old = RestHelper.ontologies
+rescue => e
+  logger.fatal e.message
+  raise e
+end
 onts_old_by_acronym = {}
 onts_old.each {|o| onts_old_by_acronym[o.abbreviation] = o}
 
@@ -93,79 +95,78 @@ onts_new.each {|o| onts_new_by_acronym[o.acronym] = o}
 acronyms_old = onts_old.map {|o| o.abbreviation }.to_set
 acronyms_new = onts_new.map {|o| o.acronym }.to_set
 acronyms_common = acronyms_old.intersection acronyms_new
+acronyms_missing = acronyms_old.difference acronyms_new
+logger.warn { "old-REST ontologies not in new-REST: #{acronyms_missing.to_a}" }
 
-# TODO: Issue warning about any old ontologies that are not in the new system?
-#if ont_new.nil?
-#  warningStr = "WARNING: skipping ontology, no match in new REST system: #{ontStr}."
-#  warnings.push warningStr
-#  puts warningStr if DEBUG
-#  next
-#end
+puts ""
+puts "Number of old-REST ontologies: #{acronyms_old.length}"
+puts "Number of new-REST ontologies: #{acronyms_new.length}"
+puts "Number of common ontologies: #{acronyms_common.length}"
+pbar = ProgressBar.new("Migrating", acronyms_common.length*2)
 
 acronyms_common.each do |acronym|
 
   ont_old = onts_old_by_acronym[acronym]
   ont_new = onts_new_by_acronym[acronym]
+  ont_new_submission_ids = ont_new.submissions.map {|s| s.submissionId }
 
-  # TODO: use progress bar.
-
-  ont_old_versions = RestHelper.ontology_versions(ont_old.ontologyId)
+  ont_old_versions = [ont_old]
+  begin
+    versions = RestHelper.ontology_versions(ont_old.ontologyId)
+    if versions.kind_of? Array                   # many versions
+      ont_old_versions.concat versions
+    elsif versions.kind_of? RecursiveOpenStruct  # one version
+      ont_old_versions.push versions
+    end
+  rescue Exception => e
+    puts 'ERROR: \n' + e.message
+  end
   ont_old_versions.each do |ont_ver|
 
     ontologyCount += 1
     ontStrData = [UI_URL, ont_ver.ontologyId, ont_ver.id, ont_ver.internalVersionNumber, ont_ver.abbreviation, ont_ver.format]
     ontStr = sprintf("%s/%d (version: %5d, submission: %3d), %s (format: %s)", *ontStrData)
     #if not ont_ver.format.start_with?('OWL')
-    #    warningStr = "WARNING: skipping ontology, format != OWL: #{ontStr}."
-    #    warnings.push warningStr
-    #    puts warningStr if DEBUG
+    #    logger.warn { "WARNING: skipping ontology, format != OWL: #{ontStr}." }
     #    next
     #end
     if ont_ver.isMetadataOnly == 1
       # metadata only ontologies also have statusId = 5.
-      warningStr = "WARNING: skipping ontology, metadata only: #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+      logger.warn { "WARNING: #{ontStr}; skipping ontology, metadata only." }
       next
     end
     if ont_ver.statusId != 3
-      warningStr = "WARNING: skipping ontology, statusId != 3 (#{ont_ver.statusId}): #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+      logger.warn { "WARNING: #{ontStr}; skipping ontology, statusId != 3 (#{ont_ver.statusId})." }
       next
     end
     # Retrieve this ontology version metrics and check they have been calculated.
-    ont_ver_metrics = RestHelper.ontology_metrics(ont_ver.id)
+    begin
+      ont_ver_metrics = RestHelper.ontology_metrics(ont_ver.id)
+    rescue => e
+      logger.error { "Failed to get ontology version metrics: #{e.message}"}
+      next
+    end
     if ont_ver_metrics.numberOfClasses.nil?
-      warningStr = "WARNING: skipping ontology version, no metrics in old REST system: #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+      logger.warn { "WARNING: #{ontStr}; skipping ontology version, no metrics in old REST system." }
       next
     end
     # Determine whether new REST API contains an ontology submission matching ont_ver.internalVersionNumber
-    ont_new_submissionIds = ont_new.submissions.map {|s| s.submissionId }
-    if not ont_new_submissionIds.include? ont_ver.internalVersionNumber
-      warningStr = "WARNING: skipping ontology, no submission match in new REST system: #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+    if not ont_new_submission_ids.include? ont_ver.internalVersionNumber
+      logger.warn { "WARNING: #{ontStr}; skipping ontology, no submission match in new REST system." }
       next
     end
     # Get the matching submission and determine whether it already has metrics available
-    subIndex = ont_new_submissionIds.index(ont_ver.internalVersionNumber)
+    subIndex = ont_new_submission_ids.index(ont_ver.internalVersionNumber)
     sub = ont_new.submissions[subIndex]
     if not sub.metrics.nil?
-      warningStr = "WARNING: skipping ontology, submission already has metrics in new REST system: #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+      logger.warn { "WARNING: #{ontStr}; skipping ontology, submission already has metrics in new REST system." }
       next
     end
     # Double check, try to find an orphaned metric object!
     metricId = sub.id + '/metrics'
     m = LinkedData::Models::Metric.find(metricId).first
     if not m.nil?
-      warningStr = "WARNING: skipping ontology, submission already has metrics in new REST system: #{ontStr}."
-      warnings.push warningStr
-      puts warningStr if DEBUG
+      logger.warn { "WARNING: #{ontStr}; skipping ontology, submission already has metrics in new REST system." }
       next
     else
       # Maybe delete this?
@@ -183,13 +184,19 @@ acronyms_common.each do |acronym|
     m.maxDepth = ont_ver_metrics.maximumDepth
     m.maxChildCount = ont_ver_metrics.maximumNumberOfSiblings
     m.averageChildCount = ont_ver_metrics.averageNumberOfSiblings
-    # Handle the classesWith{stuff} data, which can be various data structures.
-    # CHEBI example data: ont_ver_metrics.classesWithOneSubclass[0][:string].length
-    m.classesWithOneChild = count_classes_with( ont_ver_metrics.classesWithOneSubclass, m.classes )
-    # CHEBI example data: ont_ver_metrics.classesWithMoreThanXSubclasses[0][:entry].length
-    m.classesWithMoreThan25Children = count_classes_with( ont_ver_metrics.classesWithMoreThanXSubclasses, m.classes )
-    # CHEBI example data: ont_ver_metrics.classesWithNoDocumentation[0][:string].split(':').last.to_i
-    m.classesWithNoDefinition = count_classes_with( ont_ver_metrics.classesWithNoDocumentation, m.classes )
+    begin
+      # Handle the classesWith{stuff} data, which can be various data structures.
+      # CHEBI example data: ont_ver_metrics.classesWithOneSubclass[0][:string].length
+      m.classesWithOneChild = count_classes(ont_ver_metrics.classesWithOneSubclass, m.classes, ontStr)
+      # CHEBI example data: ont_ver_metrics.classesWithMoreThanXSubclasses[0][:entry].length
+      m.classesWithMoreThan25Children = count_classes(ont_ver_metrics.classesWithMoreThanXSubclasses, m.classes, ontStr)
+      # CHEBI example data: ont_ver_metrics.classesWithNoDocumentation[0][:string].split(':').last.to_i
+      m.classesWithNoDefinition = count_classes(ont_ver_metrics.classesWithNoDocumentation, m.classes, ontStr)
+    rescue Exception => e
+      # Don't save these metrics
+      logger.error { 'ERROR: ' + e.message }
+      next
+    end
     # Assign the metrics to a submission version and save
     #m.submission = sub.id.to_s  # reverse property cannot be assigned
     m.save if m.valid?
@@ -197,20 +204,22 @@ acronyms_common.each do |acronym|
     sub.metrics = m
     sub.save if sub.valid?
     if not sub.valid?
-      failures.push "FAILURE: #{ontStr}"
-      #$stdout.write " OOPS: trying again, ontology #{ontStr} ..."
-      #status = runMetrics(ont_ver)  # returns 0 on failure, 1 on success
+      msg = "FAILURE: #{ontStr}: #{sub.error}"
+      failures.push msg
+      logger.error { msg }
     else
-      $stdout.write "SUCCESS: #{ontStr}"
+      logger.info { "SUCCESS: #{ontStr}" }
       metricsCount += 1
     end
   end
+  pbar.inc
 end
+pbar.finish
 
 puts
-puts warnings if not DEBUG
 puts failures
 puts "\n\nINFO: total ontology count: #{ontologyCount}."
 puts "INFO: #{ontologyCountValid} candidate ontologies."
 puts "INFO: updated metrics for #{metricsCount} ontologies."
+puts "INFO: logged details are in #{file.path}"
 puts
