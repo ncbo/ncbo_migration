@@ -7,8 +7,7 @@ require 'progressbar'
 only_parse = []
 
 
-submissions = LinkedData::Models::OntologySubmission.where(submissionStatus: {code: "UPLOADED"}).include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
-
+submissions = LinkedData::Models::OntologySubmission.where.include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
 errors = []
 already_parsed_or_summary = []
 ontologies_to_parse = []
@@ -18,14 +17,13 @@ if only_parse.empty?
   pbar = ProgressBar.new("Searching", submissions.length)
   submissions.each do |os|
     pbar.inc
-  
-    if os.submissionStatus.parsed? || os.ontology.summaryOnly
+
+    if LinkedData::Models::SubmissionStatus.status_ready?(os.submissionStatus) || os.ontology.summaryOnly
       already_parsed_or_summary << os.ontology.acronym
       next
     end
   
     if !os.valid?
-      binding.pry
       errors << "#{os.ontology.acronym}, #{os.errors}"
       next
     end
@@ -34,12 +32,23 @@ if only_parse.empty?
   end
 else
   only_parse.each do |o|
-    ont = LinkedData::Models::Ontology.find(o).include(submissions: [ontology: [:acronym, :summaryOnly] ]).first
-    sub = ont.submissions.first
-    ontologies_to_parse << sub
+    submissions.each do |s|
+      if only_parse.include?(s.ontology.acronym)
+         ontologies_to_parse << s
+      end
+    end
   end
 end
 
+ontologies_to_parse_last = {}
+ontologies_to_parse.each do |sub|
+  next if sub.submissionStatus.map { |x| x.id.to_s.split("/")[-1] }.include?("ARCHIVED")
+  if ontologies_to_parse_last.include?(sub.ontology.id.to_s)
+    next if ontologies_to_parse_last[sub.ontology.id.to_s].submissionId > sub.submissionId
+  end
+  ontologies_to_parse_last[sub.ontology.id.to_s] = sub
+end
+ontologies_to_parse = ontologies_to_parse_last.values.sort_by { |x| x.ontology.acronym } 
 
 FileUtils.mkdir_p("./parsing")
 
