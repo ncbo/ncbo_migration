@@ -8,7 +8,6 @@ only_parse = []
 
 
 submissions = LinkedData::Models::OntologySubmission.where.include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
-
 errors = []
 already_parsed_or_summary = []
 ontologies_to_parse = []
@@ -33,9 +32,11 @@ if only_parse.empty?
   end
 else
   only_parse.each do |o|
-    ont = LinkedData::Models::Ontology.find(o).include(submissions: [ontology: [:acronym, :summaryOnly] ]).first
-    sub = ont.submissions.first
-    ontologies_to_parse << sub
+    submissions.each do |s|
+      if only_parse.include?(s.ontology.acronym)
+         ontologies_to_parse << s
+      end
+    end
   end
 end
 
