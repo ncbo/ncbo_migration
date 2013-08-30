@@ -40,7 +40,6 @@ else
 end
 
 ontologies_to_parse_last = {}
-binding.pry
 ontologies_to_parse.each do |sub|
   next if sub.submissionStatus.map { |x| x.id.to_s.split("/")[-1] }.include?("ARCHIVED")
   if ontologies_to_parse_last.include?(sub.ontology.id.to_s)
