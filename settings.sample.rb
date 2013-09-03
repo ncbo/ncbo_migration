@@ -9,6 +9,10 @@ UMLS_DOWNLOAD_SITE    = "http://localhost/umls"
 USERS_DB_HOST         = ""
 USERS_DB_USERNAME     = ""
 USERS_DB_PASSWORD     = ""
+# MySQL host for OBS concept table.
+OBS_DB_HOST           = ""
+OBS_DB_USERNAME       = ""
+OBS_DB_PASSWORD       = ""
 # MySQL host for projects and reviews.
 ROR_DB_HOST           = ""
 ROR_DB_USERNAME       = ""
