@@ -1,4 +1,4 @@
-require_relative 'helpers/rest_helper'
+require_relative '../helpers/rest_helper'
 
 DEFAULT_PREFIX = "http://bioportal.bioontology.org/metadata/def/"
 OMV_PREFIX = "http://omv.ontoware.org/2005/05/ontology#"

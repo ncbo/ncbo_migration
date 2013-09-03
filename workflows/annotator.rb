@@ -1,4 +1,4 @@
-require_relative 'settings'
+require_relative '../settings'
 
 require 'logger'
 require 'progressbar'
