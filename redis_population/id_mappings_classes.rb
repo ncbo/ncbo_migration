@@ -14,11 +14,13 @@ end
 
 redis = Redis.new(host: LinkedData.settings.redis_host, port: LinkedData.settings.redis_port, timeout: 60)
 
+KEY_STORAGE = "old:classes:keys"
+
 # Delete old keys
-keys = redis.smembers("old:classes:keys")
+keys = redis.smembers(KEY_STORAGE)
 puts "Deleting #{keys.length} class mapping entries"
 keys.each_slice(500_000) {|chunk| redis.del chunk}
-redis.del "old:classes:keys"
+redis.del KEY_STORAGE
 
 line_count = %x{wc -l #{tsv_path}}.split.first.to_i
 puts "Starting redis store for #{line_count} classes"
@@ -71,8 +73,8 @@ num_threads.times do |i|
           redis.lpush hashed_uri, short_id_key
 
           # Store keys in a set for delete
-          redis.sadd "old:classes:keys", short_id_key
-          redis.sadd "old:classes:keys", hashed_uri
+          redis.sadd KEY_STORAGE, short_id_key
+          redis.sadd KEY_STORAGE, hashed_uri
 
           count += 1
         end
