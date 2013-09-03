@@ -11,7 +11,7 @@ LDModels =LinkedData::Models
 
 sty_acr = "STY"
 submissionId = 1
-ontologyFile = "./umls_semantictypes.ttl"
+ontologyFile = "./data/umls_semantictypes.ttl"
 
 sty = LDModels::Ontology.find(sty_acr).include(LDModels::Ontology.attributes).first
 sty.bring(:submissions) if sty

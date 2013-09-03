@@ -41,7 +41,7 @@ end
 
 Annotator.config do |settings|
   settings.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
-  settings.stop_words_default_file = "./default_stop_words.txt"
+  settings.stop_words_default_file = "./data/default_stop_words.txt"
 end
 
 #for mappings we need sort to a folder with enough space for
