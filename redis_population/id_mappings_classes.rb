@@ -1,4 +1,4 @@
-require_relative 'settings'
+require_relative '../settings'
 
 require 'pry'
 require 'redis'
@@ -53,6 +53,7 @@ end
 # Wait for completion
 threads.each {|t| t.join}
 puts "Parsing took #{Time.now - parse_data}s"
+line_chunks = nil # free up some memory?
 
 # Store to redis
 threads = []

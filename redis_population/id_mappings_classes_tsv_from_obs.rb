@@ -2,8 +2,8 @@ require 'mysql2'
 require 'ontologies_linked_data'
 require 'progressbar'
 
-require_relative 'settings'
-require_relative 'helpers/rest_helper'
+require_relative '../settings'
+require_relative '../helpers/rest_helper'
 
 client = Mysql2::Client.new(host: OBS_DB_HOST, username: OBS_DB_USERNAME, password: OBS_DB_PASSWORD, database: "obs_hibernate")
 
