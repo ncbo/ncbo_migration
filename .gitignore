@@ -17,3 +17,5 @@ Gemfile.local
 *.turtle
 
 dictionary.txt
+
+redis_population/id_mappings_classes.tsv
