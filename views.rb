@@ -34,7 +34,9 @@ duplicates = []
 skipped = []
 bad_urls = []
 no_contacts = []
-master_file = {}
+master_file = {
+    "HSDB_OCRe" => "HSDB_OCRe.owl"
+}
 zip_multiple_files = []
 
 # get all views across the old system
