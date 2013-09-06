@@ -6,6 +6,7 @@ gem 'progressbar'
 gem 'pry'
 gem 'rsolr'
 gem 'redis'
+gem 'ncbo_resolver', git: "https://github.com/ncbo/ncbo_resolver.git"
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
 gemfile_local = File.expand_path("../Gemfile.local", __FILE__)
