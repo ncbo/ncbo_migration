@@ -1,6 +1,12 @@
 require_relative 'settings'
 require_relative 'helpers/rest_helper'
+require 'ncbo_resolver'
 
+resolver_options = {
+  redis_host: LinkedData.settings.redis_host,
+  redis_port: LinkedData.settings.redis_port
+}
+NCBO::Resolver.configure(resolver_options)
 
 def save_list(old_lst, new_lst)
   old_lst.each do |val|
@@ -65,7 +71,7 @@ provClasses.each do |opc|
             old_ontology = RestHelper.latest_ontology(old_ontology_ids[0])
 
             if old_ontology
-              uri = RestHelper.uri_from_short_id(old_ontology.id, uri)
+              uri = NCBO::Resolver::Classes.uri_from_short_id(old_ontology.abbreviation, uri)
             end
           else
             uri = nil
