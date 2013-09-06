@@ -22,12 +22,12 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     #
     #
     ##
-    os.prefLabelProperty  = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.preferredNameSlot))
-    os.definitionProperty = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.documentationSlot))
-    os.synonymProperty    = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.synonymSlot))
-    os.authorProperty     = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.authorSlot))
-    os.obsoleteProperty   = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.obsoleteProperty))
-    os.obsoleteParent     = RestHelper.new_iri(RestHelper.lookup_property_uri(ont.id, ont.obsoleteParent))
+    os.prefLabelProperty  = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.preferredNameSlot))
+    os.definitionProperty = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.documentationSlot))
+    os.synonymProperty    = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.synonymSlot))
+    os.authorProperty     = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.authorSlot))
+    os.obsoleteProperty   = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.obsoleteProperty))
+    os.obsoleteParent     = RestHelper.new_iri(RestHelper.property_uri(ont.id, ont.obsoleteParent))
     os.homepage           = ont.homepage
     os.publication        = ont.publication.eql?("") ? nil : ont.publication
     os.documentation      = ont.documentation.eql?("") ? nil : ont.documentation
