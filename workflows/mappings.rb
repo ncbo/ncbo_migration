@@ -30,8 +30,7 @@ only_mappings = []
 puts "Loading submissions ..."
 attributes = LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]
 submissions = LinkedData::Models::OntologySubmission
-                                         .where(submissionStatus: {code: "RDF"}, 
-                                                summaryOnly: false)
+                                         .where(submissionStatus: {code: "RDF"})
                                          .include(attributes)
                                          .to_a
 

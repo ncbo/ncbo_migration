@@ -10,8 +10,7 @@ logger = Logger.new("logs/metrics_calculate.log")
 puts "Loading submissions ..."
 attributes = LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]
 submissions = LinkedData::Models::OntologySubmission
-                                         .where(submissionStatus: {code: "RDF"},
-                                                summaryOnly: false)
+                                         .where(submissionStatus: {code: "RDF"})
                                          .include(attributes)
                                          .to_a
 metrics_to_process = {}
