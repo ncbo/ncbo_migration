@@ -8,7 +8,9 @@ only_parse = []
 
 #list of ontologies that for some reason
 #ELK fails to parse
-disable_reasoning_for = ["DCO", "NCBITaxonOWL", "NCBITAXON", "NIFSTD"]
+disable_reasoning_for = ["DCO", "NCBITaxonOWL", "NCBITAXON", "NIFSTD",
+                         "BCGO","BOF","BdOK","FHHO","OBOE-SBC","OBOE-SBC",
+                        "OMIT"] 
 
 submissions = LinkedData::Models::OntologySubmission.where.include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
 errors = []
