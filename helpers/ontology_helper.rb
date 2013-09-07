@@ -45,7 +45,8 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     pbar.inc
 
     # Check latest version, archive if it isn't latest
-    if PARSE_ONLY_LATEST && ont.id.to_i != RestHelper.latest_ontology(ont.ontologyId).id.to_i
+    latest = (ont.id.to_i == RestHelper.latest_ontology(ont.ontologyId).id.to_i)
+    if PARSE_ONLY_LATEST && !latest 
       os.submissionStatus = [LinkedData::Models::SubmissionStatus.find("ARCHIVED").first]
     end
     
@@ -84,6 +85,11 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
       skipped << "#{ont.abbreviation}, #{ont.id}, #{ont.format}"
     elsif !o.summaryOnly
       begin
+        # If this is not the latest version, get the file from BP
+        unless latest
+          os.pullLocation = RDF::IRI.new("#{REST_URL}/ontologies/download/#{ont.id}?apikey=#{API_KEY}")
+        end
+
         # Get file
         if os.pullLocation
           if os.remote_file_exists?(os.pullLocation.to_s)
