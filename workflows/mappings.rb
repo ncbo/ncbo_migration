@@ -25,7 +25,6 @@ end
 FileUtils.mkdir_p("./logs")
 
 only_mappings = []
-#only_mappings = ["NCIT", "NCBITAXON"]
 
 puts "Loading submissions ..."
 attributes = LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym]]
@@ -61,7 +60,7 @@ logger = Logger.new("logs/mappings.log")
 logger.info("start processing ontologies")
 count = 0
 acronyms_sorted = mappings_to_process.keys.sort
-resume_after = "CBO"
+resume_after = nil
 acronyms_sorted.each do |acr1|
   s1 = mappings_to_process[acr1]
   if resume_after
