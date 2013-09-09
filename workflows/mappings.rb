@@ -86,7 +86,14 @@ acronyms_sorted.each do |acr1|
       end
       logger.info("Running #{mapping_proc.name}: [#{acr1}] -- [#{acr2}] ...")
       t0 = Time.now
-      mapping_proc.new(s1.ontology,s2.ontology,logger).start()
+      command_call = "bundle exec ruby workflows/mappings_pair.rb #{acr1} #{acr2} #{mapping_proc.name}"
+      stdout,stderr,status = Open3.capture3(command_call)
+      logger.info(stdou)
+      logger.info(stderr)
+      if not status.success?
+        puts "error running `#{command_call}`"
+      end
+      #mapping_proc.new(s1.ontology,s2.ontology,logger).start()
       logger.info("COMPLETED #{mapping_proc.name}: [#{acr1}] -- [#{acr2}] in #{Time.now - t0} sec.")
     end
     pairs_processed << [acr1,acr2].sort
