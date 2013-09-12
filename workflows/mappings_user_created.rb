@@ -1,8 +1,8 @@
-require_relative 'settings'
+require_relative '../settings'
 
 require 'logger'
 require 'progressbar'
-require_relative './helpers/rest_helper'
+require_relative '../helpers/rest_helper'
 
 FileUtils.mkdir_p("./logs")
 
