@@ -33,9 +33,17 @@ acronyms_sorted.each do |acr|
   if sub.metrics.nil?
     t0 = Time.now
     puts "calculating metrics for #{acr}"
-    sub.process_metrics(logger)
-    sub.add_submission_status(metrics_status)
-    sub.save
+    begin
+      sub.process_metrics(logger)
+      sub.add_submission_status(metrics_status)
+      sub.save
+    rescue => e
+      puts "error in metrics for #{acr}"
+      puts e
+      if !sub.valid?
+        puts sub.errors
+      end
+    end
     puts "calculated metrics for #{acr} in #{Time.now - t0} sec."
   end
   subp.inc
