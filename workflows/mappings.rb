@@ -88,7 +88,7 @@ acronyms_sorted.each do |acr1|
       t0 = Time.now
       command_call = "bundle exec ruby workflows/mappings_pair.rb #{acr1} #{acr2} #{mapping_proc.name}"
       stdout,stderr,status = Open3.capture3(command_call)
-      logger.info(stdou)
+      logger.info(stdout)
       logger.info(stderr)
       if not status.success?
         puts "error running `#{command_call}`"

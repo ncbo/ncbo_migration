@@ -1,8 +1,8 @@
-require_relative 'settings'
+require_relative '../settings'
 
 require 'logger'
 require 'progressbar'
-require_relative './helpers/rest_helper'
+require_relative '../helpers/rest_helper'
 
 FileUtils.mkdir_p("./logs")
 
@@ -55,7 +55,7 @@ SELECT * {
 }
 eof
 
-def proc_by_uri(id)
+def proc_by_uri(id,batch)
   q= PROC_QUERY.dup
   q["#ID"] = id
   p= LinkedData::Models::MappingProcess.new
@@ -66,14 +66,13 @@ def proc_by_uri(id)
   map_epr = SPARQL::Client.new(MAPPINGS_EPR)
   map_epr.query(q).each do |sol|
     p.source = sol[:source]
-    p.source_contanct_info = sol[:contact_info]
+    p.source_contact_info = sol[:contact_info]
     p.source_name = sol[:source_name]
     p.date = sol[:date] ? sol[:date].object : nil
     p.valid?
-    p.save
+    p.save(batch: batch)
     return p
   end
-  binding.pry
 end
 
 def ontology_acronym(ont_id)
@@ -95,14 +94,14 @@ LinkedData::Models::Ontology.all.each do |ont|
   break
   prog.inc
   begin
-    sub = ont.latest_submission
+    sub = ont.latest_submission status: :RDF
     ontologies[ont.id.to_s] = sub if sub
   rescue => e
     puts "Error retrieving latest for #{ont.id.to_s}"
   end
 end
 prog.clear
-puts "#{ontologies.length} parsed submissions in the system."
+#puts "#{ontologies.length} parsed submissions in the system."
 
 transformed = Set.new
 count_uni = 0
@@ -113,6 +112,7 @@ map_epr.query(MAPPING_IDS).each do |sol|
   mapping_ids << mapping_id
 end
 prog = ProgressBar.new("Processing",mapping_ids.length)
+batch_triples = File.open("./user_mappings.nt","w")
 mapping_ids.each do |mapping_id|
   prog.inc
   mapping_query = MAPPING_DATA.dup
@@ -143,13 +143,15 @@ mapping_ids.each do |mapping_id|
     source_ontology_object = goo_ontology_from_acronym(source_acr)
     if source_acr && target_acr
       if source_ontology_object && target_ontology_object
-        termm_s = LinkedData::Mappings.create_term_mapping([RDF::URI.new(target_term)],target_acr)
-        termm_t = LinkedData::Mappings.create_term_mapping([RDF::URI.new(source_term)],source_acr)
-        process = proc_by_uri(process_id)
-        mapping_id = LinkedData::Mappings.create_mapping([termm_s, termm_t])
-        LinkedData::Mappings.connect_mapping_process(mapping_id, process)
+        termm_s = LinkedData::Mappings.create_term_mapping([RDF::URI.new(target_term)],
+                                                           target_acr,nil,batch_update_file=batch_triples)
+        termm_t = LinkedData::Mappings.create_term_mapping([RDF::URI.new(source_term)],
+                                                           source_acr,nil,batch_update_file=batch_triples)
+        process = proc_by_uri(process_id,batch_triples)
+        mapping_id = LinkedData::Mappings.create_mapping([termm_s, termm_t],batch_update_file=batch_triples)
+        LinkedData::Mappings.connect_mapping_process(mapping_id, process,batch_update_file=batch_triples)
       else
-        binding.pry
+        puts "could not create #{mapping_id}"
       end
     end
 
@@ -158,4 +160,11 @@ mapping_ids.each do |mapping_id|
   end
   binding.pry unless found
 end
-binding.pry
+batch_triples.close
+mapping_graphs = [LinkedData::Models::TermMapping.type_uri,
+                 LinkedData::Models::Mapping.type_uri,
+                 LinkedData::Models::MappingProcess.type_uri]
+if File.size("./user_mappings.nt") > 0
+  Goo.sparql_data_client.append_triples_from_file(
+                mapping_graphs, "./user_mappings.nt", "text/x-nquads")
+end
