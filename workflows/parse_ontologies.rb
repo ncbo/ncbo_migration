@@ -71,7 +71,10 @@ ontologies_to_parse.each do |os|
 
   begin
     reasoning = !disable_reasoning_for.include?(os.ontology.acronym)
-    os.process_submission(logger,process_rdf=true,index_search=false,run_metrics=false,reasoning=reasoning)
+    os.process_submission(logger,
+                          process_rdf: true, index_search: false,
+                          run_metrics: false, process_annotator: false,
+                          reasoning: reasoning)
   rescue Timeout::Error => timeout
     timeouts << "#{os.ontology.acronym}, #{os.submissionId}, #{timeout.backtrace.join("\n\t")}"
   rescue Exception => e

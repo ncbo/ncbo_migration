@@ -15,8 +15,10 @@ logger.info("Began indexing all ontologies...")
 time = Benchmark.realtime do
   submissions.each do |s|
     begin
-      s.index logger, false
-      s.process_submission(logger, process_rdf=false, index_search=true, run_metrics=false, reasoning=false)
+      s.process_submission(logger,
+                           process_rdf: false, index_search: true,
+                           run_metrics: false, process_annotator: false,
+                           reasoning: false)
     rescue Exception => e
       logger.error e
     end

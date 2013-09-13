@@ -75,7 +75,10 @@ else
   log_file = File.open("./logs/parsing_#{sty_acr}.log", "w")
   logger = Logger.new(log_file)
   logger.level = Logger::DEBUG
-  ont_submision.process_submission(logger)
+  ont_submision.process_submission(logger,
+                                   process_rdf: true, index_search: true,
+                                   run_metrics: true, process_annotator: true,
+                                   reasoning: true)
   classes = LinkedData::Models::Class.in(ont_submision)
                     .include(:prefLabel)
                     .read_only.to_a
