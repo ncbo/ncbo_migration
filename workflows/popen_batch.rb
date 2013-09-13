@@ -9,7 +9,7 @@ command_file = ARGV[0]
 logger = Logger.new(ARGV[1])
 
 commands = []
-File.open(commands_file,"r").each_line do |command|
+File.open(command_file,"r").each_line do |command|
   commands << command
 end
 progress = ProgressBar.new("running commands ",commands.length)

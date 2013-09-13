@@ -79,7 +79,10 @@ acronyms_sorted.each do |acr1|
     s2 = mappings_to_process[acr2]
     subp.inc
     next if acr1 == acr2
-    next if pairs_processed.include?([acr1,acr2].sort)
+    if pairs_processed.include?([acr1,acr2].sort)
+      binding.pry
+      next
+    end
     processes.each do |mapping_proc|
       if mapping_proc == LinkedData::Mappings::CUI
         next unless s1.hasOntologyLanguage.umls? && s2.hasOntologyLanguage.umls?
