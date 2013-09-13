@@ -80,7 +80,6 @@ acronyms_sorted.each do |acr1|
     subp.inc
     next if acr1 == acr2
     if pairs_processed.include?([acr1,acr2].sort)
-      binding.pry
       next
     end
     processes.each do |mapping_proc|

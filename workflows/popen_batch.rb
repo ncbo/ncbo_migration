@@ -20,6 +20,6 @@ commands.each do |cmd|
   if not status.success?
     puts "error running `#{cmd}`"
   end
-  progressbar.inc
+  progress.inc
 end
 logger.close
