@@ -73,7 +73,7 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     end
 
     # UMLS ontologies get a special download location
-    if format.eql?("UMLS")
+    if format.eql?("UMLS") && latest
       os.pullLocation = RestHelper.new_iri("#{UMLS_DOWNLOAD_SITE}/#{acronym.upcase}.ttl")
     end
 
