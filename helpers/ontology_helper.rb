@@ -91,20 +91,13 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
         end
 
         # Get file
-        if os.pullLocation
-          if os.remote_file_exists?(os.pullLocation.to_s)
-            # os.download_and_store_ontology_file
-            file, filename = RestHelper.get_file(os.pullLocation.to_s)
-            file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
-            os.uploadFilePath = File.expand_path(file_location, __FILE__)
-            if format.eql?("UMLS")
-              semantic_types = open("#{UMLS_DOWNLOAD_SITE}/umls_semantictypes.ttl") rescue File.new
-              File.open(os.uploadFilePath.to_s, 'a+') {|f| f.write(semantic_types.read) }
-            end
-          else
-            bad_urls << "#{o.acronym}, #{ont.id}, #{os.pullLocation.to_s}"
-            os.pullLocation = nil
-            o.summaryOnly = true
+        if os.pullLocation && os.remote_file_exists?(os.pullLocation.to_s)
+          file, filename = RestHelper.get_file(os.pullLocation.to_s)
+          file_location = os.class.copy_file_repository(o.acronym, os.submissionId, file, filename)
+          os.uploadFilePath = File.expand_path(file_location, __FILE__)
+          if format.eql?("UMLS")
+            semantic_types = open("#{UMLS_DOWNLOAD_SITE}/umls_semantictypes.ttl") rescue File.new
+            File.open(os.uploadFilePath.to_s, 'a+') {|f| f.write(semantic_types.read) }
           end
         else
           file, filename = RestHelper.ontology_file(ont.id)
