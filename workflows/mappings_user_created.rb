@@ -65,9 +65,17 @@ def proc_by_uri(id,batch)
   end
   map_epr = SPARQL::Client.new(MAPPINGS_EPR)
   map_epr.query(q).each do |sol|
+    creator = RestHelper.user(sol[:creator].to_s)
+    if creator
+      creator = LinkedData::Models::User
+          .find(RDF::URI.new("http://data.bioontology.org/users/#{creator[:username]}")).first
+    end
     p.source = sol[:source]
     p.source_contact_info = sol[:contact_info]
     p.source_name = sol[:source_name]
+    if creator
+      p.creator = creator
+    end
     p.date = sol[:date] ? sol[:date].object : nil
     p.valid?
     p.save(batch: batch)
