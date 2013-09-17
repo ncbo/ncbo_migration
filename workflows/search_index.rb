@@ -17,8 +17,7 @@ time = Benchmark.realtime do
     begin
       s.process_submission(logger,
                            process_rdf: false, index_search: true,
-                           run_metrics: false, process_annotator: false,
-                           reasoning: false)
+                           run_metrics: false, reasoning: false)
     rescue Exception => e
       logger.error e
     end
