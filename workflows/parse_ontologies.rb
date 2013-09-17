@@ -23,7 +23,7 @@ if only_parse.empty?
   submissions.each do |os|
     pbar.inc
 
-    if LinkedData::Models::SubmissionStatus.status_ready?(os.submissionStatus) || os.ontology.summaryOnly
+    if os.ready? || os.ontology.summaryOnly
       already_parsed_or_summary << os.ontology.acronym
       next
     end
@@ -47,7 +47,7 @@ end
 
 ontologies_to_parse_last = {}
 ontologies_to_parse.each do |sub|
-  next if sub.submissionStatus.map { |x| x.id.to_s.split("/")[-1] }.include?("ARCHIVED")
+  next if sub.archived?
   if ontologies_to_parse_last.include?(sub.ontology.id.to_s)
     next if ontologies_to_parse_last[sub.ontology.id.to_s].submissionId > sub.submissionId
   end
