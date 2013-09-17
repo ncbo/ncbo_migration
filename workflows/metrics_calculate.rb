@@ -24,8 +24,7 @@ submissions.each do |s|
   end
 end
 
-metrics_status = LinkedData::Models::SubmissionStatus.find("METRICS").include(:code).first
-subp = ProgressBar.new("Calculating metrics",metrics_to_process.length)
+subp = ProgressBar.new("Calculating metrics", metrics_to_process.length)
 acronyms_sorted = metrics_to_process.keys.sort
 acronyms_sorted.each do |acr|
   sub = metrics_to_process[acr]
@@ -34,9 +33,9 @@ acronyms_sorted.each do |acr|
     t0 = Time.now
     puts "calculating metrics for #{acr}"
     begin
-      sub.process_metrics(logger)
-      sub.add_submission_status(metrics_status)
-      sub.save
+      sub.process_submission(logger,
+                             process_rdf: false, index_search: false,
+                             run_metrics: true, reasoning: false)
     rescue => e
       puts "error in metrics for #{acr}"
       puts e
