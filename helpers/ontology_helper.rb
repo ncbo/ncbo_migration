@@ -145,7 +145,7 @@ def migrate_submission(logger, ont, pbar, virtual_to_acronym, format_mapping, sk
 
     pbar.inc
   rescue Exception => e
-    binding.pry
+    puts "Error in os.id = #{os.id}"
     puts "Unknown exception in APIRest? #{e.message}, \n  #{e.backtrace.join("\n  ")}"
   end
 end
