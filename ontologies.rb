@@ -43,7 +43,7 @@ Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = f
 master_file = {
   "OCRE" => "OCRe.owl",
   "ICPS" => "PatientSafetyIncident.owl",
-  "CTX" => "XCTontologyvtemp2/XCTontologyvtemp2.owl"
+  "CTX" => "XCTontologyvtemp2/XCTontologyvtemp2.owl",
   "CBO" => "cbo.owl",
   "ICNP" => "ICNP_2013_OWL_public_use.owl"
 }
