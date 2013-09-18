@@ -2,10 +2,14 @@ require_relative 'settings'
 require_relative 'helpers/rest_helper'
 
 require 'date'
+require 'logger'
 require 'progressbar'
 require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
+
+FileUtils.mkdir_p("./logs")
+logger = Logger.new("logs/views_migration.log")
 
 # Don't process the following formats
 skip_formats = ["RRF", "UMLS-RELA", "PROTEGE", "LEXGRID-XML"]
@@ -123,7 +127,7 @@ bp_latest_onts.each do |bp_latest_ont|
       pbar.inc
     end
 
-    migrate_submission(ont_view, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
+    migrate_submission(logger, ont_view, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
   end
 
   pbar.finish

@@ -2,10 +2,14 @@ require_relative 'settings'
 require_relative 'helpers/rest_helper'
 
 require 'date'
+require 'logger'
 require 'progressbar'
 require 'open-uri'
 
 require_relative 'helpers/ontology_helper'
+
+FileUtils.mkdir_p("./logs")
+logger = Logger.new("logs/ontologies_migration.log")
 
 only_migrate_ontologies = []
 only_migrate_formats = []
@@ -43,7 +47,7 @@ Kernel.const_defined?("ALL_ONTOLOGY_VERSIONS") ? nil : ALL_ONTOLOGY_VERSIONS = f
 master_file = {
   "OCRE" => "OCRe.owl",
   "ICPS" => "PatientSafetyIncident.owl",
-  "CTX" => "XCTontologyvtemp2/XCTontologyvtemp2.owl"
+  "CTX" => "XCTontologyvtemp2/XCTontologyvtemp2.owl",
   "CBO" => "cbo.owl",
   "ICNP" => "ICNP_2013_OWL_public_use.owl"
 }
@@ -190,7 +194,7 @@ end
 puts "", "Number of submissions to migrate: #{submissions.length}"
 pbar = ProgressBar.new("Migrating", submissions.length*2)
 submissions.each do |ont|
-  migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
+  migrate_submission(logger, ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
 end
 pbar.finish
 

@@ -1,7 +1,7 @@
 # Parse all versions or only latest
 Kernel.const_defined?("PARSE_ONLY_LATEST") ? nil : PARSE_ONLY_LATEST = true
 
-def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
+def migrate_submission(logger, ont, pbar, virtual_to_acronym, format_mapping, skip_formats, missing_abbreviation, bad_formats, skipped, bad_urls, no_contacts, master_file, zip_multiple_files)
   begin
     acronym = virtual_to_acronym[ont.ontologyId]
     if acronym.nil?
@@ -43,12 +43,9 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
 
     pbar.inc
 
-    # Check latest version, archive if it isn't latest
+    # Check latest version
     latest = (ont.id.to_i == RestHelper.latest_ontology(ont.ontologyId).id.to_i)
-    if PARSE_ONLY_LATEST && !latest 
-      os.process_submission(logger, archive: true)
-    end
-    
+
     # Contact
     contact_name = ont.contactName || ont.contactEmail
     contact = LinkedData::Models::Contact.where(name: contact_name, email: ont.contactEmail) unless ont.contactEmail.nil?
@@ -111,6 +108,10 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
     begin
       if os.valid?
         os.save
+
+        if PARSE_ONLY_LATEST && !latest
+          os.process_submission(logger, archive: true)
+        end
       elsif !os.exist?
         if (
         os.errors[:uploadFilePath] and
@@ -124,6 +125,10 @@ def migrate_submission(ont, pbar, virtual_to_acronym, format_mapping, skip_forma
             os.masterFileName = master_file[o.acronym]
             if os.valid?
               os.save
+
+              if PARSE_ONLY_LATEST && !latest
+                os.process_submission(logger, archive: true)
+              end
             else
               puts "Could not save ontology/view submission after setting master file, #{os.ontology.acronym}/#{os.submissionId}, #{os.errors}"
             end
