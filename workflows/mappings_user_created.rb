@@ -6,16 +6,6 @@ require_relative '../helpers/rest_helper'
 
 FileUtils.mkdir_p("./logs")
 
-if File.size("./user_mappings.nt") > 0
-  binding.pry
-  mapping_graphs = [LinkedData::Models::TermMapping.type_uri,
-                 LinkedData::Models::Mapping.type_uri,
-                 LinkedData::Models::MappingProcess.type_uri]
-  Goo.sparql_data_client.append_triples_from_file(
-                mapping_graphs, "./user_mappings.nt", "text/x-nquads")
-end
-binding.pry
-
 MAPPINGS_EPR = "http://ncbostage-fsmaster1:8082/sparql/"
 map_epr = SPARQL::Client.new(MAPPINGS_EPR)
 
