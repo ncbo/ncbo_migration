@@ -45,23 +45,24 @@ index_st = LinkedData::Models::SubmissionStatus.find("INDEXED").first
 LinkedData::Models::Ontology.where.include(:acronym).all.each do |ont|
   sub = ont.latest_submission(status: :rdf)
   if sub
+    sub.bring_remaining
     metrics_id = RDF::URI.new(sub.id.to_s + "/metrics")
     m = LinkedData::Models::Metric.find(metrics_id).first
-    if m
+    if m && !sub.metrics
       sub.add_submission_status(metrics_st)
       sub.metrics=m
     else
       puts "Submission #{sub.id.to_s} with no metrics"
     end
-    if solr_stats.include?(ont.acronym)
+    if solr_stats.include?(ont.acronym) && sub.submissionStatus.select { |x| x.id.to_s == index_st.id.to_s}.length == 0
       sub.add_submission_status(index_st)
     else
       puts "Submission #{sub.id.to_s} with no SOLR terms"
     end
-    if sub.valid?
-      #sub.save
+    if sub.modified? && sub.valid?
+      sub.save
     else
-      binding.pry
+      binding.pry if sub.modified?
     end
   else
     ont.bring(:summaryOnly)
