@@ -15,7 +15,6 @@ def status_fixer
       if sub.submissionStatus.select { |x| x.id.to_s == metrics_st.id.to_s}.length == 0
         sub.add_submission_status(metrics_st)
         if sub.valid?
-          binding.pry
           sub.save
         end
       end
