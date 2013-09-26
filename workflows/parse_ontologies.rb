@@ -7,10 +7,6 @@ require 'progressbar'
 only_parse = []
 
 #list of ontologies that for some reason
-#ELK fails to parse
-disable_reasoning_for = ["DCO", "NCBITaxonOWL", "NCBITAXON", "NIFSTD",
-                         "BCGO","BOF","BdOK","FHHO","OBOE-SBC","OBOE-SBC",
-                        "OMIT"] 
 
 submissions = LinkedData::Models::OntologySubmission.where.include(LinkedData::Models::OntologySubmission.attributes + [ontology: [:acronym, :summaryOnly]]).to_a
 errors = []
@@ -70,10 +66,9 @@ ontologies_to_parse.each do |os|
   logger.level = Logger::DEBUG
 
   begin
-    reasoning = !disable_reasoning_for.include?(os.ontology.acronym)
     os.process_submission(logger,
                           process_rdf: true, index_search: false,
-                          run_metrics: false, reasoning: reasoning)
+                          run_metrics: false, reasoning: true)
   rescue Timeout::Error => timeout
     timeouts << "#{os.ontology.acronym}, #{os.submissionId}, #{timeout.backtrace.join("\n\t")}"
   rescue Exception => e
