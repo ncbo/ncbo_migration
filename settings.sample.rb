@@ -21,8 +21,10 @@ GOO_HOST              = "localhost"
 GOO_PORT              = 9000
 SEARCH_SERVER_URL     = "http://ncbo-dev-app-02.stanford.edu:8080/solr/"
 ANNOTATOR_DICT_FILE   = "./dictionary.txt"
-REDIS_HOST            = "localhost"
-REDIS_PORT            = 6379
+RESOLVER_REDIS_HOST   = "localhost"
+RESOLVER_REDIS_PORT   = 6379
+ANNOTATOR_REDIS_HOST  = "localhost"
+ANNOTATOR_REDIS_PORT  = 6379
 
 ## DO NOT EDIT BELOW THIS LINE
 # Configure ontologieS_linked_data
@@ -35,12 +37,12 @@ LinkedData.config do |config|
   config.goo_host = GOO_HOST
   config.goo_port = GOO_PORT
   config.search_server_url = SEARCH_SERVER_URL
-  config.redis_host = REDIS_HOST
-  config.redis_port = REDIS_PORT
 end
 
-Annotator.config do |settings|
-  settings.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
+Annotator.config do |config|
+  config.mgrep_dictionary_file = ANNOTATOR_DICT_FILE
+  config.annotator_redis_host = ANNOTATOR_REDIS_HOST
+  config.annotator_redis_port = ANNOTATOR_REDIS_PORT
 end
 
 #for mappings we need sort to a folder with enough space for
