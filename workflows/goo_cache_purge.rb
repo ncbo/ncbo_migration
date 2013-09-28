@@ -13,7 +13,7 @@ graphs.each do |g|
     puts "#{g} --> #{queries.length}" 
   end
 end
-queries_sorted = query_graph.to_a.sort_by.reverse { |g,q| q.length }
+queries_sorted = query_graph.to_a.sort_by { |g,q| q.length }.reverse
 queries_sorted.each do |g,q|
   remove = (q.length * 0.20).to_i
   to_flush = q[0..remove]
