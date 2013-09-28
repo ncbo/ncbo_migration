@@ -19,9 +19,8 @@ queries_sorted.each do |g,q|
   to_flush = q[0..remove]
   to_flush.each do |qhash|
     redis.del(qhash)
-    redis.srem("sparql:queries",qhash)
-    sleep(0.02)
   end
+  redis.srem("sparql:queries",*to_flush)
   sleep(5)
 end
 binding.pry
