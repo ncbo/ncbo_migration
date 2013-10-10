@@ -1,0 +1,122 @@
+GIT
+  remote: https://github.com/ncbo/ncbo_annotator.git
+  revision: 753c63f7abf6c64ad1edd5f38b95942c8e774393
+  specs:
+    ncbo_annotator (0.0.1)
+      goo
+      ontologies_linked_data
+      redis
+
+GIT
+  remote: https://github.com/ncbo/ncbo_resolver.git
+  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
+  specs:
+    ncbo_resolver (0.0.1)
+      recursive-open-struct
+      redis
+
+GIT
+  remote: https://github.com/ncbo/sparql-client.git
+  revision: ece2cbe505d24072bcf0e20a8c17e7aba66a8b50
+  specs:
+    sparql-client (1.0.4.1)
+      json_pure (>= 1.4)
+      net-http-persistent (>= 1.4)
+      rdf (>= 1.0)
+
+PATH
+  remote: ~/Development/goo
+  specs:
+    goo (0.0.2)
+      rdf
+      redis
+      rest-client
+      rsolr
+      sparql-client
+      uuid
+
+PATH
+  remote: ~/Development/ontologies_linked_data
+  specs:
+    ontologies_linked_data (0.0.1)
+      activesupport
+      bcrypt-ruby
+      goo
+      json
+      libxml-ruby
+      multi_json
+      oj
+      rack
+      rack-test
+      rsolr
+      rubyzip
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (4.0.0)
+      i18n (~> 0.6, >= 0.6.4)
+      minitest (~> 4.2)
+      multi_json (~> 1.3)
+      thread_safe (~> 0.1)
+      tzinfo (~> 0.3.37)
+    addressable (2.3.5)
+    atomic (1.1.14)
+    bcrypt-ruby (3.1.2)
+    builder (3.2.2)
+    coderay (1.0.9)
+    cube-ruby (0.0.3)
+    i18n (0.6.5)
+    json (1.8.0)
+    json_pure (1.8.0)
+    libxml-ruby (2.7.0)
+    macaddr (1.6.1)
+      systemu (~> 2.5.0)
+    method_source (0.8.2)
+    mime-types (1.25)
+    minitest (4.7.5)
+    multi_json (1.8.0)
+    mysql2 (0.3.13)
+    net-http-persistent (2.9)
+    oj (2.1.4)
+    progressbar (0.20.0)
+    pry (0.9.12.2)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    rack (1.5.2)
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rdf (1.0.8)
+      addressable (>= 2.2)
+    recursive-open-struct (0.4.4)
+    redis (3.0.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rsolr (1.0.9)
+      builder (>= 2.1.2)
+    rubyzip (1.0.0)
+    slop (3.4.6)
+    systemu (2.5.2)
+    thread_safe (0.1.3)
+      atomic
+    tzinfo (0.3.37)
+    uuid (2.3.7)
+      macaddr (~> 1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cube-ruby
+  goo!
+  mysql2
+  ncbo_annotator!
+  ncbo_resolver!
+  ontologies_linked_data!
+  progressbar
+  pry
+  recursive-open-struct
+  redis
+  rsolr
+  sparql-client!
