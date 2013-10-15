@@ -1,31 +1,7 @@
 GIT
-  remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 753c63f7abf6c64ad1edd5f38b95942c8e774393
-  specs:
-    ncbo_annotator (0.0.1)
-      goo
-      ontologies_linked_data
-      redis
-
-GIT
-  remote: https://github.com/ncbo/ncbo_resolver.git
-  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
-  specs:
-    ncbo_resolver (0.0.1)
-      recursive-open-struct
-      redis
-
-GIT
-  remote: https://github.com/ncbo/sparql-client.git
-  revision: ece2cbe505d24072bcf0e20a8c17e7aba66a8b50
-  specs:
-    sparql-client (1.0.4.1)
-      json_pure (>= 1.4)
-      net-http-persistent (>= 1.4)
-      rdf (>= 1.0)
-
-PATH
-  remote: ~/Development/goo
+  remote: git://github.com/ncbo/goo.git
+  revision: 8dccb9b8bbd6e163a2b37b6781e5a6c3a18b472c
+  branch: staging
   specs:
     goo (0.0.2)
       rdf
@@ -35,8 +11,28 @@ PATH
       sparql-client
       uuid
 
-PATH
-  remote: ~/Development/ontologies_linked_data
+GIT
+  remote: git://github.com/ncbo/ncbo_annotator.git
+  revision: 043c39be3e59c7f38aaf0690697aa7742f602262
+  branch: staging
+  specs:
+    ncbo_annotator (0.0.1)
+      goo
+      ontologies_linked_data
+      redis
+
+GIT
+  remote: git://github.com/ncbo/ncbo_resolver.git
+  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
+  specs:
+    ncbo_resolver (0.0.1)
+      recursive-open-struct
+      redis
+
+GIT
+  remote: git://github.com/ncbo/ontologies_linked_data.git
+  revision: 1d73c378d0a437005149c83e09acff7b48e25e04
+  branch: staging
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -46,10 +42,21 @@ PATH
       libxml-ruby
       multi_json
       oj
+      pony
       rack
       rack-test
       rsolr
       rubyzip
+
+GIT
+  remote: git://github.com/ncbo/sparql-client.git
+  revision: de82689e690f400833653b0ecc51676396e945a8
+  branch: staging
+  specs:
+    sparql-client (1.0.4.1)
+      json_pure (>= 1.4)
+      net-http-persistent (>= 1.4)
+      rdf (>= 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -72,13 +79,19 @@ GEM
     libxml-ruby (2.7.0)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
+    mail (2.5.4)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
     method_source (0.8.2)
     mime-types (1.25)
     minitest (4.7.5)
-    multi_json (1.8.0)
+    multi_json (1.8.2)
     mysql2 (0.3.13)
     net-http-persistent (2.9)
-    oj (2.1.4)
+    oj (2.1.6)
+    polyglot (0.3.3)
+    pony (1.5.1)
+      mail (>= 2.0)
     progressbar (0.20.0)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -87,10 +100,10 @@ GEM
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
-    rdf (1.0.8)
-      addressable (>= 2.2)
+    rdf (1.0.9)
+      addressable (>= 2.3)
     recursive-open-struct (0.4.4)
-    redis (3.0.4)
+    redis (3.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rsolr (1.0.9)
@@ -100,7 +113,10 @@ GEM
     systemu (2.5.2)
     thread_safe (0.1.3)
       atomic
-    tzinfo (0.3.37)
+    treetop (1.4.15)
+      polyglot
+      polyglot (>= 0.3.1)
+    tzinfo (0.3.38)
     uuid (2.3.7)
       macaddr (~> 1.0)
 
