@@ -4,6 +4,7 @@ require 'logger'
 require 'progressbar'
 
 # An array of acronyms to restrict parsing to these particular ontologies
+<<<<<<< Updated upstream
 
 def get_obo_submissions
   subs = []
@@ -41,8 +42,8 @@ submissions.each do |s|
   logger.level = Logger::DEBUG
   begin
     s.process_submission(logger,
-                          process_rdf: true, index_search: false,
-                          run_metrics: false, reasoning: true)
+                          process_rdf: true, index_search: true,
+                          run_metrics: true, reasoning: true)
   rescue Exception => e
     binding.pry
   end
