@@ -11,9 +11,12 @@ require_relative 'helpers/ontology_helper'
 FileUtils.mkdir_p("./logs")
 logger = Logger.new("logs/ontologies_migration.log")
 
-only_migrate_ontologies = []
+only_migrate_ontologies = ["NCIT"]
 only_migrate_formats = []
+override_administeredBy_usernames = ["admin"]
 migrate_views = true
+associate_groups = true
+associate_categories = true
 
 errors = []
 errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty?
@@ -125,49 +128,60 @@ latest.dup.each do |ont|
   end
 
   # Admins
-  user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue []
-  user_ids.each do |user_id|
-    begin
-      old_user = RestHelper.user(user_id)
-    rescue Exception => e
-      missing_users << "#{ont.id}, #{user_id}"
-      next
-    end
-    new_user = LinkedData::Models::User.find(old_user.username).include(LinkedData::Models::User.attributes(:all)).first
-    if o.administeredBy.nil?
-      o.administeredBy = [new_user]
-    else
-      o.administeredBy = [new_user] + o.administeredBy
+  if override_administeredBy_usernames && !override_administeredBy_usernames.empty?
+    # Get users from the provided list
+    users = override_administeredBy_usernames.map {|u| LinkedData::Models::User.find(u).include(LinkedData::Models::User.attributes(:all)).first}
+    o.administeredBy = users
+  else
+    # Use existing admins
+    user_ids = ont.userIds[0][:int].kind_of?(Array) ? ont.userIds[0][:int] : [ ont.userIds[0][:int] ] rescue []
+    user_ids.each do |user_id|
+      begin
+        old_user = RestHelper.user(user_id)
+      rescue Exception => e
+        missing_users << "#{ont.id}, #{user_id}"
+        next
+      end
+      new_user = LinkedData::Models::User.find(old_user.username).include(LinkedData::Models::User.attributes(:all)).first
+      if o.administeredBy.nil?
+        o.administeredBy = [new_user]
+      else
+        o.administeredBy = [new_user] + o.administeredBy
+      end
     end
   end
 
   # Groups
-  o.group = []
-  if !ont.groupIds.nil? && !ont.groupIds[0].eql?("")
-    if ont.groupIds[0][:int].kind_of?(Array)
-      ont.groupIds[0][:int].each do |group_id|
-        group_acronym = RestHelper.safe_acronym(RestHelper.group(group_id).acronym)
-        o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first] + o.group
+  if associate_groups
+    o.group = []
+    if !ont.groupIds.nil? && !ont.groupIds[0].eql?("")
+      if ont.groupIds[0][:int].kind_of?(Array)
+        ont.groupIds[0][:int].each do |group_id|
+          group_acronym = RestHelper.safe_acronym(RestHelper.group(group_id).acronym)
+          o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first] + o.group
+        end
+      else
+        group_acronym = RestHelper.safe_acronym(RestHelper.group(ont.groupIds[0][:int]).acronym)
+        o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first]
       end
-    else
-      group_acronym = RestHelper.safe_acronym(RestHelper.group(ont.groupIds[0][:int]).acronym)
-      o.group = [LinkedData::Models::Group.find(group_acronym).include(LinkedData::Models::Group.attributes(:all)).first]
     end
   end
 
   # Categories
-  o.hasDomain = []
-  if !ont.categoryIds.nil? && !ont.categoryIds[0].eql?("")
-    if ont.categoryIds[0][:int].kind_of?(Array)
-      ont.categoryIds[0][:int].each do |cat_id|
-        category_acronym = RestHelper.safe_acronym(RestHelper.category(cat_id).name)
+  if associate_categories
+    o.hasDomain = []
+    if !ont.categoryIds.nil? && !ont.categoryIds[0].eql?("")
+      if ont.categoryIds[0][:int].kind_of?(Array)
+        ont.categoryIds[0][:int].each do |cat_id|
+          category_acronym = RestHelper.safe_acronym(RestHelper.category(cat_id).name)
+          category = LinkedData::Models::Category.find(category_acronym).include(LinkedData::Models::Category.attributes(:all)).first
+          o.hasDomain = [category] + o.hasDomain
+        end
+      else
+        category_acronym = RestHelper.safe_acronym(RestHelper.category(ont.categoryIds[0][:int]).name)
         category = LinkedData::Models::Category.find(category_acronym).include(LinkedData::Models::Category.attributes(:all)).first
         o.hasDomain = [category] + o.hasDomain
       end
-    else
-      category_acronym = RestHelper.safe_acronym(RestHelper.category(ont.categoryIds[0][:int]).name)
-      category = LinkedData::Models::Category.find(category_acronym).include(LinkedData::Models::Category.attributes(:all)).first
-      o.hasDomain = [category] + o.hasDomain
     end
   end
 
