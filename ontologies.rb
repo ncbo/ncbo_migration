@@ -11,9 +11,9 @@ require_relative 'helpers/ontology_helper'
 FileUtils.mkdir_p("./logs")
 logger = Logger.new("logs/ontologies_migration.log")
 
-only_migrate_ontologies = ["NCIT"]
+only_migrate_ontologies = []
 only_migrate_formats = []
-override_administeredBy_usernames = ["admin"]
+override_administeredBy_usernames = []
 migrate_views = true
 associate_groups = true
 associate_categories = true
