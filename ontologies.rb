@@ -19,9 +19,9 @@ associate_groups = true
 associate_categories = true
 
 errors = []
-errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty?
-errors << "Could not find categories, please run user migration: bundle exec ruby categories.rb" if LinkedData::Models::Category.all.empty?
-errors << "Could not find groups, please run user migration: bundle exec ruby groups.rb" if LinkedData::Models::Group.all.empty?
+errors << "Could not find users, please run user migration: bundle exec ruby users.rb" if LinkedData::Models::User.all.empty? && override_administeredBy_usernames.empty?
+errors << "Could not find categories, please run user migration: bundle exec ruby categories.rb" if LinkedData::Models::Category.all.empty? && associate_categories
+errors << "Could not find groups, please run user migration: bundle exec ruby groups.rb" if LinkedData::Models::Group.all.empty? && associate_groups
 abort("ERRORS:\n#{errors.join("\n")}") unless errors.empty?
 
 # Don't process the following formats
