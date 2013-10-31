@@ -73,6 +73,7 @@ def convert_proposal(note, new_note)
   nil
 end
 
+@errors = []
 def convert_note(note)
   user = RestHelper.user(note.author)
   ont = LinkedData::Models::Ontology.find(RestHelper.safe_acronym(RestHelper.latest_ontology(note.ontologyId).abbreviation)).first
@@ -89,10 +90,19 @@ def convert_note(note)
   # Add class to note
   if note.appliesToList.first && note.appliesToList.first[:appliesTo][:type].eql?("Class")
     classId = note.appliesToList.first[:appliesTo][:id]
-    ont.bring(:submissions)
-    submission = ont.latest_submission unless ont.submissions.empty?
-    relatedClass = LinkedData::Models::Class.find(classId).in(submission).first rescue nil
-    nn.relatedClass = [relatedClass] unless relatedClass.nil?
+    latest_ont = RestHelper.latest_ontology(note.ontologyId)
+    old_cls = RestHelper.concept(note.createdInOntologyVersion, classId) rescue nil
+    clean_class_id = old_cls.nil? ? classId : old_cls.id
+    cls = RestHelper.concept(latest_ont.id, clean_class_id) rescue nil
+    cls = RestHelper.concept(latest_ont.id, classId) rescue nil unless cls
+    if cls
+      ont.bring(:submissions)
+      submission = ont.latest_submission unless ont.submissions.empty?
+      relatedClass = LinkedData::Models::Class.find(RDF::IRI.new(cls.fullId)).in(submission).first rescue nil
+      nn.relatedClass = [relatedClass] unless relatedClass.nil?
+    end
+    
+    @errors << "Could not find #{classId} for #{nn.id.to_s}" if cls.nil? && relatedClass.nil?
   end
 
   # Needs all versions available
@@ -144,4 +154,5 @@ ontologies.each_with_index do |ont, ind|
   pbar.inc
 end
 
+puts "Errors:", @errors.join("\n")
 puts "\n\nCreated #{LinkedData::Models::Note.all.length} notes and #{LinkedData::Models::Notes::Reply.all.length} replies"
