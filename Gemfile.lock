@@ -1,10 +1,10 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 8dccb9b8bbd6e163a2b37b6781e5a6c3a18b472c
-  branch: staging
+  revision: 6ea511c310484824e050e9956dac68dab2af5eb0
+  branch: master
   specs:
     goo (0.0.2)
-      rdf
+      rdf (= 1.0.8)
       redis
       rest-client
       rsolr
@@ -13,8 +13,8 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ncbo_annotator.git
-  revision: 043c39be3e59c7f38aaf0690697aa7742f602262
-  branch: staging
+  revision: e791a5cc55940c97d2a74fa4cdf517e94bd29f6e
+  branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -31,8 +31,8 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: 1d73c378d0a437005149c83e09acff7b48e25e04
-  branch: staging
+  revision: 06bc31eefae4d1d6fd43c62f481070d9332b7095
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -51,7 +51,7 @@ GIT
 GIT
   remote: git://github.com/ncbo/sparql-client.git
   revision: de82689e690f400833653b0ecc51676396e945a8
-  branch: staging
+  branch: master
   specs:
     sparql-client (1.0.4.1)
       json_pure (>= 1.4)
@@ -74,25 +74,26 @@ GEM
     coderay (1.0.9)
     cube-ruby (0.0.3)
     i18n (0.6.5)
-    json (1.8.0)
-    json_pure (1.8.0)
+    json (1.8.1)
+    json_pure (1.8.1)
     libxml-ruby (2.7.0)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
-    mail (2.5.4)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
+    mail (2.2.7)
+      activesupport (>= 2.3.6)
+      mime-types
+      treetop (>= 1.4.5)
     method_source (0.8.2)
-    mime-types (1.25)
+    mime-types (2.0)
     minitest (4.7.5)
     multi_json (1.8.2)
     mysql2 (0.3.13)
     net-http-persistent (2.9)
-    oj (2.1.6)
+    oj (2.1.7)
     polyglot (0.3.3)
     pony (1.5.1)
       mail (>= 2.0)
-    progressbar (0.20.0)
+    progressbar (0.21.0)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -100,9 +101,9 @@ GEM
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
-    rdf (1.0.9)
-      addressable (>= 2.3)
-    recursive-open-struct (0.4.4)
+    rdf (1.0.8)
+      addressable (>= 2.2)
+    recursive-open-struct (0.4.5)
     redis (3.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
