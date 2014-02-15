@@ -26,12 +26,13 @@ end
 
 subp = ProgressBar.new("Calculating metrics", metrics_to_process.length)
 acronyms_sorted = metrics_to_process.keys.sort
-acronyms_sorted.each do |acr|
+acronyms_sorted.each_index do |i|
+  acr = acronyms_sorted[i]
   sub = metrics_to_process[acr]
   sub.bring_remaining
   if sub.metrics.nil?
     t0 = Time.now
-    puts "calculating metrics for #{acr}"
+    puts "#{i}/#{acronyms_sorted.length} calculating metrics for #{acr}"
     begin
       sub.process_submission(logger,
                              process_rdf: false, index_search: false,
