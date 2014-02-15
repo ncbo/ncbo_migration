@@ -30,22 +30,20 @@ acronyms_sorted.each_index do |i|
   acr = acronyms_sorted[i]
   sub = metrics_to_process[acr]
   sub.bring_remaining
-  if sub.metrics.nil?
-    t0 = Time.now
-    puts "#{i}/#{acronyms_sorted.length} calculating metrics for #{acr}"
-    begin
-      sub.process_submission(logger,
-                             process_rdf: false, index_search: false,
-                             run_metrics: true, reasoning: false)
-    rescue => e
-      puts "error in metrics for #{acr}"
-      puts e
-      if !sub.valid?
-        puts sub.errors
-      end
+  t0 = Time.now
+  puts "#{i}/#{acronyms_sorted.length} calculating metrics for #{acr}"
+  begin
+    sub.process_submission(logger,
+                           process_rdf: false, index_search: false,
+                           run_metrics: true, reasoning: false)
+  rescue => e
+    puts "error in metrics for #{acr}"
+    puts e
+    if !sub.valid?
+      puts sub.errors
     end
-    puts "calculated metrics for #{acr} in #{Time.now - t0} sec."
   end
+  puts "calculated metrics for #{acr} in #{Time.now - t0} sec."
   subp.inc
 end
 
