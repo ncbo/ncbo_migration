@@ -4,8 +4,6 @@ require 'logger'
 require 'progressbar'
 
 # An array of acronyms to restrict parsing to these particular ontologies
-<<<<<<< Updated upstream
-
 def get_obo_submissions
   subs = []
   LinkedData::Models::Ontology.where.include(:acronym, :summaryOnly).all.each do |ont|
