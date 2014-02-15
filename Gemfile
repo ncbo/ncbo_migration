@@ -6,6 +6,7 @@ gem 'pry'
 gem 'rsolr'
 gem 'redis'
 gem 'cube-ruby', require: "cube"
+gem 'systemu'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
 ncbo_branch = ENV["NCBO_BRANCH"] || `git rev-parse --abbrev-ref HEAD`.strip || "staging"
