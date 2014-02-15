@@ -4,14 +4,17 @@ require 'logger'
 require 'progressbar'
 
 # An array of acronyms to restrict parsing to these particular ontologies
-def get_obo_submissions
+def get_submissions(type)
   subs = []
   LinkedData::Models::Ontology.where.include(:acronym, :summaryOnly).all.each do |ont|
     if !ont.summaryOnly
       sub = ont.latest_submission(status: :any)
       if sub
         sub.bring(:hasOntologyLanguage)
-        if sub.hasOntologyLanguage.obo?
+        if type == "obo" && sub.hasOntologyLanguage.obo?
+          subs << sub
+        end
+        if type == "umls" && sub.hasOntologyLanguage.obo?
           subs << sub
         end
       else
@@ -23,12 +26,12 @@ def get_obo_submissions
 end
 
 submissions = []
-acronyms = ["CCO"]
-acronyms.each do |acr|
-  submissions << LinkedData::Models::Ontology.find(acr).first.latest_submission(status: :any)
-end
-#submissions = get_obo_submissions
+#acronyms.each do |acr|
+#  submissions << LinkedData::Models::Ontology.find(acr).first.latest_submission(status: :any)
+#end
+submissions = get_submissions("umls")
 
+binding.pry
 puts "", "Parsing #{submissions.length} submissions..."
 pbar = ProgressBar.new("Parsing", submissions.length)
 FileUtils.mkdir_p("./parsing")
