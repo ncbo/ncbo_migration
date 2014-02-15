@@ -5,6 +5,7 @@ require 'progressbar'
 
 # An array of acronyms to restrict parsing to these particular ontologies
 def get_submissions(type)
+  puts "Gathering ontologies of type #{type}"
   subs = []
   LinkedData::Models::Ontology.where.include(:acronym, :summaryOnly).all.each do |ont|
     if !ont.summaryOnly
@@ -14,14 +15,16 @@ def get_submissions(type)
         if type == "obo" && sub.hasOntologyLanguage.obo?
           subs << sub
         end
-        if type == "umls" && sub.hasOntologyLanguage.obo?
+        if type == "umls" && sub.hasOntologyLanguage.umls?
           subs << sub
         end
-      else
-        puts "#{type} ontology with no submissions #{ont.id.to_s}"
+        if type == "owl" && sub.hasOntologyLanguage.owl?
+          subs << sub
+        end
       end
     end
   end
+  puts "Found #{subs.length} #{type} ontologies"
   return subs
 end
 
