@@ -88,7 +88,6 @@ GEM
     mime-types (2.1)
     minitest (4.7.5)
     multi_json (1.8.4)
-    mysql2 (0.3.15)
     net-http-persistent (2.9.4)
     oj (2.5.4)
     polyglot (0.3.3)
@@ -128,7 +127,6 @@ PLATFORMS
 DEPENDENCIES
   cube-ruby
   goo!
-  mysql2
   ncbo_annotator!
   ncbo_resolver!
   ontologies_linked_data!
