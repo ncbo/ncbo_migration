@@ -18,7 +18,7 @@ def get_submissions(type)
           subs << sub
         end
       else
-        puts "OBO ontology with no submissions #{ont.id.to_s}"
+        puts "#{type} ontology with no submissions #{ont.id.to_s}"
       end
     end
   end
