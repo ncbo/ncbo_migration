@@ -12,6 +12,10 @@ def get_submissions(type)
       sub = ont.latest_submission(status: :any)
       if sub
         sub.bring(:hasOntologyLanguage)
+        if type == :all
+          subs << sub
+          next
+        end
         if type == "obo" && sub.hasOntologyLanguage.obo?
           subs << sub
         end
@@ -32,7 +36,7 @@ submissions = []
 #acronyms.each do |acr|
 #  submissions << LinkedData::Models::Ontology.find(acr).first.latest_submission(status: :any)
 #end
-submissions = get_submissions("umls")
+submissions = get_submissions(:all)
 
 binding.pry
 puts "", "Parsing #{submissions.length} submissions..."
@@ -46,8 +50,9 @@ submissions.each do |s|
   logger.level = Logger::DEBUG
   begin
     s.process_submission(logger,
-                          process_rdf: true, index_search: true,
-                          run_metrics: true, reasoning: true)
+                          process_rdf: true, index_search: false,
+                          run_metrics: false, reasoning: false, 
+                          diff: false, archive: false)
   rescue Exception => e
     binding.pry
   end
