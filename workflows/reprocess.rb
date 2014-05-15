@@ -44,17 +44,19 @@ pbar = ProgressBar.new("Parsing", submissions.length)
 FileUtils.mkdir_p("./parsing")
 submissions.each do |s|
   s.bring_remaining
-  s.bring(ontology: [:acronym])
-  log_file = File.open("./parsing/parsing_#{s.ontology.acronym}.log", "w")
-  logger = Logger.new(log_file)
-  logger.level = Logger::DEBUG
-  begin
-    s.process_submission(logger,
-                          process_rdf: true, index_search: false,
-                          run_metrics: false, reasoning: false, 
-                          diff: false, archive: false)
-  rescue Exception => e
-    binding.pry
+  s.bring(ontology: [:acronym, :summaryOnly])
+  if s.ontology.summaryOnly.nil? || !s.ontology.summaryOnly
+    log_file = File.open("./parsing/parsing_#{s.ontology.acronym}.log", "w")
+    logger = Logger.new(log_file)
+    logger.level = Logger::DEBUG
+    begin
+      s.process_submission(logger,
+                            process_rdf: true, index_search: false,
+                            run_metrics: false, reasoning: false, 
+                            diff: false, archive: false)
+    rescue Exception => e
+      puts "error", e.message
+    end
   end
   pbar.inc
 end
