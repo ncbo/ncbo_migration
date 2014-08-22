@@ -42,7 +42,12 @@ def dump_all_rest_mappings()
             break
           end
           acronym = ont.acronym
-          latest = ont.latest_submission
+          begin
+            latest = ont.latest_submission
+          rescue 
+            STDERR.write("Error with #{acronym}\n")
+            break
+          end
           if latest.nil?
             break
           end
