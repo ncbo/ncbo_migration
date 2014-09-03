@@ -6,7 +6,9 @@ def dump_all_rest_mappings()
       .include(LinkedData::Models::MappingProcess.attributes)
       .all.select { |x| !x.date.nil? }
   
-  procs.each do |p|
+  procs.each_index do |pi|
+    p = procs[pi]
+    $stderr.write("#{pi+1}/#{procs.length} process ...\n")
     pgraph  = Goo::SPARQL::Triples.model_delete_triples(p)
     pgraph[0].each do |triple|
         dump_triple(triple,LinkedData::Models::MappingProcess.type_uri.to_s)
@@ -22,8 +24,16 @@ def dump_all_rest_mappings()
     epr.query(qmappings).each do |sol|
         mapping_ids << sol[:s]
     end
-    mapping_ids.each do |mapping_id|
-    qterms = <<-eos
+
+    $stderr.write("\tMappings #{mapping_ids.length}\n")
+    mapping_ids.each_index do |idx|
+      mapping_id = mapping_ids[idx]
+      if (idx+1) % 10 == 0
+        $stderr.write("\t\tprogress #{idx+1}/#{mapping_ids.length}\n")
+      end
+
+
+      qterms = <<-eos
   SELECT ?termId ?ontId ?classId
   WHERE { <#{mapping_id}> 
           <http://data.bioontology.org/metadata/terms> ?termId .
@@ -42,12 +52,7 @@ def dump_all_rest_mappings()
             break
           end
           acronym = ont.acronym
-          begin
-            latest = ont.latest_submission
-          rescue 
-            STDERR.write("Error with #{acronym}\n")
-            break
-          end
+          latest = ont.latest_submission
           if latest.nil?
             break
           end
