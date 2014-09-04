@@ -75,12 +75,8 @@ def dump_all_rest_mappings()
           dump_triple(triple,LinkedData::Models::RestBackupMapping.type_uri.to_s)
         end
         classes.each do |cls| 
-          triple =  "<#{latest.id.to_s}>" +
-                    " <#{cls.id.to_s}>" + 
-                    " <#{rest_predicate}>" +
-                    " <#{backup_mapping.id.to_s}> ."
-          puts triple
-          dump_triple([cls.id.to_s,rest_predicate,backup_mapping.id.to_s], latest.id.to_s)
+          dump_triple([cls.id.to_s,rest_predicate,backup_mapping.id.to_s], 
+                      cls.submission.id.to_s)
         end
       end
     end
