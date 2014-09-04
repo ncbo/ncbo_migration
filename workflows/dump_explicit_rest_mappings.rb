@@ -6,13 +6,11 @@ def dump_all_rest_mappings()
       .include(LinkedData::Models::MappingProcess.attributes)
       .all.select { |x| !x.date.nil? }
   
+  process_dumped = false
   procs.each_index do |pi|
     p = procs[pi]
+    process_dumped = false
     $stderr.write("#{pi+1}/#{procs.length} process ...\n")
-    pgraph  = Goo::SPARQL::Triples.model_delete_triples(p)
-    pgraph[0].each do |triple|
-        dump_triple(triple,LinkedData::Models::MappingProcess.type_uri.to_s)
-    end
     mapping_ids = []
     qmappings = <<-eos
   SELECT ?s
@@ -66,6 +64,15 @@ def dump_all_rest_mappings()
 
       end
       if urn_classes.length == 2
+        if !process_dumped
+          pgraph  = Goo::SPARQL::Triples.model_delete_triples(p)
+          pgraph[0].each do |triple|
+              dump_triple(triple,LinkedData::Models::MappingProcess.type_uri.to_s)
+          end
+          process_dumped = true
+          $stderr.write("\t\tprocess dumped\n")
+        end
+
         backup_mapping = LinkedData::Models::RestBackupMapping.new
         backup_mapping.uuid = UUID.new.generate
         backup_mapping.process = p
