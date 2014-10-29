@@ -1,21 +1,23 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 46515044deb8c3593aa6c6d72746ca28f2f95be6
-  branch: master
+  revision: 0be54d91425ddd36338fac216743e5fe7c9f55e5
+  branch: staging
   specs:
     goo (0.0.2)
+      addressable (= 2.3.5)
       pry
       rdf (= 1.0.8)
       redis
       rest-client
       rsolr
       sparql-client
+      systemu
       uuid
 
 GIT
   remote: git://github.com/ncbo/ncbo_annotator.git
-  revision: 46a4fe6f2c7a67a21a48862860da67cef02ad740
-  branch: master
+  revision: 55da7fb6b148046222ee23c8cf290ac7cc742b60
+  branch: staging
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -32,16 +34,17 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: fc2652de69710b54f24d8a05beecd77b64dcbf2e
-  branch: master
+  revision: 00bb2a00865a2fe597ba315011b805910dfd0a64
+  branch: staging
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
-      bcrypt-ruby
+      bcrypt
       goo
       json
       libxml-ruby
       multi_json
+      ncbo_resource_index
       oj
       pony
       rack
@@ -50,9 +53,22 @@ GIT
       rubyzip
 
 GIT
+  remote: git://github.com/ncbo/resource_index.git
+  revision: 38239e4708326c32eca18025092efca83c13d191
+  specs:
+    ncbo_resource_index (0.0.1)
+      elasticsearch
+      mysql2
+      pony
+      ref
+      ruby-xxHash
+      sequel
+      typhoeus
+
+GIT
   remote: git://github.com/ncbo/sparql-client.git
-  revision: 245ca3abdb4c1c72bff1b150e7fe6f0d4922356f
-  branch: master
+  revision: 5f7d64615ac771b6672addbbfb94ef45c1885d41
+  branch: staging
   specs:
     sparql-client (1.0.4.1)
       json_pure (>= 1.4)
@@ -62,60 +78,77 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.0.2)
-      i18n (~> 0.6, >= 0.6.4)
-      minitest (~> 4.2)
-      multi_json (~> 1.3)
+    activesupport (4.1.6)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
       thread_safe (~> 0.1)
-      tzinfo (~> 0.3.37)
+      tzinfo (~> 1.1)
     addressable (2.3.5)
-    atomic (1.1.14)
-    bcrypt-ruby (3.1.2)
+    bcrypt (3.1.9)
     builder (3.2.2)
     coderay (1.1.0)
     cube-ruby (0.0.3)
-    i18n (0.6.9)
+    elasticsearch (1.0.6)
+      elasticsearch-api (= 1.0.6)
+      elasticsearch-transport (= 1.0.6)
+    elasticsearch-api (1.0.6)
+      multi_json
+    elasticsearch-transport (1.0.6)
+      faraday
+      multi_json
+    ethon (0.7.1)
+      ffi (>= 1.3.0)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
+    ffi (1.9.6)
+    i18n (0.6.11)
     json (1.8.1)
     json_pure (1.8.1)
     libxml-ruby (2.7.0)
-    macaddr (1.6.2)
-    mail (2.2.7)
-      activesupport (>= 2.3.6)
-      mime-types
-      treetop (>= 1.4.5)
+    macaddr (1.7.1)
+      systemu (~> 2.6.2)
+    mail (2.6.1)
+      mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.1)
-    minitest (4.7.5)
-    multi_json (1.8.4)
+    mime-types (2.4.3)
+    minitest (5.4.2)
+    multi_json (1.10.1)
+    multipart-post (2.0.0)
+    mysql2 (0.3.16)
     net-http-persistent (2.9.4)
-    oj (2.5.4)
-    polyglot (0.3.3)
-    pony (1.8)
+    netrc (0.8.0)
+    oj (2.10.4)
+    pony (1.11)
       mail (>= 2.0)
     progressbar (0.21.0)
-    pry (0.9.12.6)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
     rdf (1.0.8)
       addressable (>= 2.2)
-    recursive-open-struct (0.4.5)
-    redis (3.0.7)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
-    rsolr (1.0.9)
+    recursive-open-struct (0.5.0)
+    redis (3.1.0)
+    ref (1.0.5)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    rsolr (1.0.10)
       builder (>= 2.1.2)
-    rubyzip (1.1.0)
-    slop (3.4.7)
-    thread_safe (0.1.3)
-      atomic
-    treetop (1.4.15)
-      polyglot
-      polyglot (>= 0.3.1)
-    tzinfo (0.3.38)
+    ruby-xxHash (0.1.1)
+    rubyzip (1.1.6)
+    sequel (4.15.0)
+    slop (3.6.0)
+    systemu (2.6.4)
+    thread_safe (0.3.4)
+    typhoeus (0.6.9)
+      ethon (>= 0.7.1)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     uuid (2.3.7)
       macaddr (~> 1.0)
 
@@ -127,6 +160,7 @@ DEPENDENCIES
   goo!
   ncbo_annotator!
   ncbo_resolver!
+  ncbo_resource_index!
   ontologies_linked_data!
   progressbar
   pry
@@ -134,3 +168,4 @@ DEPENDENCIES
   redis
   rsolr
   sparql-client!
+  systemu
