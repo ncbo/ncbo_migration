@@ -2,6 +2,7 @@ require_relative '../settings'
 
 require 'logger'
 require 'progressbar'
+require 'set'
 
 # An array of acronyms to restrict parsing to these particular ontologies
 def get_submissions(type)
@@ -37,6 +38,18 @@ submissions = []
 #  submissions << LinkedData::Models::Ontology.find(acr).first.latest_submission(status: :any)
 #end
 submissions = get_submissions(:all)
+do_first = Set.new(["SNOMEDCT","NCBITAXON","RXNORM","NCIT"])
+sort_l = lambda { |s|
+  acr = s.id.to_s.split("/")[-3]
+  if acr == "SNOMEDCT"
+    return -2
+  end
+  if do_first.include?(acr)
+    return -1
+  end
+  return 1
+}
+submissions.sort_by!(&sort_l)
 
 binding.pry
 puts "", "Parsing #{submissions.length} submissions..."
@@ -52,7 +65,7 @@ submissions.each do |s|
     begin
       s.process_submission(logger,
                             process_rdf: true, index_search: false,
-                            run_metrics: false, reasoning: false, 
+                            run_metrics: false, reasoning: false,
                             diff: false, archive: false)
     rescue Exception => e
       puts "error", e.message
