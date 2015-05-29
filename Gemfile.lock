@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 2ef65beab58a3dac68fc19d5ea32412b92e014b3
+  revision: 56364c76c4654df82a21e66b30376526e997bc7b
   branch: master
   specs:
     goo (0.0.2)
@@ -34,7 +34,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: de046366b355454af6a8806712680724754aa5f7
+  revision: 998cc8aee33ea389549798c4480d1c456f452470
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -54,7 +54,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/resource_index.git
-  revision: b39a3ab6673c73c7f725799fc258386995c4cbdc
+  revision: a680c51507d68eb6f174e5c20b53c7637ab13d95
   specs:
     ncbo_resource_index (0.0.1)
       elasticsearch
@@ -91,12 +91,12 @@ GEM
     cube-ruby (0.0.3)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
-    elasticsearch (1.0.9)
-      elasticsearch-api (= 1.0.9)
-      elasticsearch-transport (= 1.0.9)
-    elasticsearch-api (1.0.9)
+    elasticsearch (1.0.10)
+      elasticsearch-api (= 1.0.10)
+      elasticsearch-transport (= 1.0.10)
+    elasticsearch-api (1.0.10)
       multi_json
-    elasticsearch-transport (1.0.9)
+    elasticsearch-transport (1.0.10)
       faraday
       multi_json
     ethon (0.7.3)
@@ -115,14 +115,14 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.5)
-    minitest (5.6.1)
+    mime-types (2.6.1)
+    minitest (5.7.0)
     multi_json (1.11.0)
     multipart-post (2.0.0)
     mysql2 (0.3.18)
     net-http-persistent (2.9.4)
     netrc (0.10.3)
-    oj (2.12.7)
+    oj (2.12.8)
     pony (1.11)
       mail (>= 2.0)
     progressbar (0.21.0)
@@ -135,7 +135,7 @@ GEM
       rack (>= 1.0)
     rdf (1.0.8)
       addressable (>= 2.2)
-    recursive-open-struct (0.6.3)
+    recursive-open-struct (0.6.4)
     redis (3.2.1)
     ref (1.0.5)
     rest-client (1.8.0)
