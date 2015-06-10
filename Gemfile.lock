@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 56364c76c4654df82a21e66b30376526e997bc7b
+  revision: 5ffce826af3f11981676a80de86452ac88190b4e
   branch: master
   specs:
     goo (0.0.2)
@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ncbo_annotator.git
-  revision: 81ade38bf1fec36858530165113ee49ad2ecee96
+  revision: d9ac30c4fee7022bf48c5cd235cf7816af8c9592
   branch: master
   specs:
     ncbo_annotator (0.0.1)
@@ -34,7 +34,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: 998cc8aee33ea389549798c4480d1c456f452470
+  revision: b6538b914320801c079d9b0f4cd2a428e048ee1e
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -91,12 +91,12 @@ GEM
     cube-ruby (0.0.3)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
-    elasticsearch (1.0.10)
-      elasticsearch-api (= 1.0.10)
-      elasticsearch-transport (= 1.0.10)
-    elasticsearch-api (1.0.10)
+    elasticsearch (1.0.12)
+      elasticsearch-api (= 1.0.12)
+      elasticsearch-transport (= 1.0.12)
+    elasticsearch-api (1.0.12)
       multi_json
-    elasticsearch-transport (1.0.10)
+    elasticsearch-transport (1.0.12)
       faraday
       multi_json
     ethon (0.7.3)
@@ -107,7 +107,7 @@ GEM
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     i18n (0.7.0)
-    json (1.8.2)
+    json (1.8.3)
     json_pure (1.8.2)
     libxml-ruby (2.8.0)
     macaddr (1.7.1)
@@ -122,7 +122,7 @@ GEM
     mysql2 (0.3.18)
     net-http-persistent (2.9.4)
     netrc (0.10.3)
-    oj (2.12.8)
+    oj (2.12.9)
     pony (1.11)
       mail (>= 2.0)
     progressbar (0.21.0)
@@ -146,7 +146,7 @@ GEM
       builder (>= 2.1.2)
     ruby-xxHash (0.3.0)
     rubyzip (1.1.7)
-    sequel (4.22.0)
+    sequel (4.23.0)
     slop (3.6.0)
     systemu (2.6.5)
     thread_safe (0.3.5)
@@ -157,7 +157,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    uuid (2.3.7)
+    uuid (2.3.8)
       macaddr (~> 1.0)
 
 PLATFORMS
