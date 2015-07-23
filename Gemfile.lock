@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 56364c76c4654df82a21e66b30376526e997bc7b
+  revision: 22fd8973768c3f21a2bb1e62e8197778656c31cf
   branch: master
   specs:
     goo (0.0.2)
@@ -16,13 +16,14 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ncbo_annotator.git
-  revision: 81ade38bf1fec36858530165113ee49ad2ecee96
+  revision: fc15412de203f4578dd554145e49beb471ecf400
   branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
       ontologies_linked_data
       redis
+      ruby-xxHash
 
 GIT
   remote: git://github.com/ncbo/ncbo_resolver.git
@@ -34,7 +35,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: 4a5c5a4908686c35402fc0fa2459f0883e5fdd32
+  revision: cc0c4cf0d8af0a8d38afc6164b415de4a0145d02
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
