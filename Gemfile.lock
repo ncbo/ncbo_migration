@@ -89,6 +89,7 @@ GEM
     bcrypt (3.1.11)
     builder (3.2.2)
     coderay (1.1.1)
+    cube-ruby (0.0.3)
     domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
     elasticsearch (2.0.0)
@@ -167,6 +168,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 4.0)
+  cube-ruby
   goo!
   ncbo_annotator!
   ncbo_resolver!

@@ -8,6 +8,7 @@ gem 'progressbar'
 gem 'pry'
 gem 'rsolr'
 gem 'redis'
+gem 'cube-ruby', require: "cube"
 gem 'systemu'
 
 gem 'goo', github: 'ncbo/goo', branch: 'master'
