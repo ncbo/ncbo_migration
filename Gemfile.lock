@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ncbo/goo.git
-  revision: 1ed644e3b969d9edfa71caab861900135dc86fee
+  revision: 9c4cf6f5668bf9f2889be5d307a314f6acc89f32
   branch: master
   specs:
     goo (0.0.2)
@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ncbo_annotator.git
-  revision: 673678ef0d849acd544869826b233bb958b444d0
+  revision: 200c1dfd0592948dc102d20a4ec546f83124575c
   branch: master
   specs:
     ncbo_annotator (0.0.1)
@@ -35,7 +35,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/ontologies_linked_data.git
-  revision: 8392421a82aa31a9a33733bf215b423a1dbdd256
+  revision: 7a7ccc80641223192cd263064d24084cd08a0370
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: git://github.com/ncbo/resource_index.git
-  revision: cadb052f3b00993331b993ffcb1dc1b2aad11c42
+  revision: 4d3020aa4aad63f45b384359b47f4b17194c3092
   specs:
     ncbo_resource_index (0.0.1)
       elasticsearch
@@ -109,7 +109,7 @@ GEM
       domain_name (~> 0.5)
     i18n (0.7.0)
     json (1.8.3)
-    json_pure (2.0.1)
+    json_pure (2.0.2)
     libxml-ruby (2.9.0)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
@@ -149,7 +149,7 @@ GEM
       builder (>= 2.1.2)
     ruby-xxHash (0.4.0.1)
     rubyzip (1.2.0)
-    sequel (4.36.0)
+    sequel (4.37.0)
     slop (3.6.0)
     systemu (2.6.5)
     thread_safe (0.3.5)
@@ -184,4 +184,4 @@ DEPENDENCIES
   systemu
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
